@@ -24,8 +24,7 @@ export const uploadFile = async file => {
 };
 
 const portNum = window.location.port;
-export const baseUrl =
-  portNum === "3014" ? "https://d3qi3mksgxfw0l.cloudfront.net" : "";
+export const baseUrl = portNum === "3014" ? process.env.REACT_APP_IMG_URL : "";
 
 // ky API 인스턴스 생성
 export const api = ky.create({
