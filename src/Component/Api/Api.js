@@ -23,8 +23,6 @@ export const uploadFile = async file => {
   }
 };
 
-export const baseUrl = process.env.REACT_APP_IMG_URL;
-
 // ky API 인스턴스 생성
 export const api = ky.create({
   //prefixUrl: process.env.REACT_APP_API_URL, // 환경 변수 사용

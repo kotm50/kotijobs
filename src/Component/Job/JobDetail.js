@@ -70,7 +70,7 @@ function JobDetail() {
             <div className="w-fit max-w-[800px]">
               <Link to={`/apply?aid=${aid}`}>
                 <ImgLoader
-                  image={`${baseUrl}${jobInfo.adImg}`}
+                  image={`/${jobInfo.adImg}`}
                   altText={jobInfo.title}
                 />
               </Link>
