@@ -4,6 +4,7 @@ import logo from "../../Asset/defaultlogo.png";
 function ImgLoader(props) {
   const [imgSrc, setImgSrc] = useState(props.image);
   const handleError = () => {
+    console.log(imgSrc);
     // 이미지 로드에 실패하면 기본 이미지로 변경
     setImgSrc(logo); // 기본 이미지 경로 설정
   };
