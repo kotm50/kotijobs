@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import DetailPhone from "./DetailPhone";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import ky from "ky";
 import PopupDom from "../../Kakao/PopupDom";
@@ -8,6 +8,7 @@ import PopupPostCode from "../../Kakao/PopupPostCode";
 import Privacy from "../Doc/Privacy";
 
 function Apply() {
+  const navi = useNavigate();
   const thisLocation = useLocation();
   const parsed = queryString.parse(thisLocation.search);
   const aid = parsed.aid || null;
@@ -128,9 +129,11 @@ function Apply() {
         .json();
       //console.log(res);
       if (res.code === "C000") {
-        return alert(
+        alert(
           "지원이 완료되었습니다. 빠른시일내에 연락 드리겠습니다\n지원해 주셔서 감사합니다"
         );
+        navi("/");
+        return true;
       }
     } catch {
       console.error("Error fetching admin list: ", error);
