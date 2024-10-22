@@ -3,7 +3,6 @@ import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import ImgLoader from "../Image/ImgLoader";
-import { baseUrl } from "../Api/Api";
 
 function JobDetail() {
   const navi = useNavigate();
@@ -81,7 +80,7 @@ function JobDetail() {
               <div className="bg-white border p-4 flex flex-col justify-start gap-y-2 max-w-[300px]">
                 <div className="max-w-[250px] max-h-[100px] overflow-hidden">
                   <ImgLoader
-                    image={`${baseUrl}${jobInfo.logoImg}`}
+                    image={`/${jobInfo.logoImg}`}
                     altText={jobInfo.title}
                   />
                 </div>
