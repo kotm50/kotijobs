@@ -57,7 +57,7 @@ function JobList() {
                   className="p-2 bg-white border rounded w-[25%] flex flex-col justify-start hover:bg-rose-50"
                 >
                   <div className="w-[200px] h-[80px] mx-auto overflow-hidden relative mb-4">
-                    <ImgLoader image={`/${job.logoImg}`} altText={job.title} />
+                    <ImgLoader image={job.logoImg} altText={job.title} />
                   </div>
                   <div className="text-base font-bold">{job.title}</div>
                   <div className="text-sm text-nowrap text-ellipsis mb-2">
