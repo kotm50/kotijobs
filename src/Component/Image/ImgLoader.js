@@ -22,7 +22,7 @@ function ImgLoader(props) {
       src={imgSrc}
       onError={handleError}
       onLoad={handleHeight}
-      className="max-w-full h-auto my-auto"
+      className={props.tag}
       alt={props.altText}
     />
   );

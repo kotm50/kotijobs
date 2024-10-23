@@ -42,7 +42,7 @@ function UploadImg(props) {
   return (
     <>
       <div className="flex justify-start gap-x-2">
-        <div className="block px-1 py-1.5 text-sm font-neobold text-gray-900 dark:text-white min-w-[120px]">
+        <div className="block px-1 py-1.5 text-sm font-neobold text-gray-900 min-w-[120px]">
           {props.title}
         </div>
         <div className="flex justify-between w-full">
@@ -71,7 +71,7 @@ function UploadImg(props) {
       {preview && (
         <>
           <div className="flex justify-start gap-x-2">
-            <div className="block p-1 text-sm font-neobold text-gray-900 dark:text-white min-w-[120px]">
+            <div className="block p-1 text-sm font-neobold text-gray-900 min-w-[120px]">
               미리보기
             </div>
             <div className="grid grid-cols-1 gap-y-2">

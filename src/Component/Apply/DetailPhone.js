@@ -48,9 +48,7 @@ function DetailPhone(props) {
       <label
         htmlFor={props.id}
         className={`block p-1 min-w-[120px] text-sm font-neobold ${
-          props.error
-            ? "text-rose-500 dark:text-white"
-            : "text-gray-900 dark:text-white"
+          props.error ? "text-rose-500" : "text-gray-900"
         }`}
       >
         {props.title}
@@ -58,9 +56,9 @@ function DetailPhone(props) {
       <input
         type="text"
         id={props.id}
-        className={`shadow-sm border bg-gray-50 ${
+        className={`shadow-sm border  ${
           props.error ? "border-rose-500" : "border-gray-300"
-        } text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500 dark:shadow-sm-light`}
+        }  text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-1.5 `}
         value={props.phone}
         onFocus={handleFocus}
         onChange={handleChange}

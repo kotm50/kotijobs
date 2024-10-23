@@ -66,10 +66,23 @@ body {
   font-family: 'NanumSquareNeoBold', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #fafbfc;
+  background: #f8f8f8;
 	min-height: 100vh;
 }
 
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+  .bg-white {
+    background-color:#ffffff !important;
+  }
+}
+
+img.overflow {
+  max-width:9999px!important;
+}
 
 
 .loading-bg {

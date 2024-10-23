@@ -1,17 +1,19 @@
-import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React from "react";
+
+import Jumbotron from "./Main/Jumbotron";
+import PremiumJobs from "./Main/PremiumJobs";
+import GoldJobs from "./Main/GoldJobs";
 
 function Main() {
-  const thisLocation = useLocation();
-  const navi = useNavigate();
-
-  useEffect(() => {
-    // 현재 URL이 /job이면 /job/list로 리다이렉트
-    if (thisLocation.pathname === "/") {
-      navi("/job/list");
-    }
-  }, [thisLocation, navi]);
-  return <>잠시만 기다려 주십시오</>;
+  return (
+    <>
+      <Jumbotron />
+      <div className="grid grid-cols-1 gap-y-4">
+        <PremiumJobs />
+        <GoldJobs />
+      </div>
+    </>
+  );
 }
 
 export default Main;

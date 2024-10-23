@@ -2,18 +2,15 @@ import React, { useEffect, useState } from "react";
 import { baseUrl } from "../Api/Api";
 import { Link, useLocation } from "react-router-dom";
 import queryString from "query-string";
-import Pagenation from "../Layout/Pagenation";
 import ImgLoader from "../Image/ImgLoader";
 import ky from "ky";
 
-function JobList() {
+function GoldJobs() {
   const thisLocation = useLocation();
   const parsed = queryString.parse(thisLocation.search);
   const page = Number(parsed.page) || 1;
   const size = Number(parsed.size) || 20;
   const [jobs, setJobs] = useState([]); // 단일 파일을 저장할 상태
-  const [last, setLast] = useState(1);
-
   useEffect(() => {
     //console.log(jobs);
   }, [jobs]);
@@ -42,10 +39,9 @@ function JobList() {
       const jobSiteList = res.jobSiteList;
       let testList = [];
 
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 8; i++) {
         testList.push(jobSiteList[0]);
       }
-      setLast(res.totalPages || 1);
       //setJobs(res.jobSiteList || []);
       setJobs(testList || []);
     } catch (error) {
@@ -115,12 +111,9 @@ function JobList() {
             </div>
           </div>
         )}
-        {jobs && jobs.length > 0 ? (
-          <Pagenation last={last} rootPath={"job/list"} />
-        ) : null}
       </div>
     </>
   );
 }
 
-export default JobList;
+export default GoldJobs;

@@ -68,15 +68,16 @@ function JobDetail() {
           <h3 className="text-center font-neoextra text-2xl lg:text-4xl mb-3 w-full">
             {jobInfo.title}
           </h3>
-          <div className="w-full lg:max-w-[1400px] max-w-[95vw] h-fit flex justify-center gap-x-2">
+          <div className="w-[98vw] lg:max-w-[1400px] mx-auto h-fit grid grid-cols-1 lg:grid-cols-2 gap-x-2">
             <div className="h-fit">
-              <div className="w-fit max-w-[800px]">
+              <div className="w-fit max-w-[800px] mx-auto">
                 <Link to={`/apply?aid=${aid}`}>
                   <ImgLoader
                     image={`${baseUrl}${jobInfo.adImg}`}
                     altText={jobInfo.title}
                     setHeight={setHeight}
                     isAd={true}
+                    tag={"max-w-full h-auto my-auto"}
                   />
                 </Link>
               </div>
@@ -90,7 +91,7 @@ function JobDetail() {
                     <ImgLoader
                       image={`${baseUrl}${jobInfo.logoImg}`}
                       altText={jobInfo.title}
-                      type={"logo"}
+                      tag={"max-w-full h-auto my-auto"}
                     />
                   </div>
                   <div className="flex justify-start gap-x-1">

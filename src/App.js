@@ -10,14 +10,15 @@ import JobDetail from "./Component/Job/JobDetail";
 import Apply from "./Component/Apply/Apply";
 import Header from "./Component/Layout/Header";
 import Footer from "./Component/Layout/Footer";
+import Main from "./Component/Main";
 
 function App() {
   return (
     <>
       <Header />
-      <div className="font-neo text-sm max-w-[1200px] mx-auto py-4 min-h-[800px]">
+      <div className="font-neo text-sm max-w-[1200px] mx-auto pb-4 min-h-[800px]">
         <Routes>
-          <Route path="/" element={<JobList />} />
+          <Route path="/" element={<Main />} />
           <Route path="/apply" element={<Apply />} />
           <Route path="/job" element={<JobMain />}>
             <Route path="" element={<JobList />} />

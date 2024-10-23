@@ -184,14 +184,14 @@ function Apply() {
               <div className="flex justify-start gap-x-2">
                 <label
                   htmlFor="adTitle"
-                  className="block px-1 py-1.5 text-sm font-neobold text-gray-900 dark:text-white min-w-[120px]"
+                  className="block px-1 py-1.5 text-sm font-neobold text-gray-900 min-w-[120px]"
                 >
                   광고제목
                 </label>
                 <input
                   type="text"
                   id="adTitle"
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full  p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500 dark:shadow-sm-light"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full  p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-orange-500 dark:focus:border-orange-500 dark:shadow-sm-light"
                   value={adTitle}
                   onChange={e => e.preventDefault()}
                   placeholder="광고 제목"
@@ -201,14 +201,14 @@ function Apply() {
               <div className="flex justify-start gap-x-2">
                 <label
                   htmlFor="applyName"
-                  className="block px-1 py-1.5 text-sm font-neobold text-gray-900 dark:text-white min-w-[120px]"
+                  className="block px-1 py-1.5 text-sm font-neobold text-gray-900 min-w-[120px]"
                 >
                   이름
                 </label>
                 <input
                   type="text"
                   id="applyName"
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full  p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500 dark:shadow-sm-light"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full  p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-orange-500 dark:focus:border-orange-500 dark:shadow-sm-light"
                   value={applyName}
                   onChange={e => setApplyName(e.currentTarget.value)}
                   onBlur={e => setApplyName(e.currentTarget.value)}
@@ -219,14 +219,14 @@ function Apply() {
               <div className="flex justify-start gap-x-2">
                 <label
                   htmlFor="applyBirth"
-                  className="block px-1 py-1.5 text-sm font-neobold text-gray-900 dark:text-white min-w-[120px]"
+                  className="block px-1 py-1.5 text-sm font-neobold text-gray-900 min-w-[120px]"
                 >
                   생년월일
                 </label>
                 <input
                   type="text"
                   id="applyBirth"
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full  p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-orange-500 dark:focus:border-orange-500 dark:shadow-sm-light"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full  p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-orange-500 dark:focus:border-orange-500 dark:shadow-sm-light"
                   value={applyBirth}
                   onChange={e => setApplyBirth(e.currentTarget.value)}
                   onBlur={handleBirth}
@@ -234,7 +234,7 @@ function Apply() {
                 />
               </div>
               <div className="flex gap-x-2">
-                <div className="block p-1 text-sm font-neobold text-gray-900 dark:text-white min-w-[120px]">
+                <div className="block p-1 text-sm font-neobold text-gray-900 min-w-[120px]">
                   성별
                 </div>
                 <div className="flex flex-wrap gap-y-4 gap-x-4">
@@ -246,11 +246,11 @@ function Apply() {
                       value="여자"
                       onChange={handleGenderChange}
                       name="inline-radio-group"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
                     />
                     <label
                       htmlFor="gender_1"
-                      className="ms-1 text-sm font-medium text-gray-900 dark:text-gray-300"
+                      className="ms-1 text-sm font-medium text-gray-900"
                     >
                       여자
                     </label>
@@ -263,11 +263,11 @@ function Apply() {
                       value="남자"
                       onChange={handleGenderChange}
                       name="inline-radio-group"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
                     />
                     <label
                       htmlFor="gender_2"
-                      className="ms-1 text-sm font-medium text-gray-900 dark:text-gray-300"
+                      className="ms-1 text-sm font-medium text-gray-900"
                     >
                       남자
                     </label>
@@ -286,14 +286,14 @@ function Apply() {
               <div className="flex justify-start gap-x-2">
                 <label
                   htmlFor="address"
-                  className="block px-1 py-1.5 text-sm font-neobold text-gray-900 dark:text-white min-w-[120px]"
+                  className="block px-1 py-1.5 text-sm font-neobold text-gray-900 min-w-[120px]"
                 >
                   거주지 주소
                 </label>
                 <input
                   type="text"
                   id="address"
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full  p-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500 dark:shadow-sm-light"
+                  className="shadow-sm border border-gray-300 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-1"
                   value={address}
                   onChange={e => e.preventDefault()}
                   placeholder="클릭하여 주소 입력"
@@ -306,14 +306,14 @@ function Apply() {
                 <div data="상세주소" className="flex justify-start gap-x-2">
                   <label
                     htmlFor="addr"
-                    className="block p-1 text-sm font-neobold text-gray-900 dark:text-white min-w-[120px]"
+                    className="block p-1 text-sm font-neobold text-gray-900 min-w-[120px]"
                   >
                     상세주소
                   </label>
                   <input
                     type="text"
                     id="addr"
-                    className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full  p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500 dark:shadow-sm-light"
+                    className="shadow-sm border border-gray-300 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-1"
                     value={addr}
                     onChange={e => setAddr(e.currentTarget.value)}
                     onBlur={e => setAddr(e.currentTarget.value)}
@@ -336,12 +336,12 @@ function Apply() {
                     value={isAgree}
                     onChange={() => setIsAgree(!isAgree)}
                     name="agree-check"
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
                     checked={isAgree}
                   />
                   <label
                     htmlFor="agree"
-                    className="ms-1 text-sm font-medium text-gray-900 dark:text-gray-300"
+                    className="ms-1 text-sm font-medium text-gray-900"
                   >
                     개인정보 수집 및 이용에 동의합니다
                   </label>
