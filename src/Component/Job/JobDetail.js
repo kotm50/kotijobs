@@ -87,7 +87,7 @@ function JobDetail() {
             >
               <div className="sticky top-10 left-0 w-full h-fit min-h-[100px]">
                 <div className="bg-white border p-4 flex flex-col justify-start gap-y-2 max-w-[300px]">
-                  <div className="max-w-[250px] max-h-[100px] overflow-hidden">
+                  <div className="max-w-[250px] max-h-[100px] overflow-hidden dark:bg-white">
                     <ImgLoader
                       image={`${baseUrl}${jobInfo.logoImg}`}
                       altText={jobInfo.title}

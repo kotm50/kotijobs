@@ -60,7 +60,7 @@ function GoldJobs() {
                   key={idx}
                   className="px-4 py-2 bg-white dark:bg-white border rounded-lg w-full flex flex-col justify-start hover:bg-rose-50 jobList shadow hover:shadow-lg"
                 >
-                  <div className="max-w-[100px] h-[40px] lg:max-w-[200px] lg:h-[80px] mx-auto overflow-hidden relative mb-2 bg-white dark:bg-white">
+                  <div className="max-w-[100px] h-[40px] lg:max-w-[200px] lg:h-[80px] mx-auto overflow-hidden relative mb-2 dark:bg-white">
                     <ImgLoader
                       image={`${baseUrl}${job.logoImg}`}
                       altText={job.title}
@@ -72,18 +72,11 @@ function GoldJobs() {
                     {job.company}
                   </div>
                   <div className="text-base">
-                    주{" "}
-                    <span className="text-rose-500 font-bold">
-                      {job.workDay.split(", ").length}
-                    </span>{" "}
-                    일 근무
-                  </div>
-                  <div className="text-base">
                     월 최대{" "}
                     <span className="text-rose-500 font-bold">
                       {Number(job.maxPay).toLocaleString()}
                     </span>{" "}
-                    만원 지급
+                    만원
                   </div>
                 </Link>
               ))}

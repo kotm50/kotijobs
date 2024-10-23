@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { baseUrl } from "../Api/Api";
 import { Link, useLocation } from "react-router-dom";
 import queryString from "query-string";
-import ImgLoader from "../Image/ImgLoader";
+//import ImgLoader from "../Image/ImgLoader";
 import ky from "ky";
 
 function PremiumJobs() {
@@ -12,9 +12,29 @@ function PremiumJobs() {
   const size = Number(parsed.size) || 20;
   const [jobs, setJobs] = useState([]); // 단일 파일을 저장할 상태
 
+  const [browser, setBrowser] = useState("");
+
   useEffect(() => {
-    //console.log(jobs);
-  }, [jobs]);
+    const userAgent = navigator.userAgent.toLowerCase();
+
+    if (userAgent.includes("whale")) {
+      setBrowser("Naver Whale");
+    } else if (userAgent.includes("chrome") && !userAgent.includes("edg")) {
+      setBrowser("Google Chrome");
+    } else if (userAgent.includes("firefox")) {
+      setBrowser("Mozilla Firefox");
+    } else if (userAgent.includes("safari") && !userAgent.includes("chrome")) {
+      setBrowser("Safari");
+    } else if (userAgent.includes("edg")) {
+      setBrowser("Microsoft Edge");
+    } else {
+      setBrowser("Unknown Browser");
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log(browser);
+  }, [browser]);
 
   useEffect(() => {
     getJobs();
@@ -56,33 +76,30 @@ function PremiumJobs() {
           <>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full px-2 lg:px-0">
               {jobs.map((job, idx) => (
-                <Link
-                  to={`/job/detail?aid=${job.aid}`}
-                  key={idx}
-                  className="p-4 bg-white dark:bg-white border rounded-lg w-full grid grid-cols-3 gap-x-2 hover:bg-rose-50 jobList shadow hover:shadow-lg"
-                >
-                  <div className="col-span-2 flex flex-col justify-center gap-y-1">
-                    <div className="text-sm text-nowrap text-ellipsis">
-                      {job.company}
+                <Link to={`/job/detail?aid=${job.aid}`} key={idx}>
+                  <div
+                    className=" bg-white dark:bg-white border rounded-lg w-full  hover:bg-rose-50 jobList shadow hover:shadow-lg premium-list"
+                    style={{
+                      backgroundImage: `url(${baseUrl}${job.logoImg})`,
+                    }}
+                  >
+                    <div className="p-4 w-full flex flex-col justify-center gap-y-1 premium-bg">
+                      <div className="text-sm text-nowrap text-ellipsis">
+                        {job.company}
+                      </div>
+                      <div className="text-lg font-bold">{job.title}</div>
+                      <div className="text-base">
+                        주{" "}
+                        <span className="text-rose-500 font-bold">
+                          {job.workDay.split(", ").length}
+                        </span>{" "}
+                        일 근무 월 최대{" "}
+                        <span className="text-rose-500 font-bold">
+                          {Number(job.maxPay).toLocaleString()}
+                        </span>{" "}
+                        만원
+                      </div>
                     </div>
-                    <div className="text-base font-bold">{job.title}</div>
-                    <div className="text-base">
-                      월 최대{" "}
-                      <span className="text-rose-500 font-bold">
-                        {Number(job.maxPay).toLocaleString()}
-                      </span>{" "}
-                      만원 지급
-                    </div>
-                  </div>
-
-                  <div className="h-full mx-auto overflow-hidden relative mb-2 bg-white dark:bg-white my-auto">
-                    <ImgLoader
-                      image={`${baseUrl}${job.logoImg}`}
-                      altText={job.title}
-                      tag={
-                        "h-[80px] w-[200px] overflow absolute right-1/2 top-1/2 translate-x-1/2 -translate-y-1/2"
-                      }
-                    />
                   </div>
                 </Link>
               ))}

@@ -101,3 +101,19 @@ img.overflow {
   width:100%;
   overflow:hidden
 }
+
+.premium-bg {
+  width: 100%;
+  height: 120px; /* 높이는 필요에 따라 조정 */
+  background: linear-gradient(to right,
+              rgba(255, 255, 255, 1) 0%,  /* 완전 흰색 */
+              rgba(255, 255, 255, 1) 50%, /* 50%까지 흰색 유지 */
+              rgba(255, 255, 255, 0) 100%); /* 투명해짐 */
+}
+
+.premium-list {
+  background-size: auto 80%;
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-color: rgba(255, 255, 255, 0.5);
+}
