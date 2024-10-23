@@ -14,6 +14,7 @@ function JobDetail() {
   const [jobInfo, setJobInfo] = useState(null);
   const [workDayList, setWorkDayList] = useState([]);
   const [welfare, setWelfare] = useState([]);
+  const [height, setHeight] = useState("100px");
   useEffect(() => {
     if (aid === "error") {
       alert("잘못된 접근 경로입니다");
@@ -59,109 +60,119 @@ function JobDetail() {
       console.error("Error fetching company list: ", error);
     }
   };
+
   return (
     <>
       {jobInfo ? (
-        <div className="w-full lg:max-w-[1400px] max-w-[95vw] flex justify-center gap-x-2">
-          <div className="h-fit">
-            <h3 className="text-center font-neoextra text-lg mb-3 w-full">
-              {jobInfo.title}
-            </h3>
-            <div className="w-fit max-w-[800px]">
-              <Link to={`/apply?aid=${aid}`}>
-                <ImgLoader
-                  image={`${baseUrl}${jobInfo.adImg}`}
-                  altText={jobInfo.title}
-                />
-              </Link>
-            </div>
-          </div>
-          <div className="relative w-fit h-full min-w-[100px] min-h-[100px] max-w-[300px]">
-            <div className="sticky top-10 left-0 w-full h-fit min-h-[100px]">
-              <div className="bg-white border p-4 flex flex-col justify-start gap-y-2 max-w-[300px]">
-                <div className="max-w-[250px] max-h-[100px] overflow-hidden">
+        <>
+          <h3 className="text-center font-neoextra text-2xl lg:text-4xl mb-3 w-full">
+            {jobInfo.title}
+          </h3>
+          <div className="w-full lg:max-w-[1400px] max-w-[95vw] h-fit flex justify-center gap-x-2">
+            <div className="h-fit">
+              <div className="w-fit max-w-[800px]">
+                <Link to={`/apply?aid=${aid}`}>
                   <ImgLoader
-                    image={`${baseUrl}${jobInfo.logoImg}`}
+                    image={`${baseUrl}${jobInfo.adImg}`}
                     altText={jobInfo.title}
+                    setHeight={setHeight}
+                    isAd={true}
                   />
-                </div>
-                <div className="flex justify-start gap-x-1">
-                  <span className="font-normal">기업명</span>
-                  <span>{" : "}</span>
-                  <span className="font-bold">{jobInfo.company}</span>
-                </div>
-                <div className="flex justify-start gap-x-1">
-                  <span className="font-normal">채용기간</span>
-                  <span>{" : "}</span>
-                  <span className="font-bold">{jobInfo.endDate}</span>
-                  <span>까지</span>
-                </div>
-                <div className="flex justify-start gap-x-1">
-                  <span className="font-normal">근무요일</span>
-                  <span>{" : "}</span>
-                  <span>주</span>
-                  <span className="font-bold">{workDayList.length}</span>
-                  <span>일 근무</span>
-                </div>
-                <div className="flex justify-start gap-x-1">
-                  <span className="font-normal text-transparent">요일상세</span>
-                  <span className="text-transparent">{" : "}</span>
-                  {workDayList.includes("0") && (
-                    <span className="font-bold text-rose-500">일</span>
-                  )}
-                  {workDayList.includes("1") && (
-                    <span className="font-bold">월</span>
-                  )}
-                  {workDayList.includes("2") && (
-                    <span className="font-bold">화</span>
-                  )}
-                  {workDayList.includes("3") && (
-                    <span className="font-bold">수</span>
-                  )}
-                  {workDayList.includes("4") && (
-                    <span className="font-bold">목</span>
-                  )}
-                  {workDayList.includes("5") && (
-                    <span className="font-bold">금</span>
-                  )}
-                  {workDayList.includes("6") && (
-                    <span className="font-bold text-blue-500">토</span>
-                  )}
-                </div>
-                <div className="flex justify-start gap-x-1">
-                  <span className="font-normal">근무시간</span>
-                  <span>{" : "}</span>
-                  <span className="font-bold">{jobInfo.workStart}</span>
-                  <span>~</span>
-                  <span className="font-bold">{jobInfo.workEnd}</span>
-                </div>
-                {welfare.length > 0 && (
-                  <div className="flex justify-start gap-x-1 gap-y-1 flex-wrap">
-                    <span className="font-normal py-1">복지혜택</span>
-                    <span className="py-1">{" : "}</span>
-                    {welfare.map((wel, idx) => (
-                      <span
-                        key={idx}
-                        className={`p-1 border text-xs rounded ${
-                          count === idx &&
-                          "bg-indigo-50 text-indigo-500 border-indigo-500 font-bold"
-                        }`}
-                      >
-                        {wel}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                <Link
-                  to={`/apply?aid=${aid}`}
-                  className="block text-center bg-green-500 hover:bg-green-700 text-white font-bold p-2"
-                >
-                  지원하기
                 </Link>
               </div>
             </div>
+            <div
+              className={`hidden lg:block relative w-fit min-w-[100px] min-h-[${height}] max-w-[300px]`}
+            >
+              <div className="sticky top-10 left-0 w-full h-fit min-h-[100px]">
+                <div className="bg-white border p-4 flex flex-col justify-start gap-y-2 max-w-[300px]">
+                  <div className="max-w-[250px] max-h-[100px] overflow-hidden">
+                    <ImgLoader
+                      image={`${baseUrl}${jobInfo.logoImg}`}
+                      altText={jobInfo.title}
+                      type={"logo"}
+                    />
+                  </div>
+                  <div className="flex justify-start gap-x-1">
+                    <span className="font-normal">기업명</span>
+                    <span>{" : "}</span>
+                    <span className="font-bold">{jobInfo.company}</span>
+                  </div>
+                  <div className="flex justify-start gap-x-1">
+                    <span className="font-normal">채용기간</span>
+                    <span>{" : "}</span>
+                    <span className="font-bold">{jobInfo.endDate}</span>
+                    <span>까지</span>
+                  </div>
+                  <div className="flex justify-start gap-x-1">
+                    <span className="font-normal">근무요일</span>
+                    <span>{" : "}</span>
+                    <span>주</span>
+                    <span className="font-bold">{workDayList.length}</span>
+                    <span>일 근무</span>
+                  </div>
+                  <div className="flex justify-start gap-x-1">
+                    <span className="font-normal text-transparent">
+                      요일상세
+                    </span>
+                    <span className="text-transparent">{" : "}</span>
+                    {workDayList.includes("0") && (
+                      <span className="font-bold text-rose-500">일</span>
+                    )}
+                    {workDayList.includes("1") && (
+                      <span className="font-bold">월</span>
+                    )}
+                    {workDayList.includes("2") && (
+                      <span className="font-bold">화</span>
+                    )}
+                    {workDayList.includes("3") && (
+                      <span className="font-bold">수</span>
+                    )}
+                    {workDayList.includes("4") && (
+                      <span className="font-bold">목</span>
+                    )}
+                    {workDayList.includes("5") && (
+                      <span className="font-bold">금</span>
+                    )}
+                    {workDayList.includes("6") && (
+                      <span className="font-bold text-blue-500">토</span>
+                    )}
+                  </div>
+                  <div className="flex justify-start gap-x-1">
+                    <span className="font-normal">근무시간</span>
+                    <span>{" : "}</span>
+                    <span className="font-bold">{jobInfo.workStart}</span>
+                    <span>~</span>
+                    <span className="font-bold">{jobInfo.workEnd}</span>
+                  </div>
+                  {welfare.length > 0 && (
+                    <div className="flex justify-start gap-x-1 gap-y-1 flex-wrap">
+                      <span className="font-normal py-1">복지혜택</span>
+                      <span className="py-1">{" : "}</span>
+                      {welfare.map((wel, idx) => (
+                        <span
+                          key={idx}
+                          className={`p-1 border text-xs rounded ${
+                            count === idx &&
+                            "bg-indigo-50 text-indigo-500 border-indigo-500 font-bold"
+                          }`}
+                        >
+                          {wel}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <Link
+                    to={`/apply?aid=${aid}`}
+                    className="block text-center bg-green-500 hover:bg-green-700 text-white font-bold p-2"
+                  >
+                    지원하기
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
+        </>
       ) : (
         <div className="w-full h-[800px] relative">
           <div className="absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2">

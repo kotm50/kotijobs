@@ -38,8 +38,16 @@ function JobList() {
 
       //console.log("겟", res);
       //console.log("포스트", res1);
+
+      const jobSiteList = res.jobSiteList;
+      let testList = [];
+
+      for (let i = 0; i < 12; i++) {
+        testList.push(jobSiteList[0]);
+      }
       setLast(res.totalPages || 1);
-      setJobs(res.jobSiteList || []);
+      //setJobs(res.jobSiteList || []);
+      setJobs(testList || []);
     } catch (error) {
       console.error("Error fetching company list: ", error);
     }
@@ -49,14 +57,14 @@ function JobList() {
       <div className="w-full">
         {jobs && jobs.length > 0 ? (
           <>
-            <div className="flex flex-row flex-wrap gap-4 w-full">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 w-full px-2 lg:px-0">
               {jobs.map((job, idx) => (
                 <Link
                   to={`/job/detail?aid=${job.aid}`}
                   key={idx}
-                  className="p-2 bg-white border rounded w-[25%] flex flex-col justify-start hover:bg-rose-50"
+                  className="p-2 bg-white border rounded w-full flex flex-col justify-start hover:bg-rose-50 jobList"
                 >
-                  <div className="w-[200px] h-[80px] mx-auto overflow-hidden relative mb-4">
+                  <div className="max-w-[200px] h-[80px] mx-auto overflow-hidden relative mb-4">
                     <ImgLoader
                       image={`${baseUrl}${job.logoImg}`}
                       altText={job.title}
