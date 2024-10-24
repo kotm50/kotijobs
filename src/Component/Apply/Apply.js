@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import DetailPhone from "./DetailPhone";
 import { useLocation, useNavigate } from "react-router-dom";
 import queryString from "query-string";
-import ky from "ky";
+import { api } from "../Api/Api";
 import PopupDom from "../../Kakao/PopupDom";
 import PopupPostCode from "../../Kakao/PopupPostCode";
 import Privacy from "../Doc/Privacy";
@@ -60,13 +60,13 @@ function Apply() {
     };
     //console.log(data);
 
-    const res = await ky
+    const res = await api
       .post("/api/v1/formMail_ad/findOneJobsite", { json: data })
       .json();
     //console.log(res);
     setAdTitle(res.jobSiteList[0].title);
 
-    const res2 = await ky
+    const res2 = await api
       .post("/api/v1/formMail_ad/findCompanyAndUser", { json: data })
       .json();
     const info = res2.findCompanyAndUserList;
@@ -124,7 +124,7 @@ function Apply() {
     };
     //console.log(data);
     try {
-      const res = await ky
+      const res = await api
         .post("/api/v1/formMail_apply/addApply", { json: data })
         .json();
       //console.log(res);

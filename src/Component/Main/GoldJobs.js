@@ -3,7 +3,7 @@ import { baseUrl } from "../Api/Api";
 import { Link, useLocation } from "react-router-dom";
 import queryString from "query-string";
 import ImgLoader from "../Image/ImgLoader";
-import ky from "ky";
+import { api } from "../Api/Api";
 
 function GoldJobs() {
   const thisLocation = useLocation();
@@ -29,7 +29,7 @@ function GoldJobs() {
     //console.log(data);
     try {
       //const res1 = await ky.get("/api/v1/formMail_ad/jobSiteListTest").json();
-      const res = await ky
+      const res = await api
         .post("/api/v1/formMail_ad/allJobsiteList", { json: data })
         .json();
 

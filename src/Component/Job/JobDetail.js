@@ -1,4 +1,4 @@
-import ky from "ky";
+import { api } from "../Api/Api";
 import queryString from "query-string";
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -49,7 +49,7 @@ function JobDetail() {
       aid: aid,
     };
     try {
-      const res = await ky
+      const res = await api
         .post("/api/v1/formMail_ad/findOneJobsite", { json: data })
         .json();
       //console.log(res);
