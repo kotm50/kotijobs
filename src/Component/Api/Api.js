@@ -1,4 +1,6 @@
 import ky from "ky";
+import { useDispatch } from "react-redux";
+import { clearUser } from "../../Reducer/userSlice";
 
 export const uploadFile = async file => {
   const formData = new FormData();
@@ -28,9 +30,20 @@ export const baseUrl = portNum === "3014" ? process.env.REACT_APP_IMG_URL : "";
 
 // ky API 인스턴스 생성
 export const api = ky.create({
-  //prefixUrl: process.env.REACT_APP_API_URL, // 환경 변수 사용
+  credentials: "include",
   headers: {
     "Content-Type": "application/json",
+  },
+  hooks: {
+    afterResponse: [
+      async (request, options, response) => {
+        if (response.status === 401) {
+          // 로그아웃 처리 (Redux 상태 초기화 등)
+          useDispatch(clearUser());
+          window.location.href = "/"; // 로그인 페이지로 이동
+        }
+      },
+    ],
   },
   timeout: 10000, // 타임아웃 설정 (10초)
 });
