@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { baseUrl } from "../Api/Api";
 import { Link, useLocation } from "react-router-dom";
 import queryString from "query-string";
-import ImgLoader from "../Image/ImgLoader";
+//import ImgLoader from "../Image/ImgLoader";
 import { api } from "../Api/Api";
+import ImgLoader from "../Image/ImgLoader";
 
 function GoldJobs() {
   const thisLocation = useLocation();
@@ -11,14 +12,35 @@ function GoldJobs() {
   const page = Number(parsed.page) || 1;
   const size = Number(parsed.size) || 20;
   const [jobs, setJobs] = useState([]); // 단일 파일을 저장할 상태
+
+  const [browser, setBrowser] = useState("");
+
   useEffect(() => {
-    //console.log(jobs);
-  }, [jobs]);
+    const userAgent = navigator.userAgent.toLowerCase();
+
+    if (userAgent.includes("whale")) {
+      setBrowser("Naver Whale");
+    } else if (userAgent.includes("chrome") && !userAgent.includes("edg")) {
+      setBrowser("Google Chrome");
+    } else if (userAgent.includes("firefox")) {
+      setBrowser("Mozilla Firefox");
+    } else if (userAgent.includes("safari") && !userAgent.includes("chrome")) {
+      setBrowser("Safari");
+    } else if (userAgent.includes("edg")) {
+      setBrowser("Microsoft Edge");
+    } else {
+      setBrowser("Unknown Browser");
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log(browser);
+  }, [browser]);
 
   useEffect(() => {
     getJobs();
     //eslint-disable-next-line
-  }, []);
+  }, [thisLocation]);
 
   const getJobs = async () => {
     //console.log(process.env.REACT_APP_API_URL);
@@ -33,13 +55,12 @@ function GoldJobs() {
         .post("/api/v1/formMail_ad/allJobsiteList", { json: data })
         .json();
 
-      //console.log("겟", res);
-      //console.log("포스트", res1);
+      console.log("테스트", res);
 
       const jobSiteList = res.jobSiteList;
       let testList = [];
 
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < 4; i++) {
         testList.push(jobSiteList[0]);
       }
       //setJobs(res.jobSiteList || []);
@@ -53,30 +74,30 @@ function GoldJobs() {
       <div className="w-full">
         {jobs && jobs.length > 0 ? (
           <>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 w-full px-2 lg:px-0">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full px-2 lg:px-0">
               {jobs.map((job, idx) => (
-                <Link
-                  to={`/job/detail?aid=${job.aid}`}
-                  key={idx}
-                  className="px-4 py-2 bg-white dark:bg-white border rounded-lg w-full flex flex-col justify-start hover:bg-rose-50 jobList shadow hover:shadow-lg"
-                >
-                  <div className="max-w-[100px] h-[40px] lg:max-w-[200px] lg:h-[80px] mx-auto overflow-hidden relative mb-2 dark:bg-white">
-                    <ImgLoader
-                      image={`${baseUrl}${job.logoImg}`}
-                      altText={job.title}
-                      tag={"max-w-full h-auto my-auto"}
-                    />
-                  </div>
-                  <div className="text-base font-bold">{job.title}</div>
-                  <div className="text-sm text-nowrap text-ellipsis mb-2">
-                    {job.company}
-                  </div>
-                  <div className="text-base">
-                    월 최대{" "}
-                    <span className="text-rose-500 font-bold">
-                      {Number(job.maxPay).toLocaleString()}
-                    </span>{" "}
-                    만원
+                <Link to={`/job/detail?aid=${job.aid}`} key={idx}>
+                  <div className="flex justify-start gap-x-2 bg-white dark:bg-white border rounded-lg w-full hover:bg-rose-50 shadow hover:shadow-lg items-center">
+                    <div className="w-auto max-w-[120px] h-[48px] lg:max-w-[200px] lg:h-[80px] mx-auto overflow-hidden dark:bg-white">
+                      <ImgLoader
+                        image={`${baseUrl}${job.logoImg}`}
+                        altText={job.title}
+                        tag={"w-full h-auto my-auto"}
+                      />
+                    </div>
+                    <div className="p-4 w-full flex flex-col justify-center gap-y-1">
+                      <div className="text-sm text-nowrap text-ellipsis">
+                        {job.company}
+                      </div>
+                      <div className="text-lg font-bold">{job.title}</div>
+                      <div className="text-base">
+                        월급{" "}
+                        <span className="text-rose-500 font-bold">
+                          {Number(job.maxPay).toLocaleString()}
+                        </span>{" "}
+                        만원
+                      </div>
+                    </div>
                   </div>
                 </Link>
               ))}

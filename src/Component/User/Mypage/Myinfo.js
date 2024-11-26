@@ -1,30 +1,19 @@
 import React, { useEffect, useState } from "react";
-import DetailPhone from "./DetailPhone";
-import { useLocation, useNavigate } from "react-router-dom";
-import queryString from "query-string";
-import { api } from "../Api/Api";
-import PopupDom from "../../Kakao/PopupDom";
-import PopupPostCode from "../../Kakao/PopupPostCode";
-import Privacy from "../Doc/Privacy";
+
+import { useNavigate } from "react-router-dom";
+import { api } from "../../Api/Api";
+import PopupDom from "../../../Kakao/PopupDom";
+import PopupPostCode from "../../../Kakao/PopupPostCode";
+import PhoneAuth from "../PhoneAuth";
 import { useSelector } from "react-redux";
 
-function Apply() {
+function MyInfo() {
   const login = useSelector(state => state.user);
   const navi = useNavigate();
-  const thisLocation = useLocation();
-  const parsed = queryString.parse(thisLocation.search);
-  const aid = parsed.aid || null;
-  const [adNum, setAdNum] = useState("");
-  const [adTitle, setAdTitle] = useState("");
-  const [companyName, setCompanyName] = useState("");
-  const [partner, setPartner] = useState("");
-  const [companyId, setCompanyId] = useState("");
-  const [managerId, setManagerID] = useState("");
-  const [applyName, setApplyName] = useState("");
-  const [applyBirth, setApplyBirth] = useState("");
-  const [applyPhone, setApplyPhone] = useState("");
+  const [userName, setUserName] = useState("");
+  const [birth, setBirth] = useState("");
+  const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("");
-  const [isAgree, setIsAgree] = useState(false);
 
   // 팝업창 상태 관리
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -42,123 +31,56 @@ function Apply() {
   const [addressDetail, setAddressDetail] = useState(false);
   const [address, setAddress] = useState("");
   const [addrDetail, setAddrDetail] = useState("");
+  const [sido, setSido] = useState("");
+  const [sigungu, setSigungu] = useState("");
 
   const [error, setError] = useState("");
 
-  const handleGenderChange = e => {
-    setGender(e.target.value);
-  };
-
   useEffect(() => {
-    //console.log(aid);
-    if (aid) {
-      getAdInfo(aid);
-    }
-  }, [aid]);
+    console.log("시도", sido);
+    console.log("시군구", sigungu);
+  }, [sido, sigungu]);
 
   useEffect(() => {
     if (login.userId) {
-      getUserInfo(login.userId);
+      getUserInfo();
     }
+    //eslint-disable-next-line
   }, [login]);
 
-  const getUserInfo = async id => {
+  const getUserInfo = async () => {
     const data = {
-      userId: id,
+      userId: login.userId,
     };
 
     const res = await api
       .post("/api/v1/jobsite/user/findOne", { json: data })
       .json();
     console.log(res);
-    const userInfo = res.user;
-    setApplyName(userInfo.userName || "");
-    setApplyBirth(userInfo.birth || "");
-    setApplyPhone(userInfo.phone || "");
-    setGender(userInfo.gender || "");
-    setAddress(userInfo.address || "");
   };
 
-  const getAdInfo = async aid => {
-    const data = {
-      aid: aid,
+  const handleGenderChange = e => {
+    setGender(e.target.value);
+  };
+
+  const getData = () => {
+    let data = {
+      userId: login.userId,
     };
-    //console.log(data);
-
-    const res = await api
-      .post("/api/v1/formMail_ad/findOneJobsite", { json: data })
-      .json();
-    //console.log(res);
-    setAdTitle(res.jobSiteList[0].title);
-
-    const res2 = await api
-      .post("/api/v1/formMail_ad/findCompanyAndUser", { json: data })
-      .json();
-    console.log(res2);
-    const info = res2.findCompanyAndUserList;
-    setCompanyName(`${info[0].companyName}`);
-    setPartner(`${info[0].userName}(${info[0].rName}) ${info[0].position}`);
-    setCompanyId(info[0].cid || "");
-    setManagerID(info[0].userId || "");
-    setAdNum(info[0].adNum || "");
+    return data;
   };
 
-  const chkData = () => {
-    if (!isAgree) {
-      return "개인정보 수집이용에 동의하셔야 지원이 가능합니다";
-    }
-    if (!applyName) {
-      return "지원자 이름을 입력해 주세요";
-    }
-    if (!applyBirth) {
-      return "지원자 생년월일을 입력해 주세요";
-    }
-    if (!applyPhone) {
-      return "지원자 연락처를 입력해 주세요";
-    }
-    if (error) {
-      return "연락처를 양식에 맞춰 입력해 주세요";
-    }
-    if (!address) {
-      return "지원자 거주지를 입력하세요";
-    }
-    if (!gender) {
-      return "지원자 성별을 선택 해 주세요";
-    }
-    return "완료";
-  };
-
-  const addApply = async e => {
+  const userEdit = async e => {
     e.preventDefault();
-    const chk = await chkData();
-    if (chk !== "완료") {
-      return alert(chk);
-    }
-    const data = {
-      aid: aid,
-      cid: companyId,
-      managerId: managerId,
-      company: companyName,
-      adNum: adNum,
-      title: adTitle,
-      partner: partner,
-      applyName: applyName,
-      applyPhone: applyPhone,
-      applyAddress: address,
-      addressDetail: addressDetail,
-      applyGender: gender,
-      applyBirth: applyBirth,
-    };
+    const data = getData();
     //console.log(data);
     try {
       const res = await api
-        .post("/api/v1/jobsite/common/addApply", { json: data })
+        .post("/api/v1/jobsite/user/join", { json: data })
         .json();
-
+      console.log(res);
       if (res.code === "C000") {
-        alert(
-          "지원이 완료되었습니다. 빠른시일내에 연락 드리겠습니다\n지원해 주셔서 감사합니다"
-        );
+        alert("회원가입이 완료되었습니다");
         navi("/");
         return true;
       }
@@ -169,7 +91,6 @@ function Apply() {
 
   const handleBirth = e => {
     const value = e.target.value;
-
     if (value === "") {
       return false;
     }
@@ -178,7 +99,7 @@ function Apply() {
 
     if (!isNumeric) {
       alert("숫자만 입력 가능합니다.");
-      setApplyBirth("");
+      setBirth("");
       return;
     }
 
@@ -187,20 +108,20 @@ function Apply() {
       const firstTwoDigits = value.slice(0, 2);
       if (firstTwoDigits !== "19" && firstTwoDigits !== "20") {
         alert("잘못된 입력입니다. '19' 또는 '20'으로 시작해야 합니다.");
-        setApplyBirth(""); // 값 초기화
+        setBirth(""); // 값 초기화
         return;
       }
     } else {
       alert("잘못된 입력입니다. 4자리 또는 8자리 숫자로 입력해 주세요");
-      setApplyBirth(""); // 값 초기화
+      setBirth(""); // 값 초기화
       return;
     }
 
     // 4자리일 때 '0000'을 붙이는 로직
     if (value.length === 4) {
-      setApplyBirth(`${value}0000`);
+      setBirth(`${value}0000`);
     } else {
-      setApplyBirth(value);
+      setBirth(value);
     }
   };
   return (
@@ -208,69 +129,52 @@ function Apply() {
       <div className="w-full lg:max-w-[1400px] max-w-[95vw] mx-auto pt-10">
         <div className="w-full">
           <h3 className="text-center font-neoextra text-lg mb-3 w-full">
-            지원자 입력
+            개인정보 수정
           </h3>
-          <form onSubmit={addApply}>
+          <form onSubmit={userEdit}>
             <div className="p-4 border bg-white flex flex-col justify-start gap-y-4 max-w-[600px] mx-auto">
               <div className="flex justify-start gap-x-2">
                 <label
-                  htmlFor="adTitle"
-                  className="block px-1 py-1.5 text-sm font-neobold text-gray-900 min-w-[120px]"
-                >
-                  광고제목
-                </label>
-                <input
-                  type="text"
-                  id="adTitle"
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full  p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-orange-500 dark:focus:border-orange-500 dark:shadow-sm-light"
-                  value={adTitle}
-                  onChange={e => e.preventDefault()}
-                  placeholder="광고 제목"
-                />
-              </div>
-
-              <div className="flex justify-start gap-x-2">
-                <label
-                  htmlFor="applyName"
+                  htmlFor="userName"
                   className="block px-1 py-1.5 text-sm font-neobold text-gray-900 min-w-[120px]"
                 >
                   이름
                 </label>
                 <input
                   type="text"
-                  id="applyName"
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full  p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-orange-500 dark:focus:border-orange-500 dark:shadow-sm-light"
-                  value={applyName}
-                  onChange={e => setApplyName(e.currentTarget.value)}
-                  onBlur={e => setApplyName(e.currentTarget.value)}
-                  placeholder="지원자 이름"
+                  id="userName"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-stone-500 focus:border-stone-500 block w-full  p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-stone-500 dark:focus:border-stone-500 dark:shadow-sm-light"
+                  value={userName}
+                  onChange={e => setUserName(e.currentTarget.value)}
+                  onBlur={e => setUserName(e.currentTarget.value)}
+                  placeholder="이름"
                 />
               </div>
-
               <div className="flex justify-start gap-x-2">
                 <label
-                  htmlFor="applyBirth"
+                  htmlFor="birth"
                   className="block px-1 py-1.5 text-sm font-neobold text-gray-900 min-w-[120px]"
                 >
                   생년월일
                 </label>
                 <input
                   type="text"
-                  id="applyBirth"
-                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-orange-500 focus:border-orange-500 block w-full  p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-orange-500 dark:focus:border-orange-500 dark:shadow-sm-light"
-                  value={applyBirth}
-                  onChange={e => setApplyBirth(e.currentTarget.value)}
+                  id="birth"
+                  className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded focus:ring-stone-500 focus:border-stone-500 block w-full  p-1.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-stone-500 dark:focus:border-stone-500 dark:shadow-sm-light"
+                  value={birth}
+                  onChange={e => setBirth(e.currentTarget.value)}
                   onBlur={handleBirth}
                   placeholder="생년월일 8자리, 또는 태어난 해 4자리"
                 />
               </div>
-              <DetailPhone
-                title={"지원자 연락처"}
-                id={"applyPhone"}
-                phone={applyPhone}
+              <PhoneAuth
+                title={"연락처"}
+                id={"phone"}
+                phone={phone}
                 error={error}
-                setPhone={setApplyPhone}
+                setPhone={setPhone}
                 setError={setError}
+                userName={userName}
               />
 
               <div className="flex gap-x-2">
@@ -352,37 +256,11 @@ function Apply() {
                   />
                 </div>
               )}
-              <hr />
-              <div className="mt-5 grid grid-cols-1 gap-y-2">
-                <h4 className="text-lg font-bold">개인정보 수집 이용동의</h4>
-                <div className="bg-gray-100 border p-2">
-                  <div className=" h-[120px] overflow-auto bg-white p-2">
-                    <Privacy />
-                  </div>
-                </div>
-                <div className="flex items-center">
-                  <input
-                    id="agree"
-                    type="checkbox"
-                    value={isAgree}
-                    onChange={() => setIsAgree(!isAgree)}
-                    name="agree-check"
-                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
-                    checked={isAgree}
-                  />
-                  <label
-                    htmlFor="agree"
-                    className="ms-1 text-sm font-medium text-gray-900"
-                  >
-                    개인정보 수집 및 이용에 동의합니다
-                  </label>
-                </div>
-              </div>
               <button
                 type="submit"
-                className="mt-2 text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-neobold rounded text-sm px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-500 dark:focus:ring-orange-700"
+                className="mt-2 text-white bg-orange-600 hover:bg-orange-700 focus:ring-4 focus:outline-none focus:ring-orange-300 font-neobold rounded text-sm px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-stone-500 dark:focus:ring-orange-700"
               >
-                지원자 입력
+                수정
               </button>
             </div>
           </form>
@@ -394,6 +272,8 @@ function Apply() {
                   onClose={closePostCode}
                   setAddress={setAddress}
                   setInputAddress={setAddressDetail}
+                  setSido={setSido}
+                  setSigungu={setSigungu}
                 />
               </PopupDom>
             )}
@@ -404,4 +284,4 @@ function Apply() {
   );
 }
 
-export default Apply;
+export default MyInfo;

@@ -1,7 +1,7 @@
 import React from "react";
 import Menu from "./Layout/Menu";
 
-function FormMailMain() {
+function Main() {
   return (
     <>
       <Menu />
@@ -40,4 +40,4 @@ function FormMailMain() {
   );
 }
 
-export default FormMailMain;
+export default Main;

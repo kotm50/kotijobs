@@ -1,23 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../../Reducer/userSlice";
-import { api } from "../Api/Api";
+import { useSelector } from "react-redux";
+import { api, useLogout } from "../../Api/Api";
 import { useNavigate } from "react-router-dom";
 
-function Login() {
+function MypageAuth() {
   const login = useSelector(state => state.user);
   const navi = useNavigate();
-  const dispatch = useDispatch();
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
 
   useEffect(() => {
-    if (login.userId) {
-      console.log(login);
-      navi("/formmail/main");
+    console.log(login.userId);
+    if (!login.userId) {
+      alert("잘못된 경로로 진입하셨습니다");
+      navi("/");
+    } else {
+      setId(login.userId);
     }
     //eslint-disable-next-line
   }, [login]);
+  const handleLogout = useLogout();
 
   const loginAdmin = async e => {
     e.preventDefault();
@@ -28,21 +30,16 @@ function Login() {
       };
 
       const res = await api
-        .post("/api/v1/formMail_admin/login", {
+        .post("/api/v1/jobsite/user/login", {
           json: data,
         })
         .json();
-      if (res.code === "C000") {
-        dispatch(
-          loginUser({
-            userId: id,
-            userName: res.user.rName,
-            phone: res.user.mPhone,
-            admin: res.user.admin,
-          })
-        );
+      console.log(res);
+      if (res.code === "C001") {
+        navi("/mypage/edit");
       } else {
-        return alert(res.message);
+        alert("세션이 만료되었습니다. 다시 로그인 해 주세요");
+        handleLogout();
       }
     } catch (error) {
       console.log(error.code + " : " + error.message);
@@ -55,14 +52,14 @@ function Login() {
       className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
     p-3 bg-white rounded-lg min-w-1 min-h-1 drop-shadow-lg w-11/12 lg:w-2/6"
     >
-      <h2 className="text-lg mb-3">관리자 로그인</h2>
+      <h2 className="text-lg mb-3">로그인</h2>
       <form onSubmit={loginAdmin}>
         <div className="mb-3">
           <label
             htmlFor="id"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
-            아이디를 입력해주세요
+            아이디
           </label>
           <input
             type="text"
@@ -71,7 +68,7 @@ function Login() {
             value={id}
             onChange={e => setId(e.currentTarget.value)}
             onBlur={e => setId(e.currentTarget.value)}
-            required
+            disabled
           />
         </div>
         <div className="mb-3">
@@ -79,7 +76,7 @@ function Login() {
             htmlFor="password"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
-            비밀번호를 입력하세요(6글자 이상)
+            비밀번호를 다시 입력하세요
           </label>
           <input
             type="password"
@@ -96,11 +93,11 @@ function Login() {
           type="submit"
           className="text-white bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:outline-none focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-indigo-600 dark:hover:bg-indigo-700 dark:focus:ring-indigo-800"
         >
-          관리자로그인
+          비밀번호확인
         </button>
       </form>
     </div>
   );
 }
 
-export default Login;
+export default MypageAuth;

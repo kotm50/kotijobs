@@ -2,72 +2,66 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css');
+@import url("https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css");
+
 @font-face {
-  font-family: 'PyeongChangPeace';
+  font-family: "PyeongChangPeace-Light";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Light.woff2")
+    format("woff2");
   font-weight: 300;
   font-style: normal;
-  src: url('https://cdn.jsdelivr.net/gh/webfontworld/PyeongChang/PyeongChangPeace-Light.eot');
-  src: url('https://cdn.jsdelivr.net/gh/webfontworld/PyeongChang/PyeongChangPeace-Light.eot?#iefix') format('embedded-opentype'),
-      url('https://cdn.jsdelivr.net/gh/webfontworld/PyeongChang/PyeongChangPeace-Light.woff2') format('woff2'),
-      url('https://cdn.jsdelivr.net/gh/webfontworld/PyeongChang/PyeongChangPeace-Light.woff') format('woff'),
-      url('https://cdn.jsdelivr.net/gh/webfontworld/PyeongChang/PyeongChangPeace-Light.ttf') format("truetype");
-  font-display: swap;
 }
 @font-face {
-  font-family: 'PyeongChangPeace';
+  font-family: "PyeongChangPeace-Bold";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2")
+    format("woff2");
   font-weight: 700;
   font-style: normal;
-  src: url('https://cdn.jsdelivr.net/gh/webfontworld/PyeongChang/PyeongChangPeace-Bold.eot');
-  src: url('https://cdn.jsdelivr.net/gh/webfontworld/PyeongChang/PyeongChangPeace-Bold.eot?#iefix') format('embedded-opentype'),
-      url('https://cdn.jsdelivr.net/gh/webfontworld/PyeongChang/PyeongChangPeace-Bold.woff2') format('woff2'),
-      url('https://cdn.jsdelivr.net/gh/webfontworld/PyeongChang/PyeongChangPeace-Bold.woff') format('woff'),
-      url('https://cdn.jsdelivr.net/gh/webfontworld/PyeongChang/PyeongChangPeace-Bold.ttf') format("truetype");
-  font-display: swap;
 }
 
 :root {
   color-scheme: light only;
 }
 
+#root {
+  width: 100%;
+}
+
+a:hover {
+  color: #dc143c;
+}
 
 label:hover {
   cursor: pointer;
 }
 
 .memolock {
-  height:calc(100vh - 100px);
+  height: calc(100vh - 100px);
 }
 
 .pplight {
-  font-family: 'PyeongChangPeace';
-  font-weight:400;
+  font-family: "PyeongChangPeace-Light";
+  font-weight: 400;
 }
-
 
 .ppbold {
-  font-family: 'PyeongChangPeace';
-  font-weight:700;
+  font-family: "PyeongChangPeace-Bold";
+  font-weight: 700;
 }
 
-.ppresponse {
-  font-family: 'PyeongChangPeace';
-  font-weight:400;
-}
-
-@media (min-width:1024px) {
+@media (min-width: 1024px) {
   .ppresponse {
-    font-weight:700;
+    font-weight: 700;
   }
 }
 
 body {
   margin: 0;
-  font-family: 'NanumSquareNeoBold', sans-serif;
+  font-family: "NanumSquareNeoBold", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #f8f8f8;
-	min-height: 100vh;
+  min-height: 100vh;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -76,44 +70,58 @@ body {
     color: #000000 !important;
   }
   .bg-white {
-    background-color:#ffffff !important;
+    background-color: #ffffff !important;
   }
 }
 
 img.overflow {
-  max-width:9999px!important;
+  max-width: 9999px !important;
 }
 
-
 .loading-bg {
-  width:100vw;
-  min-height:100vh;
+  width: 100vw;
+  min-height: 100vh;
   background-color: white;
-  opacity:0.7;
-  position:fixed;
-  top:0;
-  left:0;
+  opacity: 0.7;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 99999;
   overflow: hidden;
 }
 
-.jobList > div {
-  width:100%;
-  overflow:hidden
+div#userInfo > a:after {
+  color: #ccc;
+  content: "|";
+  display: inline-block;
+  margin-left: 6px;
 }
 
-.premium-bg {
+div#userInfo > a:last-child:after {
+  display: none;
+}
+
+#addrAPI {
+  max-width: 600px;
+  height: 600px;
+}
+
+.addrAPIInput {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.popupModal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  height: 120px; /* 높이는 필요에 따라 조정 */
-  background: linear-gradient(to right,
-              rgba(255, 255, 255, 1) 0%,  /* 완전 흰색 */
-              rgba(255, 255, 255, 1) 50%, /* 50%까지 흰색 유지 */
-              rgba(255, 255, 255, 0) 100%); /* 투명해짐 */
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
-.premium-list {
-  background-size: auto 80%;
-  background-position: center right;
-  background-repeat: no-repeat;
-  background-color: rgba(255, 255, 255, 0.5);
+.popupModal > #addrAPI > .addrAPIInput > div {
+  margin: 0 auto;
 }

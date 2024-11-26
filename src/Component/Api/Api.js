@@ -1,6 +1,7 @@
 import ky from "ky";
 import { useDispatch } from "react-redux";
 import { clearUser } from "../../Reducer/userSlice";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const uploadFile = async file => {
   const formData = new FormData();
@@ -34,18 +35,34 @@ export const api = ky.create({
   headers: {
     "Content-Type": "application/json",
   },
-  hooks: {
-    afterResponse: [
-      async (request, options, response) => {
-        if (response.status === 401) {
-          // 로그아웃 처리 (Redux 상태 초기화 등)
-          useDispatch(clearUser());
-          window.location.href = "/"; // 로그인 페이지로 이동
-        }
-      },
-    ],
-  },
   timeout: 10000, // 타임아웃 설정 (10초)
 });
 
 // 인스턴스 내보내기
+export const useLogout = () => {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      if (location.pathname.includes("formmail")) {
+        const res = await api.post("/api/v1/formMail_admin/logout").json();
+        if (res.code === "C000" || res.code === "E403") {
+          navigate("/formmail"); // 로그아웃 후 홈 화면으로 리디렉션
+          dispatch(clearUser()); // Redux 상태 초기화
+        }
+      } else {
+        const res = await api.post("/api/v1/jobsite/user/logout").json();
+        if (res.code === "C000" || res.code === "E403") {
+          navigate("/");
+          dispatch(clearUser()); // Redux 상태 초기화
+        }
+      }
+    } catch (error) {
+      console.error("로그아웃 오류:", error);
+    }
+  };
+
+  return handleLogout;
+};

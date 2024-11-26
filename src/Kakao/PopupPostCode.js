@@ -25,6 +25,8 @@ const PopupPostCode = props => {
       props.setAddrDetail(true);
       props.setAddr("");
     }
+    props.setSido(data.sido);
+    props.setSigungu(data.sigungu);
     props.onClose();
   };
 

@@ -3,9 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   userId: "",
   userName: "",
-  admin: false,
   phone: "",
-  lastLogin: "",
+  admin: false,
+  role: "",
+  lastLogin: null,
 };
 
 const userSlice = createSlice({
@@ -24,6 +25,9 @@ const userSlice = createSlice({
       }
       if (action.payload.admin !== undefined) {
         state.admin = action.payload.admin;
+      }
+      if (action.payload.role !== undefined) {
+        state.role = action.payload.role;
       }
       if (action.payload.lastLogin !== undefined) {
         state.lastLogin = action.payload.lastLogin;
