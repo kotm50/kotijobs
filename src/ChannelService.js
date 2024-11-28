@@ -121,4 +121,6 @@ class ChannelService {
   }
 }
 
-export default new ChannelService();
+const channelServiceInstance = new ChannelService();
+
+export default channelServiceInstance;
