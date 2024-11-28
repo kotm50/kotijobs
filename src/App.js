@@ -26,7 +26,16 @@ import MypageAuth from "./Component/User/Mypage/MypageAuth";
 import MyInfo from "./Component/User/Mypage/Myinfo";
 import Test from "./Component/Test";
 
+import ChannelService from "./ChannelService";
+
 function App() {
+  //2. 설치하기
+  ChannelService.loadScript();
+
+  //3. 부트하기
+  ChannelService.boot({
+    pluginKey: "8b6e2d8d-2066-4a0b-abbe-8f447f61e639",
+  });
   const thisLocation = useLocation();
   const isAdmin = thisLocation.pathname.includes("formmail");
   return (
