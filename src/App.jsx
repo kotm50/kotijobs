@@ -16,7 +16,6 @@ function App() {
   const navi = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log("chk");
     if (thisLocation.pathname === "/" && login.userId) {
       navi("/admin");
     } else if (!login.userId && thisLocation.pathname !== "/") {

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import queryString from "query-string";
+import { useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 //import defaultLogo from "../../assets/defaultlogo.png";
 import {
@@ -40,6 +41,7 @@ import PopupPostCode from "../../Api/Kakao/PopupPostCode";
 import DetailUploadImg from "../../Components/DetailUploadImg";
 
 function AdInput() {
+  const login = useSelector(state => state.user);
   const navi = useNavigate();
   const noUse = false;
   const applyRef = useRef();
@@ -682,6 +684,7 @@ function AdInput() {
     const { data, result } = await getData();
 
     if (result !== "성공") {
+      setLoading(false);
       return alert(result);
     }
     try {
@@ -732,6 +735,7 @@ function AdInput() {
     const data = {};
     let result = "성공";
     data.cid = "0825232a-9353-4be3-af82-69f9962b1f27"; // 임시 CID
+    data.companyUserId = login.userId || null;
     if (!title) {
       result = "제목을 작성해 주세요";
       return { data, result };
