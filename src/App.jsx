@@ -21,6 +21,7 @@ function App() {
       if (!isOverDay(login.lastLogin)) {
         navi("/admin");
       } else {
+        alert("로그인 한지 24시간이 지났습니다. 다시 로그인 해주세요");
         dispatch(clearUser());
         navi("/");
       }
