@@ -1,0 +1,204 @@
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+@import url("https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css");
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  font-family: "NanumSquareNeo", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  vertical-align: baseline;
+  font-weight: 400;
+}
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body {
+  line-height: 1;
+  margin: 0;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+textarea:focus,
+input:focus {
+  outline: none;
+}
+
+textarea {
+  resize: none !important;
+}
+
+/* 스크롤바 시작 */
+div::-webkit-scrollbar {
+  width: 10px;
+}
+div::-webkit-scrollbar-track {
+  background-color: #fafbfc;
+}
+div::-webkit-scrollbar-thumb {
+  background-color: #def;
+}
+div::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* 스크롤바 끝 */
+
+.font-extra {
+  font-family: "NanumSquareNeoExtraBold";
+}
+
+.font-bold {
+  font-family: "NanumSquareNeoBold";
+}
+
+.font-light {
+  font-family: "NanumSquareNeoLight";
+}
+
+.quill,
+.ql-container,
+.ql-editor,
+textarea.htmleditor {
+  width: 600px;
+  max-width: 100%;
+  min-height: 400px;
+  height: 100%;
+  max-height: 400px;
+}
+
+.ql-size-small {
+  font-size: 0.8em !important;
+}
+
+.ql-size-large {
+  font-size: 1.5em !important;
+}
+.ql-size-huge {
+  font-size: 2em !important;
+}
+
+.hidden-file-input {
+  display: none; /* 기본 파일 선택 input 숨기기 */
+}
+
+.custom-file-label {
+  display: inline-block;
+  cursor: pointer;
+  /* 원하는 스타일 추가 */
+}

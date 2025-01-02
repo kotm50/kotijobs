@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "PyeongChangPeace-Light";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Light.woff2")
+    format("woff2");
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: "PyeongChangPeace-Bold";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-02@1.0/PyeongChangPeace-Bold.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-style: normal;
+}
+
+:root {
+  color-scheme: light only;
+}
+
+#root {
+  width: 100%;
+}
+
+a:hover {
+  color: #dc143c;
+}
+
+label:hover {
+  cursor: pointer;
+}
+
+.memolock {
+  height: calc(100vh - 100px);
+}
+
+.pplight {
+  font-family: "PyeongChangPeace-Light";
+  font-weight: 400;
+}
+
+.ppbold {
+  font-family: "PyeongChangPeace-Bold";
+  font-weight: 700;
+}
+
+@media (min-width: 1024px) {
+  .ppresponse {
+    font-weight: 700;
+  }
+}
+
+body {
+  margin: 0;
+  background: #f8f8f8;
+  min-height: calc(100vh - 100px);
+}
+
+/* HTML: <div class="loader"></div> */
+.loader {
+  height: 4px;
+  width: 130px;
+  --c: no-repeat linear-gradient(#6100ee 0 0);
+  background: var(--c), var(--c), #d7b8fc;
+  background-size: 60% 100%;
+  animation: l16 3s infinite;
+}
+@keyframes l16 {
+  0% {
+    background-position: -150% 0, -150% 0;
+  }
+  66% {
+    background-position: 250% 0, -150% 0;
+  }
+  100% {
+    background-position: 250% 0, 250% 0;
+  }
+}
+
+th.rdp-weekday:first-child,
+td.rdp-day:first-child {
+  color: #dc143c;
+}
+
+th.rdp-weekday:last-child,
+td.rdp-day:last-child {
+  color: #06f;
+}
+
+.addrAPIInput {
+  height: 450px !important;
+}
