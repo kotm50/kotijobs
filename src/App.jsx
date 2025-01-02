@@ -16,10 +16,9 @@ function App() {
   const navi = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    const today = dayjs(new Date()).format("YYYY-MM-DD");
     console.log(login);
     if (login.userId) {
-      if (login.lastLogin === today) {
+      if (!isOverDay(login.lastLogin)) {
         navi("/admin");
       } else {
         dispatch(clearUser());
@@ -31,6 +30,13 @@ function App() {
     }
     //eslint-disable-next-line
   }, [thisLocation]);
+
+  const isOverDay = lastLogin => {
+    if (!lastLogin) return true;
+    const now = dayjs();
+    const lastLoginDate = dayjs(lastLogin);
+    return now.diff(lastLoginDate, "hour") >= 24;
+  };
   return (
     <>
       <Header thisLocation={thisLocation} />
