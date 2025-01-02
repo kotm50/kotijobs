@@ -17,7 +17,6 @@ function App() {
   useEffect(() => {
     console.log(login);
     if (login.userId) {
-      console.log(login);
       navi("/admin");
     } else {
       dispatch(clearUser());
