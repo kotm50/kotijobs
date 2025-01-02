@@ -8,6 +8,7 @@ import AdInput from "./Pages/AdInput";
 import AdList from "./Pages/AdList";
 import Test from "./Pages/Test";
 import { clearUser } from "./Reducer/userSlice";
+import dayjs from "dayjs";
 
 function App() {
   const thisLocation = useLocation();
@@ -15,9 +16,15 @@ function App() {
   const navi = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
+    const today = dayjs(new Date()).format("YYYY-MM-DD");
     console.log(login);
     if (login.userId) {
-      navi("/admin");
+      if (login.lastLogin === today) {
+        navi("/admin");
+      } else {
+        dispatch(clearUser());
+        navi("/");
+      }
     } else {
       dispatch(clearUser());
       navi("/");

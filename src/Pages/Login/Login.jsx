@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../Reducer/userSlice";
+import dayjs from "dayjs";
 
 import { useNavigate } from "react-router-dom";
 import { api } from "../../Api/Api";
@@ -41,6 +42,7 @@ function Login() {
             userName: res.formMailAdmin.rName,
             phone: res.formMailAdmin.mPhone,
             admin: res.formMailAdmin.admin,
+            lastLogin: dayjs(new Date()).format("YYYY-MM-DD"),
           })
         );
       } else {
