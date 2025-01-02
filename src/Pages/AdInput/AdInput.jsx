@@ -678,7 +678,7 @@ function AdInput() {
       return false;
     }
     setLoading(true);
-    setLoadMsg("저장 중");
+    setLoadMsg("저장 중...");
     const { data, result } = await getData();
 
     if (result !== "성공") {
