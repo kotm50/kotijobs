@@ -220,13 +220,10 @@ function AdInput() {
   }, [fullAddress]);
 
   const getSubwayUniversity = async (x, y) => {
-    console.log(x, y);
-    console.log(`/api/v1/common/find/subway?x=${x}&y=${y}`);
     const res = await api
       .get(`/api/v1/common/find/subway?x=${x}&y=${y}`)
       .json();
 
-    console.log(res);
     setUniversity(res.university);
     let stations = [];
     if (res.mapInfoList.length > 0) {
@@ -246,16 +243,13 @@ function AdInput() {
         });
       }
     }
-    console.log(stations);
     setStation(stations);
   };
 
   const getLocation = async address => {
-    console.log(address);
     const res = await api
       .get(`/api/v1/common/get/coordinates?address=${address}`)
       .json();
-    console.log(res);
     setLocationX(res.x);
     setLocationY(res.y);
     await getSubwayUniversity(res.x, res.y);
@@ -696,7 +690,6 @@ function AdInput() {
           json: data,
         })
         .json();
-      console.log(res);
       if (res.code === "C000") {
         alert("완료");
         navi("/admin/adlist");
@@ -934,20 +927,16 @@ function AdInput() {
     data.logoImg = await uploadFile(logoImg, "logo");
     const photoLists = await getMultipleImg(photoList, "office");
     data.photoList = photoLists.join(",");
-    console.log(detailContent);
     if (detailImages.length > 0) {
       const { detailContent: updatedContent, images } = await filterImg(
         detailImages,
         detailContent
       );
-      console.log(updatedContent);
       const mixedContent = await getMixed(updatedContent);
-      console.log(mixedContent);
       data.detailContent = escapeHTML(mixedContent);
       data.detailImages = images.join(",");
     } else {
       const mixedContent = await getMixed(detailContent);
-      console.log(mixedContent);
       data.detailContent = escapeHTML(mixedContent);
     }
 
@@ -991,7 +980,6 @@ function AdInput() {
         try {
           // 이미지를 업로드하고 URL 가져오기
           const uploadedUrl = await uploadFile(file, "ad");
-          console.log(`Uploaded URL for ${alt}:`, uploadedUrl);
 
           // 업로드된 이미지 정보를 uploadedImgs에 저장
           uploadedImgs.push({ url: uploadedUrl, alt });
@@ -1013,8 +1001,6 @@ function AdInput() {
       images.push(img.url);
     });
 
-    console.log("Final detailContent:", detailContent);
-
     // 수정된 detailContent와 업로드된 이미지 정보 반환
     return { detailContent, images };
   };
@@ -1026,7 +1012,6 @@ function AdInput() {
       const photoUrl = await uploadFile(photo, txt);
       photos.push(photoUrl);
     }
-    console.log(photos);
     return photos;
   };
 
@@ -2289,18 +2274,17 @@ function AdInput() {
                         </div>
                       </div>
                     )}
-
-                    <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                      <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                        <div
-                          className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center"
-                          onClick={() => console.log(station)}
-                        >
-                          주변지하철
-                        </div>
-                        <div className="grid grid-cols-1 gap-y-[1px] w-full">
-                          {station.length > 0 ? (
-                            <>
+                    {station.length > 0 ? (
+                      <>
+                        <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                          <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                            <div
+                              className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center"
+                              onClick={() => console.log(station)}
+                            >
+                              주변지하철
+                            </div>
+                            <div className="grid grid-cols-1 gap-y-[1px] w-full">
                               {station.map((stat, idx) => (
                                 <div
                                   className="w-full flex flex-row justify-start gap-x-10 flex-nowrap bg-white py-2"
@@ -2323,7 +2307,6 @@ function AdInput() {
                                     type="text"
                                     className="w-[200px] py-1 px-2 border border-[#ccc] rounded-sm"
                                     value={`${stat.distance} (${stat.durationTime})`}
-                                    onChange={e => console.log(e)}
                                     disabled
                                   />
                                   <div className="flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-1 bg-white">
@@ -2374,11 +2357,11 @@ function AdInput() {
                                   </div>
                                 </div>
                               ))}
-                            </>
-                          ) : null}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
+                      </>
+                    ) : null}
                   </>
                 ) : null}
               </div>
@@ -2949,15 +2932,6 @@ function AdInput() {
                     }}
                   >
                     HTML 입력
-                  </button>
-
-                  <button
-                    className="bg-red-500 p-2"
-                    onClick={async () =>
-                      console.log(await getMixed(detailContent))
-                    }
-                  >
-                    테스트
                   </button>
                 </div>
                 {!isHtml ? (
