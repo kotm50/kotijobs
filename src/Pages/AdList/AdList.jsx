@@ -20,7 +20,7 @@ function AdList() {
   };
   return (
     <>
-      <div className="w-full max-w-[1200px] mx-auto mt-[100px] bg-white py-10 grid grid-cols-1 gap-y-[100px] mb-20">
+      <div className="w-full max-w-[1240px] mx-auto mt-[100px] bg-white py-10 grid grid-cols-1 gap-y-[100px] mb-20 px-5">
         리스트
       </div>
     </>

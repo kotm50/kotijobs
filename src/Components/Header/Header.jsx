@@ -1,16 +1,12 @@
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { clearUser } from "../../Reducer/userSlice";
 
 function Header({ thisLocation }) {
-  const navi = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = async () => {
     try {
       dispatch(clearUser()); // Redux 상태 초기화
-      if (thisLocation.pathname !== "/") {
-        navi("/"); // 로그아웃 후 홈 화면으로 리디렉션
-      }
     } catch (error) {
       console.error("로그아웃 오류:", error);
       // 오류 처리 로직 추가 가능

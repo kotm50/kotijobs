@@ -1,26 +1,14 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { loginUser } from "../../Reducer/userSlice";
 import dayjs from "dayjs";
 
-import { useNavigate } from "react-router-dom";
 import { api } from "../../Api/Api";
 
 function Login() {
-  const login = useSelector(state => state.user);
-  const navi = useNavigate();
   const dispatch = useDispatch();
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
-
-  useEffect(() => {
-    console.log(login);
-    if (login.userId) {
-      console.log(login);
-      navi("/admin");
-    }
-    //eslint-disable-next-line
-  }, [login]);
 
   const loginAdmin = async e => {
     e.preventDefault();
@@ -42,7 +30,7 @@ function Login() {
             userName: res.formMailAdmin.rName,
             phone: res.formMailAdmin.mPhone,
             admin: res.formMailAdmin.admin,
-            lastLogin: dayjs(new Date()).format("YYYY-MM-DD"),
+            lastLogin: dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss"),
           })
         );
       } else {

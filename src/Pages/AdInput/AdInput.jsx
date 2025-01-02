@@ -1031,7 +1031,7 @@ function AdInput() {
 
   return (
     <>
-      <div className="w-full max-w-[1200px] mx-auto mt-[100px] bg-white py-10 grid grid-cols-1 gap-y-[100px] mb-20">
+      <div className="w-full max-w-[1240px] mx-auto mt-[100px] bg-white py-10 grid grid-cols-1 gap-y-[100px] mb-20 px-5">
         <div data="모집내용" className="grid grid-cols-1 gap-y-[30px] px-5">
           <h3 className="py-[10px] border-b border-[#ccc] lg:text-2xl font-extra text-[#069]">
             모집내용

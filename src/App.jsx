@@ -7,7 +7,7 @@ import Login from "./Pages/Login";
 import AdInput from "./Pages/AdInput";
 import AdList from "./Pages/AdList";
 import Test from "./Pages/Test";
-import { clearUser } from "./Reducer/userSlice";
+import { loginUser, clearUser } from "./Reducer/userSlice";
 import dayjs from "dayjs";
 
 function App() {
@@ -16,28 +16,32 @@ function App() {
   const navi = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    console.log(login);
-    if (login.userId) {
-      if (!isOverDay(login.lastLogin)) {
-        navi("/admin");
-      } else {
-        alert("로그인 한지 24시간이 지났습니다. 다시 로그인 해주세요");
-        dispatch(clearUser());
-        navi("/");
-      }
-    } else {
-      dispatch(clearUser());
+    console.log("chk");
+    if (thisLocation.pathname === "/" && login.userId) {
+      navi("/admin");
+    } else if (!login.userId && thisLocation.pathname !== "/") {
       navi("/");
     }
-    //eslint-disable-next-line
-  }, [thisLocation]);
+    if (login.userId && isOverDay(login.lastLogin)) {
+      alert("로그인 후 오랜시간 페이지를 이동하지 않으면 로그아웃 됩니다");
+      dispatch(clearUser());
+    } else {
+      dispatch(
+        loginUser({
+          lastLogin: dayjs(new Date()).format("YYYY-MM-DD HH:mm:ss"),
+        })
+      );
+    }
+    // eslint-disable-next-line
+  }, [thisLocation.pathname, login.userId]);
 
   const isOverDay = lastLogin => {
     if (!lastLogin) return true;
     const now = dayjs();
     const lastLoginDate = dayjs(lastLogin);
-    return now.diff(lastLoginDate, "hour") >= 24;
+    return now.diff(lastLoginDate, "hour") >= 10;
   };
+
   return (
     <>
       <Header thisLocation={thisLocation} />
