@@ -110,7 +110,6 @@ function AdInput() {
   const [zipCode, setZipCode] = useState(""); //우편번호
   const [addressA, setAddressA] = useState(""); //기본주소
   const [addressB, setAddressB] = useState(""); //상세주소
-  const [fullAddress, setFullAddress] = useState("");
   const [locationX, setLocationX] = useState();
   const [locationY, setLocationY] = useState();
 
@@ -399,9 +398,9 @@ function AdInput() {
 
   //좌표정보
   useEffect(() => {
-    if (fullAddress) getLocation(fullAddress);
+    if (addressA) getLocation(addressA);
     //eslint-disable-next-line
-  }, [fullAddress]);
+  }, [addressA]);
 
   const getSubwayUniversity = async (x, y) => {
     const res = await api
@@ -3465,7 +3464,6 @@ function AdInput() {
               setAreaA={setAreaA}
               setZipCode={setZipCode}
               setAddressA={setAddressA}
-              setFullAddress={setFullAddress}
             />
           </PopupDom>
         )}

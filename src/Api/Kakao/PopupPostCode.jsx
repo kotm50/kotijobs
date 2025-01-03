@@ -11,7 +11,6 @@ const PopupPostCode = props => {
     });
     props.setZipCode(data.zonecode);
     props.setAddressA(data.roadAddress);
-    props.setFullAddress(data.jibunAddress);
     props.onClose();
   };
 
