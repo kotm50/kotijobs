@@ -24,7 +24,13 @@ import {
 
 import { modules, formats } from "../../Data/EditorModule";
 
-import { uploadFile, escapeHTML, api, deleteFile } from "../../Api/Api";
+import {
+  uploadFile,
+  escapeHTML,
+  unescapeHTML,
+  api,
+  deleteFile,
+} from "../../Api/Api";
 
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
 import "react-day-picker/style.css";
@@ -225,8 +231,10 @@ function AdInput() {
   // 데이터 불러오기
   const putData = async adInfo => {
     setBeforeData(adInfo);
+    console.log(adInfo.photoList.split(","));
     setZipCode(adInfo.zipCode);
     setAddressA(adInfo.address);
+    await getLocation(adInfo.address);
     if (adInfo.addressDetail) {
       setAddressB(adInfo.addressDetail);
     }
@@ -264,6 +272,56 @@ function AdInput() {
     if (adInfo.workDate) {
       setWorkDateList(adInfo.workDays.split(","));
     }
+    setWorkTime(adInfo.workTime);
+    if (adInfo.workTime) {
+      setStartTime(adInfo.workStart || "");
+      setEndTime(adInfo.workEnd || "");
+    }
+    setWorkTimeDetail(adInfo.workTimeDetail);
+    setPayType(adInfo.salaryType);
+    setSalary(Number(adInfo.salary).toLocaleString());
+    setFormatedSalary(adInfo.salary);
+    setEducation(adInfo.education);
+    if (reinput === "y") {
+      setLimit("상시모집");
+      setLimitDate("");
+    } else {
+      setLimit(adInfo.endLimit ? "마감일지정" : "상시모집");
+      setLimitDate(adInfo.endDate || "");
+    }
+    setApplyRoute(adInfo.applyMethod.split(","));
+    setApplyUrl(adInfo.applyUrl || "");
+    setCompanyName(adInfo.company); // 회사명 불러오기
+    setAreaA({
+      sido: adInfo.sido || "",
+      sigungu: adInfo.sigungu || "",
+      dongEubMyun: adInfo.dongEubMyun || "",
+    });
+    setAreaB({
+      sido: adInfo.sido2 || "",
+      sigungu: adInfo.sigungu2 || "",
+      dongEubMyun: adInfo.dongEubMyun2 || "",
+    });
+    setAreaC({
+      sido: adInfo.sido3 || "",
+      sigungu: adInfo.sigungu3 || "",
+      dongEubMyun: adInfo.dongEubMyun3 || "",
+    });
+    if (adInfo.sido3) {
+      setAreaCount(3);
+    } else if (adInfo.sido2) {
+      setAreaCount(2);
+    } else {
+      setAreaCount(1);
+    }
+    setEmailId(adInfo.managerEmail || "");
+    setManagerName(adInfo.managerName || "");
+    setCompanyName(adInfo.company || "");
+    setLocationX(adInfo.x);
+    setLocationY(adInfo.y);
+    setDetailContent(
+      adInfo.detailContent ? unescapeHTML(adInfo.detailContent) : ""
+    );
   };
 
   const putWelfare = async welfare => {
@@ -753,6 +811,31 @@ function AdInput() {
 
   const handleEmployTypeChange = e => {
     const { value, checked } = e.target;
+
+    if (value === "교육생/연수생") {
+      // '교육생/연수생'을 체크하면 배열 초기화 후 '교육생/연수생' 추가
+      if (checked) {
+        setEmployType(["교육생/연수생"]);
+      } else {
+        setEmployType([]); // 체크 해제 시 배열 초기화
+      }
+    } else {
+      if (checked) {
+        // 다른 값을 체크하면 '교육생/연수생' 제거 후 추가
+        setEmployType(prev => [
+          ...prev.filter(item => item !== "교육생/연수생"),
+          value,
+        ]);
+      } else {
+        // 체크 해제 시 해당 값만 배열에서 제거
+        setEmployType(prev => prev.filter(item => item !== value));
+      }
+    }
+  };
+
+  /* 백업
+  const handleEmployTypeChange = e => {
+    const { value, checked } = e.target;
     if (value === "교육생/연수생") {
       // 'e'를 체크하면 배열 초기화 후 'e' 추가
       if (checked) {
@@ -770,6 +853,7 @@ function AdInput() {
       }
     }
   };
+  */
 
   const handleApplyRouteChange = e => {
     const { value, checked } = e.target;
@@ -1025,7 +1109,7 @@ function AdInput() {
       return { data, result };
     }
     data.education = education;
-    data.limit = limit !== "상시모집";
+    data.endLimit = limit;
     if (limit !== "상시모집") {
       if (!limitDate) {
         result = "마감일을 선택하세요";
@@ -1075,7 +1159,7 @@ function AdInput() {
     data.dongEubMyun = areaA.dongEubMyun || null;
     data.sido2 = areaB.sido || null;
     data.sigungu2 = areaB.sigungu || null;
-    data.dongEubMyun2 = areaC.dongEubMyun || null;
+    data.dongEubMyun2 = areaB.dongEubMyun || null;
     data.sido3 = areaC.sido || null;
     data.sigungu3 = areaC.sigungu || null;
     data.dongEubMyun3 = areaC.dongEubMyun || null;
@@ -2115,7 +2199,11 @@ function AdInput() {
                         ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
                         : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
                     }`}
-                    onClick={() => setAge(false)}
+                    onClick={() => {
+                      setAge(false);
+                      setMinAge("");
+                      setMaxAge("");
+                    }}
                   >
                     연령무관
                   </button>
@@ -2130,36 +2218,38 @@ function AdInput() {
                     연령선택
                   </button>
                 </div>
-                <div className="flex flex-row justify-start gap-x-2 text-sm font-bold">
-                  <div className="w-[200px] relative bg-white">
-                    <input
-                      type="text"
-                      className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
-                      value={minAge || ""}
-                      onChange={e => {
-                        setMinAge(e.currentTarget.value);
-                      }}
-                    />
-                    <div className="absolute top-1/2 -translate-y-1/2 right-2 text-xs">
-                      세
+                {age && (
+                  <div className="flex flex-row justify-start gap-x-2 text-sm font-bold">
+                    <div className="w-[200px] relative bg-white">
+                      <input
+                        type="text"
+                        className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
+                        value={minAge || ""}
+                        onChange={e => {
+                          setMinAge(e.currentTarget.value);
+                        }}
+                      />
+                      <div className="absolute top-1/2 -translate-y-1/2 right-2 text-xs">
+                        세
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-x-2">부터</div>
-                  <div className="w-[200px] relative bg-white">
-                    <input
-                      type="text"
-                      className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
-                      value={maxAge || ""}
-                      onChange={e => {
-                        setMaxAge(e.currentTarget.value);
-                      }}
-                    />
-                    <div className="absolute top-1/2 -translate-y-1/2 right-2 text-xs">
-                      세
+                    <div className="flex items-center gap-x-2">부터</div>
+                    <div className="w-[200px] relative bg-white">
+                      <input
+                        type="text"
+                        className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
+                        value={maxAge || ""}
+                        onChange={e => {
+                          setMaxAge(e.currentTarget.value);
+                        }}
+                      />
+                      <div className="absolute top-1/2 -translate-y-1/2 right-2 text-xs">
+                        세
+                      </div>
                     </div>
+                    <div className="flex items-center gap-x-2">까지</div>
                   </div>
-                  <div className="flex items-center gap-x-2">까지</div>
-                </div>
+                )}
               </div>
             </div>
 
@@ -2745,6 +2835,18 @@ function AdInput() {
                       file={logoImg}
                       setFile={setLogoImg}
                     />
+                    {beforeData && beforeData.logoImg && (
+                      <div className="flex gap-x-2">
+                        <div className="flex flex-col justify-center h-full bg-[#eaeaea] px-2">
+                          기존 로고
+                        </div>
+                        <img
+                          src={beforeData.logoImg}
+                          alt="기존로고"
+                          className="min-w-[60px] w-auto max-w-[100px] h-auto max-h-[150px]"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -2764,6 +2866,34 @@ function AdInput() {
                       files={photoList}
                       setFiles={setPhotoList}
                     />
+                    {beforeData &&
+                      beforeData.photoList.split(",").length > 0 &&
+                      beforeData.photoList.split(",")[0] && (
+                        <div className="flex gap-x-2">
+                          <div className="flex flex-col justify-center h-full bg-[#eaeaea] px-2">
+                            기존 사진
+                          </div>
+                          <div className="grid grid-cols-1 gap-y-2">
+                            <div className="grid grid-cols-4 gap-x-4 gap-y-4">
+                              {beforeData.photoList
+                                .split(",")
+                                .map((preview, index) => (
+                                  <div
+                                    key={index}
+                                    className="relative p-1 border border-[#ccc] h-fit z-0 hover:cursor-pointer"
+                                  >
+                                    <img
+                                      src={preview} // 미리보기 이미지 경로 사용
+                                      className="min-w-[60px] w-auto max-w-[100px] h-auto max-h-[150px] mx-auto"
+                                      alt={`미리보기 ${index + 1}`}
+                                      title="이미지를 클릭하면 원본 사이즈로 볼 수 있습니다"
+                                    />
+                                  </div>
+                                ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>

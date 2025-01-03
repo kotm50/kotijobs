@@ -114,7 +114,7 @@ export const escapeHTML = text => {
 };
 
 export const unescapeHTML = text => {
-  return text
+  let filtertxt = text
     .replace(/＜/g, "<")
     .replace(/＞/g, ">")
     .replace(/＝/g, "=")
@@ -125,4 +125,8 @@ export const unescapeHTML = text => {
     .replace(/：/g, ":")
     .replace(/；/g, ";")
     .replace(/／/g, "/");
+
+  return filtertxt
+    .replace(/<center>/g, '<p class="ql-align-center">') // <center> 태그 변경
+    .replace(/<\/center>/g, "</p>"); // </center> 태그 변경;
 };
