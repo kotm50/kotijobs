@@ -1,3 +1,4 @@
+import GradeEdit from "../GradeEdit";
 import SearchArea from "../SearchArea";
 
 function Modal(props) {
@@ -22,6 +23,14 @@ function Modal(props) {
                   setAreaC={props.setAreaC}
                 />
               </>
+            ) : null}
+            {props.modalType === "grade" ? (
+              <GradeEdit
+                setModalOn={props.setModalOn}
+                setModalType={props.setModalType}
+                selectedAd={props.selectedAd}
+                getAdList={props.getAdList}
+              />
             ) : null}
           </div>
           <div

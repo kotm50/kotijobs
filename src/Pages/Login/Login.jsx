@@ -45,7 +45,7 @@ function Login() {
   return (
     <div
       className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
-    p-3 bg-white rounded-lg min-w-1 min-h-1 drop-shadow-lg w-11/12 lg:w-2/6"
+    p-3 bg-white rounded-lg min-w-1 min-h-1 drop-shadow-lg w-[95%] lg:w-[600px]"
     >
       <h2 className="text-lg mb-3">관리자 로그인</h2>
       <form onSubmit={loginAdmin}>

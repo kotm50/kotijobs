@@ -160,15 +160,15 @@ div::-webkit-scrollbar-button {
 /* 스크롤바 끝 */
 
 .font-extra {
-  font-family: "NanumSquareNeoExtraBold";
+  font-family: "NanumSquareNeoExtraBold" !important;
 }
 
 .font-bold {
-  font-family: "NanumSquareNeoBold";
+  font-family: "NanumSquareNeoBold" !important;
 }
 
 .font-light {
-  font-family: "NanumSquareNeoLight";
+  font-family: "NanumSquareNeoLight" !important;
 }
 
 .quill,

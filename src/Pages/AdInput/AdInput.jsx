@@ -49,6 +49,9 @@ function AdInput() {
   const thisLocation = useLocation();
   const parsed = queryString.parse(thisLocation.search);
   const aid = parsed.aid || "";
+  const reinput = parsed.reinput || "N";
+  const [beforeData, setBeforeData] = useState(null);
+  const [adStat, setAdStat] = useState("등록");
   const [loading, setLoading] = useState(false);
   const [loadMsg, setLoadMsg] = useState("작업 중...");
   const [title, setTitle] = useState(""); //제목
@@ -67,6 +70,7 @@ function AdInput() {
   const [endTime, setEndTime] = useState(""); //근무 종료시간
   const [workTimeDetail, setWorkTimeDetail] = useState(""); //근무시간 상세(참고사항)
   const [restTime, setRestTime] = useState(""); //근무시간 상세(참고사항)
+  const [rest, setRest] = useState("시간");
   const [workTimePeriod, setWorkTimePeriod] = useState("0"); //근무시간 기간(일일 근무시간 계산)
   const [isNightWork, setIsNightWork] = useState(false); //야간근무여부(익일 새벽까지 근무할 때 시간 계산하기 위한 변수)
 
@@ -190,13 +194,123 @@ function AdInput() {
   }, [thisLocation]);
 
   const getJobData = async aid => {
+    setLoading(true);
+    setLoadMsg("데이터 불러오는 중...");
     if (!aid) {
-      console.log("신규");
+      setAdStat("등록");
     } else {
-      console.log("수정");
+      if (reinput === "y") {
+        setAdStat("등록");
+      } else {
+        setAdStat("수정");
+      }
+      const data = {
+        aid: aid,
+      };
+      const res = await api
+        .post("/api/v1/formMail_ad/findOneAd", { json: data })
+        .json();
+      console.log(res.fmAdList[0]);
+      await putData(res.fmAdList[0]);
     }
     console.log(uploadedImgs);
     setUploadedImgs([]);
+    setLoading(false);
+    setLoadMsg("작업 중...");
+  };
+  useEffect(() => {
+    console.log(beforeData);
+  }, [beforeData]);
+
+  // 데이터 불러오기
+  const putData = async adInfo => {
+    setBeforeData(adInfo);
+    setZipCode(adInfo.zipCode);
+    setAddressA(adInfo.address);
+    if (adInfo.addressDetail) {
+      setAddressB(adInfo.addressDetail);
+    }
+    setTitle(adInfo.title);
+    setOccupation(adInfo.jobType.split(","));
+    setEmployType(adInfo.employmentType.split(","));
+    if (headCounts.includes(adInfo.recruitCount)) {
+      setHeadCountA(adInfo.recruitCount);
+    } else {
+      setHeadCountA("직접입력");
+      setHeadCountB(adInfo.recruitCount);
+    }
+    await splitPhone(adInfo.managerPhone, adInfo.phoneShow, 1);
+    if (adInfo.managerSubPhone) {
+      setAddContact(true);
+      await splitPhone(adInfo.managerSubPhone, adInfo.subPhoneShow, 2);
+    }
+    if (adInfo.welfare.length > 0) {
+      await putWelfare(adInfo.welfare);
+    }
+    if (adInfo.preConditions.length > 0) {
+      setTreat(adInfo.preConditions.split(","));
+    }
+    if (adInfo.etcConditions.length > 0) {
+      setCondition(adInfo.etcConditions.split(","));
+    }
+    setGender(adInfo.gender);
+  };
+
+  const putWelfare = async welfare => {
+    const list = welfare.split(",");
+    const insurance = [];
+    const vacation = [];
+    const incentive = [];
+    const support = [];
+    list.forEach(item => {
+      if (insurances.includes(item)) {
+        insurance.push(item);
+      }
+      if (vacations.includes(item)) {
+        vacation.push(item);
+      }
+      if (incentives.includes(item)) {
+        incentive.push(item);
+      }
+      if (supports.includes(item)) {
+        support.push(item);
+      }
+    });
+    setInsurance(insurance);
+    setVacation(vacation);
+    setIncentive(incentive);
+    setSupport(support);
+  };
+  const splitPhone = async (num, show, count) => {
+    let first = "";
+    let second = "";
+    let third = "";
+
+    if (num.startsWith("02")) {
+      first = num.slice(0, 2); // 시작 2글자
+    } else if (num.startsWith("050")) {
+      first = num.slice(0, 4); // 시작 4글자
+    } else {
+      first = num.slice(0, 3); // 기본 3글자
+    }
+
+    third = num.slice(-4); // 맨 끝 4글자
+    second = num.slice(first.length, -4); // 중간 숫자들
+    if (count === 1) {
+      setContact({
+        first: first,
+        second: second,
+        third: third,
+        reveal: show,
+      });
+    } else if (count === 2) {
+      setSubContact({
+        first: first,
+        second: second,
+        third: third,
+        reveal: show,
+      });
+    }
   };
 
   //모달 스크롤 막기
@@ -278,7 +392,10 @@ function AdInput() {
 
   const handleRestTime = e => {
     const value = e.target.value;
-    setRestTime(value);
+    // 숫자만 입력받도록 정규식을 사용하여 필터링
+    if (/^\d*$/.test(value)) {
+      setRestTime(value); // 숫자인 경우만 상태를 업데이트
+    }
   };
 
   const handleEmail = e => {
@@ -323,6 +440,13 @@ function AdInput() {
     } else {
       alert("공고 노출지역은 최대 3개까지 선택 가능합니다");
     }
+  };
+
+  const chkEmail = email => {
+    // 정규식: 이메일 형식 검사
+    const emailRegex =
+      /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})*$/;
+    return emailRegex.test(email);
   };
 
   const deleteArea = count => {
@@ -688,30 +812,57 @@ function AdInput() {
       return alert(result);
     }
     try {
-      const res = await api
-        .post("/api/v1/formMail_ad/addAd", {
-          json: data,
-        })
-        .json();
-      if (res.code === "C000") {
-        alert("완료");
-        navi("/admin/adlist");
-      } else {
-        if (data.logoImg) {
-          await deleteFile(data.logoImg);
-        }
-        if (data.adImg) {
-          await deleteFile(data.adImg);
-        }
-        if (data.photoList) {
-          const photoLists = data.photoList.split(",");
-          for (const photo of photoLists) {
-            await deleteFile(photo);
+      if (adStat === "수정") {
+        const res = await api
+          .put("/api/v1/formMail_ad/updateAd", {
+            json: data,
+          })
+          .json();
+        if (res.code === "C000") {
+          alert("완료");
+          navi("/admin/adlist");
+        } else {
+          if (data.logoImg) {
+            await deleteFile(data.logoImg);
+          }
+          if (data.adImg) {
+            await deleteFile(data.adImg);
+          }
+          if (data.photoList) {
+            const photoLists = data.photoList.split(",");
+            for (const photo of photoLists) {
+              await deleteFile(photo);
+            }
           }
         }
+        setLoading(false);
+        setLoadMsg("작업 중...");
+      } else {
+        const res = await api
+          .post("/api/v1/formMail_ad/addAd", {
+            json: data,
+          })
+          .json();
+        if (res.code === "C000") {
+          alert("완료");
+          navi("/admin/adlist");
+        } else {
+          if (data.logoImg) {
+            await deleteFile(data.logoImg);
+          }
+          if (data.adImg) {
+            await deleteFile(data.adImg);
+          }
+          if (data.photoList) {
+            const photoLists = data.photoList.split(",");
+            for (const photo of photoLists) {
+              await deleteFile(photo);
+            }
+          }
+        }
+        setLoading(false);
+        setLoadMsg("작업 중...");
       }
-      setLoading(false);
-      setLoadMsg("작업 중...");
     } catch (e) {
       console.error(e);
       setLoading(false);
@@ -731,6 +882,7 @@ function AdInput() {
     }
   };
 
+  //입력용 데이터
   const getData = async () => {
     const data = {};
     let result = "성공";
@@ -783,6 +935,17 @@ function AdInput() {
       data.managerSubPhone = `${subContact.first}${subContact.second}${subContact.third}`;
       data.subPhoneShow = !subContact.reveal;
     }
+    if (!emailId) {
+      result = "담당자 이메일을 입력하세요";
+      return { data, result };
+    } else {
+      const emailChk = chkEmail(emailId);
+      if (!emailChk) {
+        result = "이메일 양식이 잘못되었습니다";
+      } else {
+        data.managerEmail = emailId;
+      }
+    }
 
     if (!period) {
       result = "근무기간을 선택해 주세요";
@@ -822,6 +985,9 @@ function AdInput() {
     }
     if (workTimeDetail) {
       data.workTimeDetail = workTimeDetail;
+    }
+    if (restTime) {
+      data.restTime = `${restTime} ${rest}`;
     }
     data.salaryType = payType;
 
@@ -894,8 +1060,6 @@ function AdInput() {
       data.company = companyName;
     }
 
-    data.address = "서울시 중구 다산로";
-
     if (!zipCode || !addressA) {
       result = "주소찾기를 누르고 근무지 주소를 입력해 주세요";
       return { data, result };
@@ -952,7 +1116,7 @@ function AdInput() {
 
         return { data, result };
       } else {
-        data.startDate = reserveDate;
+        data.startDate = dayjs(reserveDate).format("YYYY-MM-DD");
       }
     } else {
       data.startDate = dayjs(new Date()).format("YYYY-MM-DD");
@@ -1509,6 +1673,17 @@ function AdInput() {
                             onChange={handleRestTime}
                             placeholder="점심포함 휴게시간"
                           />
+                          <select
+                            id="rest"
+                            className="border border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block w-full p-1 py-2"
+                            value={rest}
+                            onChange={e => {
+                              setRest(e.currentTarget.value);
+                            }}
+                          >
+                            <option value="시간">시간</option>
+                            <option value="분">분</option>
+                          </select>
                         </div>
                         {startTime && endTime ? (
                           <div className="items-center py-4 text-sm font-normal">
@@ -2771,7 +2946,15 @@ function AdInput() {
                     {addContact && (
                       <button
                         className="border border-success border-dashed p-2 text-success font-normal"
-                        onClick={() => setAddContact(false)}
+                        onClick={() => {
+                          setSubContact({
+                            first: "",
+                            second: "",
+                            third: "",
+                            reveal: false,
+                          });
+                          setAddContact(false);
+                        }}
                       >
                         + 삭제하기
                       </button>
@@ -3011,10 +3194,7 @@ function AdInput() {
                   ))}
                 </div>
                 <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                  <div
-                    data="기간협의가능"
-                    className="flex items-center gap-x-2"
-                  >
+                  <div data="포커스광고" className="flex items-center gap-x-2">
                     <input
                       id="focus"
                       type="checkbox"
