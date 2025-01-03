@@ -254,6 +254,16 @@ function AdInput() {
       setCondition(adInfo.etcConditions.split(","));
     }
     setGender(adInfo.gender);
+    setAge(adInfo.age);
+    setMaxAge(adInfo.maxAge);
+    setMinAge(adInfo.minAge);
+    setPeriod(adInfo.workPeriod);
+    setProbation(adInfo.probation);
+    setPeriodDiscussion(adInfo.periodDiscussion);
+    setWorkDate(adInfo.workDate);
+    if (adInfo.workDate) {
+      setWorkDateList(adInfo.workDays.split(","));
+    }
   };
 
   const putWelfare = async welfare => {
@@ -651,16 +661,6 @@ function AdInput() {
   }, [limitDate]);
 
   useEffect(() => {
-    if (workDateList.includes("0") || workDateList.includes("6")) {
-      setWorkDateDetail("주말근무");
-    } else if (workDateList.length === 5) {
-      setWorkDateDetail("평일근무");
-    } else {
-      setWorkDateDetail("");
-    }
-  }, [workDateList]);
-
-  useEffect(() => {
     if (startTime && endTime) {
       const startHour = Number(startTime.split(":")[0]);
       const startMin = Number(startTime.split(":")[1]);
@@ -979,6 +979,7 @@ function AdInput() {
 
         return { data, result };
       } else {
+        data.workTime = workTime;
         data.workStart = startTime;
         data.workEnd = endTime;
       }
@@ -1214,7 +1215,7 @@ function AdInput() {
                 <input
                   type="text"
                   className="w-full p-2 border border-[#ccc] rounded-sm"
-                  value={title}
+                  value={title || ""}
                   onChange={handleTitle}
                 />
                 <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
@@ -1320,7 +1321,7 @@ function AdInput() {
                       <input
                         type="text"
                         className="w-full py-1 px-2 border border-[#ccc] rounded-sm"
-                        value={headCountB}
+                        value={headCountB || ""}
                         onChange={e => setHeadCountB(e.currentTarget.value)}
                         disabled={headCountA !== "직접입력"}
                       />
@@ -1447,6 +1448,7 @@ function AdInput() {
                             type="checkbox"
                             value="1"
                             onChange={handleWorkday}
+                            checked={workDateList.includes("1")}
                             name="inline-checkbox-group0"
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
                           />
@@ -1463,6 +1465,7 @@ function AdInput() {
                             type="checkbox"
                             value="2"
                             onChange={handleWorkday}
+                            checked={workDateList.includes("2")}
                             name="inline-checkbox-group0"
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
                           />
@@ -1479,6 +1482,7 @@ function AdInput() {
                             type="checkbox"
                             value="3"
                             onChange={handleWorkday}
+                            checked={workDateList.includes("3")}
                             name="inline-checkbox-group0"
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
                           />
@@ -1495,6 +1499,7 @@ function AdInput() {
                             type="checkbox"
                             value="4"
                             onChange={handleWorkday}
+                            checked={workDateList.includes("4")}
                             name="inline-checkbox-group0"
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
                           />
@@ -1511,6 +1516,7 @@ function AdInput() {
                             type="checkbox"
                             value="5"
                             onChange={handleWorkday}
+                            checked={workDateList.includes("5")}
                             name="inline-checkbox-group0"
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
                           />
@@ -1527,6 +1533,7 @@ function AdInput() {
                             type="checkbox"
                             value="6"
                             onChange={handleWorkday}
+                            checked={workDateList.includes("6")}
                             name="inline-checkbox-group0"
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
                           />
@@ -1543,6 +1550,7 @@ function AdInput() {
                             type="checkbox"
                             value="0"
                             onChange={handleWorkday}
+                            checked={workDateList.includes("0")}
                             name="inline-checkbox-group0"
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
                           />
@@ -1573,7 +1581,7 @@ function AdInput() {
                       <input
                         type="text"
                         className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
-                        value={workDateDetail}
+                        value={workDateDetail || ""}
                         onChange={e => setWorkDateDetail(e.currentTarget.value)}
                         placeholder="예시) 주 3일 근무, 격주 토요일 등등"
                       />
@@ -1669,14 +1677,14 @@ function AdInput() {
                           <input
                             type="text"
                             className="w-full p-2 border border-[#ccc] rounded-sm font-normal min-w-[200px]"
-                            value={restTime}
+                            value={restTime || ""}
                             onChange={handleRestTime}
                             placeholder="점심포함 휴게시간"
                           />
                           <select
                             id="rest"
                             className="border border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block w-full p-1 py-2"
-                            value={rest}
+                            value={rest || ""}
                             onChange={e => {
                               setRest(e.currentTarget.value);
                             }}
@@ -1711,7 +1719,7 @@ function AdInput() {
                       <input
                         type="text"
                         className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
-                        value={workTimeDetail}
+                        value={workTimeDetail || ""}
                         onChange={e => setWorkTimeDetail(e.currentTarget.value)}
                         placeholder="예시) 평일 오전, 주말 오전 근무 등"
                       />
@@ -1806,7 +1814,7 @@ function AdInput() {
                       <input
                         type="text"
                         className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
-                        value={salary}
+                        value={salary || ""}
                         onChange={e => {
                           setSalary(e.currentTarget.value);
                           setFormatedSalary(e.currentTarget.value);
@@ -2127,7 +2135,7 @@ function AdInput() {
                     <input
                       type="text"
                       className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
-                      value={minAge}
+                      value={minAge || ""}
                       onChange={e => {
                         setMinAge(e.currentTarget.value);
                       }}
@@ -2141,7 +2149,7 @@ function AdInput() {
                     <input
                       type="text"
                       className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
-                      value={maxAge}
+                      value={maxAge || ""}
                       onChange={e => {
                         setMaxAge(e.currentTarget.value);
                       }}
@@ -2301,7 +2309,7 @@ function AdInput() {
                         <input
                           type="text"
                           className="min-w-[300px] px-2 py-1 border border-[#ccc] rounded-sm"
-                          value={applyUrl}
+                          value={applyUrl || ""}
                           onChange={e => setApplyUrl(e.currentTarget.value)}
                           onBlur={() => {
                             if (applyUrl !== "") {
@@ -2334,7 +2342,7 @@ function AdInput() {
                 <input
                   type="text"
                   className="w-full p-2 border border-[#ccc] rounded-sm"
-                  value={companyName}
+                  value={companyName || ""}
                   onChange={handleCompanyNameChange}
                 />
                 <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
@@ -2353,14 +2361,14 @@ function AdInput() {
                   <input
                     type="text"
                     className="w-[70px] py-1 px-2 border border-[#ccc] rounded-sm"
-                    value={zipCode}
+                    value={zipCode || ""}
                     onChange={e => setZipCode(e.currentTarget.value)}
                     disabled
                   />
                   <input
                     type="text"
                     className="w-[300px] py-1 px-2 border border-[#ccc] rounded-sm"
-                    value={addressA}
+                    value={addressA || ""}
                     onChange={e => setAddressA(e.currentTarget.value)}
                     placeholder="주소찾기를 눌러주세요"
                     disabled
@@ -2368,7 +2376,7 @@ function AdInput() {
                   <input
                     type="text"
                     className="w-[300px] py-1 px-2 border border-[#ccc] rounded-sm"
-                    value={addressB}
+                    value={addressB || ""}
                     onChange={e => setAddressB(e.currentTarget.value)}
                     placeholder="건물명 등 상세주소 입력"
                     disabled={!addressA}
@@ -2777,7 +2785,7 @@ function AdInput() {
                 <input
                   type="text"
                   className="w-full p-2 border border-[#ccc] rounded-sm"
-                  value={managerName}
+                  value={managerName || ""}
                   onChange={handleManagerName}
                   placeholder="최대 20자 (공백포함)"
                 />
@@ -2795,7 +2803,7 @@ function AdInput() {
                 <input
                   type="text"
                   className="w-full p-2 border border-[#ccc] rounded-sm"
-                  value={emailId}
+                  value={emailId || ""}
                   onChange={handleEmail}
                   placeholder="예시) abcde@fghijklmn.com"
                 />
@@ -2833,7 +2841,7 @@ function AdInput() {
                   <input
                     type="text"
                     className="w-[20%] p-2 border border-[#ccc] rounded-sm"
-                    value={contact.second}
+                    value={contact.second || ""}
                     onChange={e =>
                       handleContactChange(
                         "second",
@@ -2847,7 +2855,7 @@ function AdInput() {
                   <input
                     type="text"
                     className="w-[20%] p-2 border border-[#ccc] rounded-sm"
-                    value={contact.third}
+                    value={contact.third || ""}
                     onChange={e =>
                       handleContactChange(
                         "third",
@@ -2904,7 +2912,7 @@ function AdInput() {
                     <input
                       type="text"
                       className="w-[20%] p-2 border border-[#ccc] rounded-sm"
-                      value={subContact.second}
+                      value={subContact.second || ""}
                       onChange={e =>
                         handleContactChange(
                           "second",
@@ -2918,7 +2926,7 @@ function AdInput() {
                     <input
                       type="text"
                       className="w-[20%] p-2 border border-[#ccc] rounded-sm"
-                      value={subContact.third}
+                      value={subContact.third || ""}
                       onChange={e =>
                         handleContactChange(
                           "third",
@@ -3135,7 +3143,7 @@ function AdInput() {
                   <div className="flex flex-row justify-start gap-x-1 h-fit">
                     <textarea
                       className="htmleditor border p-1"
-                      value={detailContent}
+                      value={detailContent || ""}
                       onChange={e => setDetailContent(e.currentTarget.value)}
                     ></textarea>
                   </div>
