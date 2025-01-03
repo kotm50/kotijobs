@@ -99,7 +99,7 @@ function AdInput() {
 
   const [education, setEducation] = useState(""); //학력
 
-  const [limit, setLimit] = useState(""); //마감일 지정여부
+  const [limit, setLimit] = useState(false); //마감일 지정여부
   const [limitDate, setLimitDate] = useState(""); //마감일 지정
 
   const [applyRoute, setApplyRoute] = useState([]); // 지원방법
@@ -1109,7 +1109,7 @@ function AdInput() {
       return { data, result };
     }
     data.education = education;
-    data.endLimit = limit;
+    data.endLimit = limit === "상시모집" ? false : true;
     if (limit !== "상시모집") {
       if (!limitDate) {
         result = "마감일을 선택하세요";
