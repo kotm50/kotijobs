@@ -171,7 +171,7 @@ function Test() {
           )}
         </div>
       </div>
-      <div className="mt-[200px] bg-white w-full grid grid-cols-1 gap-x-2 max-w-[1200px] mx-auto p-2 ">
+      <div className="mt-[200px] bg-white w-full grid grid-cols-1 gap-x-2 gap-y-4 max-w-[1200px] mx-auto p-2 ">
         <UploadImg
           title={"로고이미지"}
           type={"logo"}
@@ -189,13 +189,14 @@ function Test() {
         </button>
 
         <button
-          className="w-[50%] mx-auto p-2 bg-red-500 text-white"
+          className="w-[50%] mx-auto p-2 bg-green-500 text-white"
           onClick={() => {
             deleteTest();
           }}
         >
           삭제 테스트
         </button>
+        {logoUrl && <img src={logoUrl} alt="test" className="max-w-[200px]" />}
       </div>
     </>
   );
