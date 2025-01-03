@@ -79,7 +79,10 @@ function Test() {
   };
 
   const deleteTest = async () => {
-    await deleteFile(logoUrl);
+    const res = await deleteFile(logoUrl);
+    if (res === "C000") {
+      setLogoUrl("");
+    }
   };
   return (
     <>
