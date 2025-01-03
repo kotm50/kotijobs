@@ -83,7 +83,7 @@ function Test() {
   };
   return (
     <>
-      <div className="mt-[200px] bg-white w-full grid grid-cols-2 gap-x-2 max-w-[1200px] mx-auto p-2 hidden">
+      <div className="mt-[200px] bg-white w-full grid-cols-2 gap-x-2 max-w-[1200px] mx-auto p-2 hidden">
         <div className="grid grid-cols-1 gap-y-4">
           <div className="p-2">
             <textarea
@@ -171,30 +171,32 @@ function Test() {
           )}
         </div>
       </div>
-      <UploadImg
-        title={"로고이미지"}
-        type={"logo"}
-        file={logoImg}
-        setFile={setLogoImg}
-      />
+      <div className="mt-[200px] bg-white w-full grid grid-cols-1 gap-x-2 max-w-[1200px] mx-auto p-2 ">
+        <UploadImg
+          title={"로고이미지"}
+          type={"logo"}
+          file={logoImg}
+          setFile={setLogoImg}
+        />
 
-      <button
-        className="w-[50%] mx-auto p-2 bg-red-500 text-white"
-        onClick={() => {
-          uploadTest();
-        }}
-      >
-        업로드 테스트
-      </button>
+        <button
+          className="w-[50%] mx-auto p-2 bg-red-500 text-white"
+          onClick={() => {
+            uploadTest();
+          }}
+        >
+          업로드 테스트
+        </button>
 
-      <button
-        className="w-[50%] mx-auto p-2 bg-red-500 text-white"
-        onClick={() => {
-          deleteTest();
-        }}
-      >
-        삭제 테스트
-      </button>
+        <button
+          className="w-[50%] mx-auto p-2 bg-red-500 text-white"
+          onClick={() => {
+            deleteTest();
+          }}
+        >
+          삭제 테스트
+        </button>
+      </div>
     </>
   );
 }
