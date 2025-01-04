@@ -10,8 +10,12 @@ function MultipleUploadImg(props) {
     const files = Array.from(event.target.files);
 
     // 파일 개수 체크 (최대 10개)
-    if (previews.length + files.length > 10) {
-      alert("최대 10개의 이미지만 업로드 가능합니다.");
+    if (previews.length + files.length > 10 - props.before.length) {
+      if (props.before.length > 0) {
+        alert("기존 이미지 포함 최대 10개의 이미지만 업로드 가능합니다.");
+      } else {
+        alert("최대 10개의 이미지만 업로드 가능합니다.");
+      }
       return;
     }
 

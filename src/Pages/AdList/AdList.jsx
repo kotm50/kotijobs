@@ -135,6 +135,22 @@ function AdList() {
       getAdList();
     }
   };
+
+  const deleteAd = async aid => {
+    const confirm = window.confirm("삭제하면 복구할 수 없습니다!\n진행할까요?");
+    if (!confirm) return false;
+    const data = {
+      aid: aid,
+    };
+    const res = await api
+      .delete("/api/v1/formMail_ad/deleteAd", { json: data })
+      .json();
+    console.log(res);
+    if (res.code === "C000") {
+      alert("공고가 삭제되었습니다");
+      getAdList();
+    }
+  };
   return (
     <>
       <div className="w-full max-w-[1240px] mx-auto mt-[100px] bg-white py-10 grid grid-cols-1 gap-y-[40px] mb-20 px-5">
@@ -337,7 +353,10 @@ function AdList() {
                       ) : (
                         <>
                           <div className="font-bold text-success">마감</div>
-                          <button className="py-1 px-4 border bg-white hover:bg-gray-50 text-[12px] w-[60px] mx-auto">
+                          <button
+                            className="py-1 px-4 border bg-white hover:bg-gray-50 text-[12px] w-[60px] mx-auto"
+                            onClick={() => deleteAd(ad.aid)}
+                          >
                             삭제
                           </button>
                         </>

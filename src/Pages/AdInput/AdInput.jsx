@@ -55,7 +55,7 @@ function AdInput() {
   const thisLocation = useLocation();
   const parsed = queryString.parse(thisLocation.search);
   const aid = parsed.aid || "";
-  const reinput = parsed.reinput || "N";
+  const reinput = parsed.reinput || "n";
   const [beforeData, setBeforeData] = useState(null);
   const [adStat, setAdStat] = useState("등록");
   const [loading, setLoading] = useState(false);
@@ -110,8 +110,8 @@ function AdInput() {
   const [zipCode, setZipCode] = useState(""); //우편번호
   const [addressA, setAddressA] = useState(""); //기본주소
   const [addressB, setAddressB] = useState(""); //상세주소
-  const [locationX, setLocationX] = useState();
-  const [locationY, setLocationY] = useState();
+  const [locationX, setLocationX] = useState(0);
+  const [locationY, setLocationY] = useState(0);
 
   const [modalOn, setModalOn] = useState(false); //모달창 오픈 설정
   const [modalType, setModalType] = useState("0"); //모달창 종류 설정
@@ -143,6 +143,12 @@ function AdInput() {
   const [logoImg, setLogoImg] = useState(""); // 로고 url
 
   const [photoList, setPhotoList] = useState([]); //사무실사진
+  const [beforePhotoList, setBeforePhotoList] = useState([]); //사무실사진
+
+  useEffect(() => {
+    console.log(beforePhotoList.length);
+  }, [beforePhotoList]);
+
   const [detailImages, setDetailImages] = useState([]);
   const [uploadedImgs, setUploadedImgs] = useState([]);
 
@@ -218,8 +224,6 @@ function AdInput() {
       console.log(res.fmAdList[0]);
       await putData(res.fmAdList[0]);
     }
-    console.log(uploadedImgs);
-    setUploadedImgs([]);
     setLoading(false);
     setLoadMsg("작업 중...");
   };
@@ -230,7 +234,7 @@ function AdInput() {
   // 데이터 불러오기
   const putData = async adInfo => {
     setBeforeData(adInfo);
-    console.log(adInfo.photoList.split(","));
+    setBeforePhotoList(adInfo.photoList ? adInfo.photoList.split(",") : []);
     setZipCode(adInfo.zipCode);
     setAddressA(adInfo.address);
     await getLocation(adInfo.address);
@@ -316,10 +320,26 @@ function AdInput() {
     setEmailId(adInfo.managerEmail || "");
     setManagerName(adInfo.managerName || "");
     setCompanyName(adInfo.company || "");
-    setLocationX(adInfo.x);
-    setLocationY(adInfo.y);
     setDetailContent(
       adInfo.detailContent ? unescapeHTML(adInfo.detailContent) : ""
+    );
+    setUploadedImgs(adInfo.deatilImages || []);
+
+    setGrade(String(adInfo.grade));
+    setFocus(adInfo.focus);
+    const reserveDay = dayjs(adInfo.startDate).format("YYMMDD");
+    const today = dayjs(new Date()).format("YYMMDD");
+    console.log(Number(reserveDay) > Number(today));
+    setReserve(Number(reserveDay) > Number(today));
+    if (Number(reserveDay) > Number(today)) {
+      setReserveDate(adInfo.startDate);
+    }
+    setManagerName(
+      adInfo.userName
+        ? adInfo.userName
+        : adInfo.managerName
+        ? adInfo.managerName
+        : ""
     );
   };
 
@@ -433,6 +453,7 @@ function AdInput() {
     const res = await api
       .get(`/api/v1/common/get/coordinates?address=${address}`)
       .json();
+    console.log(res);
     setLocationX(res.x);
     setLocationY(res.y);
     await getSubwayUniversity(res.x, res.y);
@@ -888,6 +909,7 @@ function AdInput() {
     }
     setLoading(true);
     setLoadMsg("저장 중...");
+
     const { data, result } = await getData();
 
     if (result !== "성공") {
@@ -896,11 +918,14 @@ function AdInput() {
     }
     try {
       if (adStat === "수정") {
+        data.aid = aid;
+        console.log(data);
         const res = await api
           .put("/api/v1/formMail_ad/updateAd", {
             json: data,
           })
           .json();
+        console.log(res);
         if (res.code === "C000") {
           alert("완료");
           navi("/admin/adlist");
@@ -969,7 +994,7 @@ function AdInput() {
   const getData = async () => {
     const data = {};
     let result = "성공";
-    data.cid = "0825232a-9353-4be3-af82-69f9962b1f27"; // 임시 CID
+    //data.cid = "0825232a-9353-4be3-af82-69f9962b1f27"; // 임시 CID
     data.companyUserId = login.userId || null;
     if (!title) {
       result = "제목을 작성해 주세요";
@@ -1025,6 +1050,7 @@ function AdInput() {
       const emailChk = chkEmail(emailId);
       if (!emailChk) {
         result = "이메일 양식이 잘못되었습니다";
+        return { data, result };
       } else {
         data.managerEmail = emailId;
       }
@@ -1176,9 +1202,23 @@ function AdInput() {
     if (nearStation.length > 0) {
       data.nearInfoList = nearStation;
     }
-    data.logoImg = await uploadFile(logoImg, "logo");
-    const photoLists = await getMultipleImg(photoList, "office");
-    data.photoList = photoLists.join(",");
+    if (!beforeData.logoImg) {
+      data.logoImg = await uploadFile(logoImg, "logo");
+    } else if (logoImg) {
+      data.logoImg = await uploadFile(logoImg, "logo");
+    } else {
+      data.logoImg = beforeData.logoImg;
+    }
+    if (!beforeData.photoList) {
+      const photoLists = await getMultipleImg(photoList, "office");
+      data.photoList = photoLists.join(",");
+    } else if (photoList.length > 0) {
+      const photoLists = await getMultipleImg(photoList, "office");
+      const fullPhotoList = beforePhotoList.concat(photoLists);
+      data.photoList = fullPhotoList.join(",");
+    } else if (beforeData.photoList !== beforePhotoList) {
+      data.photoList = beforePhotoList.join(",");
+    }
     if (detailImages.length > 0) {
       const { detailContent: updatedContent, images } = await filterImg(
         detailImages,
@@ -1186,10 +1226,18 @@ function AdInput() {
       );
       const mixedContent = await getMixed(updatedContent);
       data.detailContent = escapeHTML(mixedContent);
-      data.detailImages = images.join(",");
+      if (uploadedImgs.length > 0) {
+        const fullImages = images.concat(uploadedImgs);
+        data.detailImages = fullImages.join(",");
+      } else {
+        data.detailImages = images.join(",");
+      }
     } else {
       const mixedContent = await getMixed(detailContent);
       data.detailContent = escapeHTML(mixedContent);
+      if (uploadedImgs.legnth > 0) {
+        data.detailImages = uploadedImgs.join(",");
+      }
     }
 
     data.adLink = imgApply;
@@ -1210,6 +1258,10 @@ function AdInput() {
 
     return { data, result };
   };
+
+  useEffect(() => {
+    console.log(locationX, locationY);
+  }, [locationX, locationY]);
 
   const getMixed = async text => {
     return text.replace(
@@ -1239,7 +1291,7 @@ function AdInput() {
           // detailContent에서 해당 alt를 가진 모든 <img> 태그를 새로운 태그로 대체
           detailContent = detailContent.replace(
             imgTagRegex,
-            `<img src="${uploadedUrl}" alt="${alt}" />`
+            `<img src="${uploadedUrl}" alt="${alt}-changed" />`
           );
         } catch (error) {
           console.error(`Failed to upload image for alt=${alt}:`, error);
@@ -1280,6 +1332,10 @@ function AdInput() {
     );
   };
   */
+  const handleRemovePreview = preview => {
+    const updatedPreviews = beforePhotoList.filter(item => item !== preview);
+    setBeforePhotoList(updatedPreviews);
+  };
 
   return (
     <>
@@ -1808,7 +1864,7 @@ function AdInput() {
                       />
                       <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
                         <span className="text-success">
-                          {workTimeDetail.length}
+                          {workTimeDetail ? workTimeDetail.length : 0}
                         </span>{" "}
                         / 40자
                       </div>
@@ -2864,35 +2920,51 @@ function AdInput() {
                       type={"photo"}
                       files={photoList}
                       setFiles={setPhotoList}
+                      before={beforePhotoList}
                     />
-                    {beforeData &&
-                      beforeData.photoList.split(",").length > 0 &&
-                      beforeData.photoList.split(",")[0] && (
-                        <div className="flex gap-x-2">
-                          <div className="flex flex-col justify-center h-full bg-[#eaeaea] px-2">
-                            기존 사진
+                    {beforePhotoList && beforePhotoList.length > 0 && (
+                      <div className="flex gap-x-2 w-full">
+                        <div className="flex flex-col justify-center h-full bg-[#eaeaea] px-2">
+                          기존 사진
+                        </div>
+                        <div className="grid grid-cols-1 gap-y-2">
+                          <div className="w-full relative flex flex-row justify-end gap-x-[50px] gap-y-3 flex-wrap font-normal py-1">
+                            <button
+                              type="button"
+                              className="px-2 py-0.5 bg-[#efefef] hover:bg-[#e5e5e5] rounded-sm border border-black"
+                              onClick={() => {
+                                setBeforePhotoList([]); // 미리보기 이미지 초기화
+                              }}
+                            >
+                              기존 파일 초기화
+                            </button>
                           </div>
-                          <div className="grid grid-cols-1 gap-y-2">
-                            <div className="grid grid-cols-4 gap-x-4 gap-y-4">
-                              {beforeData.photoList
-                                .split(",")
-                                .map((preview, index) => (
-                                  <div
-                                    key={index}
-                                    className="relative p-1 border border-[#ccc] h-fit z-0 hover:cursor-pointer"
-                                  >
-                                    <img
-                                      src={preview} // 미리보기 이미지 경로 사용
-                                      className="min-w-[60px] w-auto max-w-[100px] h-auto max-h-[150px] mx-auto"
-                                      alt={`미리보기 ${index + 1}`}
-                                      title="이미지를 클릭하면 원본 사이즈로 볼 수 있습니다"
-                                    />
-                                  </div>
-                                ))}
-                            </div>
+                          <div className="grid grid-cols-5 gap-x-4 gap-y-4">
+                            {beforePhotoList.map((preview, index) => (
+                              <div
+                                key={index}
+                                className="relative p-1 border border-[#ccc] h-fit z-0 hover:cursor-pointer"
+                              >
+                                <div className="w-full h-full">
+                                  <img
+                                    src={preview} // 미리보기 이미지 경로 사용
+                                    className="min-w-[60px] w-auto max-w-[100px] h-auto max-h-[150px] mx-auto"
+                                    alt={`미리보기 ${index + 1}`}
+                                  />
+                                </div>
+                                {/* X 버튼 */}
+                                <button
+                                  className="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 hover:bg-red-600"
+                                  onClick={() => handleRemovePreview(preview)}
+                                >
+                                  삭제
+                                </button>
+                              </div>
+                            ))}
                           </div>
                         </div>
-                      )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -3440,7 +3512,7 @@ function AdInput() {
             className="border border-primary bg-primary text-white hover:bg-opacity-80 rounded py-2 px-5 text-lg"
             onClick={() => submit()}
           >
-            공고 등록
+            공고 {!aid ? "등록" : reinput !== "y" ? "수정" : "재등록"}
           </button>
         </div>
       </div>
