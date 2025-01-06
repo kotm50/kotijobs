@@ -900,93 +900,75 @@ function AdInput() {
     console.log("초기화");
   };
 
+  const handleLoading = (loading, message) => {
+    setLoading(loading);
+    setLoadMsg(message || "작업 중...");
+  };
+
   const submit = async () => {
     const confirm = window.confirm(
       "공고 등록을 하면 예약한 날짜부터 바로 공개됩니다. 진행할까요?"
     );
-    if (!confirm) {
-      return false;
-    }
-    setLoading(true);
-    setLoadMsg("저장 중...");
 
-    const { data, result } = await getData();
+    if (!confirm) return;
 
-    if (result !== "성공") {
-      setLoading(false);
-      return alert(result);
-    }
+    handleLoading(true, "저장 중...");
+
+    let data = null; // 데이터 초기화
     try {
-      if (adStat === "수정") {
-        data.aid = aid;
-        console.log(data);
-        const res = await api
-          .put("/api/v1/formMail_ad/updateAd", {
-            json: data,
-          })
-          .json();
-        console.log(res);
-        if (res.code === "C000") {
-          alert("완료");
-          navi("/admin/adlist");
-        } else {
-          if (data.logoImg) {
-            await deleteFile(data.logoImg);
-          }
-          if (data.adImg) {
-            await deleteFile(data.adImg);
-          }
-          if (data.photoList) {
-            const photoLists = data.photoList.split(",");
-            for (const photo of photoLists) {
-              await deleteFile(photo);
-            }
-          }
-        }
-        setLoading(false);
-        setLoadMsg("작업 중...");
+      const response = await getData();
+      data = response.data; // 성공적으로 가져온 데이터 저장
+      const { result } = response;
+
+      if (result !== "성공") {
+        handleLoading(false);
+        return alert(result);
+      }
+
+      const apiUrl =
+        adStat === "수정"
+          ? "/api/v1/formMail_ad/updateAd"
+          : "/api/v1/formMail_ad/addAd";
+
+      if (adStat === "수정") data.aid = aid;
+
+      const res = await api[adStat === "수정" ? "put" : "post"](apiUrl, {
+        json: data,
+      }).json();
+
+      if (res.code === "C000") {
+        alert("완료");
+        navi("/admin/adlist");
       } else {
-        const res = await api
-          .post("/api/v1/formMail_ad/addAd", {
-            json: data,
-          })
-          .json();
-        if (res.code === "C000") {
-          alert("완료");
-          navi("/admin/adlist");
-        } else {
-          if (data.logoImg) {
-            await deleteFile(data.logoImg);
-          }
-          if (data.adImg) {
-            await deleteFile(data.adImg);
-          }
-          if (data.photoList) {
-            const photoLists = data.photoList.split(",");
-            for (const photo of photoLists) {
-              await deleteFile(photo);
-            }
-          }
-        }
-        setLoading(false);
-        setLoadMsg("작업 중...");
+        await deleteAllFiles(data);
+        alert("서버 오류로 작업이 실패했습니다.");
       }
-    } catch (e) {
-      console.error(e);
-      setLoading(false);
-      setLoadMsg("작업 중...");
-      if (data.logoImg) {
-        await deleteFile(data.logoImg);
+    } catch (error) {
+      console.error("Submit error:", error);
+      if (data) {
+        await deleteAllFiles(data);
+      } else {
+        console.warn("No data to delete files from.");
       }
-      if (data.adImg) {
-        await deleteFile(data.adImg);
-      }
-      if (data.photoList.length > 0) {
-        const photoLists = data.photoList.split(",");
-        for (const photo of photoLists) {
-          await deleteFile(photo);
-        }
-      }
+      alert("작업 중 오류가 발생했습니다.");
+    } finally {
+      handleLoading(false);
+    }
+  };
+
+  const deleteAllFiles = async data => {
+    const fileUrls = [
+      data.logoImg,
+      data.adImg,
+      ...(data.photoList ? data.photoList.split(",") : []),
+    ].filter(Boolean); // `null` 또는 `undefined` 제거
+
+    try {
+      await Promise.all(fileUrls.map(url => deleteFile(url)));
+      console.log("All files deleted successfully");
+    } catch (error) {
+      console.error("Error deleting files:", error);
+      throw error;
     }
   };
 
@@ -1009,7 +991,7 @@ function AdInput() {
     } else {
       data.jobType = occupation.join(",");
     }
-    if (!employType.length > 0) {
+    if (employType.length === 0) {
       result = "고용형태를 한개 이상 선택하세요";
       return { data, result };
     } else {
@@ -1312,13 +1294,9 @@ function AdInput() {
     return { detailContent, images };
   };
 
-  const getMultipleImg = async (list, txt) => {
-    let photos = [];
-
-    for (const photo of list) {
-      const photoUrl = await uploadFile(photo, txt);
-      photos.push(photoUrl);
-    }
+  const getMultipleImg = async (list, folder) => {
+    const uploadPromises = list.map(photo => uploadFile(photo, folder));
+    const photos = await Promise.all(uploadPromises);
     return photos;
   };
 
