@@ -211,7 +211,7 @@ function AdInput() {
       setAdStat("등록");
     } else {
       if (reinput === "y") {
-        setAdStat("등록");
+        setAdStat("재등록");
       } else {
         setAdStat("수정");
       }
@@ -921,12 +921,7 @@ function AdInput() {
       const response = await getData();
       data = response.data; // 성공적으로 가져온 데이터 저장
       const { result } = response;
-      if (adStat === "수정") {
-        const modifyChk = await hasChanges(beforeData, data);
-        if (!modifyChk) {
-          return alert("수정된 내용이 없습니다 확인 후 다시 진행해 주세요");
-        }
-      }
+
       if (result !== "성공") {
         handleLoading(false);
         return alert(result);
@@ -947,13 +942,13 @@ function AdInput() {
         alert("완료");
         navi("/admin/adlist");
       } else {
-        await deleteAllFiles(data);
+        if (adStat === "등록") await deleteAllFiles(data);
         alert("서버 오류로 작업이 실패했습니다.");
       }
     } catch (error) {
       console.error("Submit error:", error);
       if (data) {
-        await deleteAllFiles(data);
+        if (adStat === "등록") await deleteAllFiles(data);
       } else {
         console.warn("No data to delete files from.");
       }
@@ -977,96 +972,6 @@ function AdInput() {
       console.error("Error deleting files:", error);
       throw error;
     }
-  };
-
-  const hasChanges = (beforeData, currentState) => {
-    // Helper function to deep compare objects or arrays
-    const deepEqual = (obj1, obj2) => {
-      if (obj1 === obj2) return true;
-
-      if (
-        obj1 &&
-        obj2 &&
-        typeof obj1 === "object" &&
-        typeof obj2 === "object"
-      ) {
-        if (Object.keys(obj1).length !== Object.keys(obj2).length) return false;
-
-        for (const key in obj1) {
-          if (!deepEqual(obj1[key], obj2[key])) return false;
-        }
-
-        return true;
-      }
-
-      return false;
-    };
-
-    // Map state values to match `beforeData` structure
-    const mappedState = {
-      aid: currentState.aid,
-      startDate: currentState.reserveDate,
-      totalDay: currentState.totalDay,
-      logoImg: currentState.logoImg,
-      company: currentState.companyName,
-      address: currentState.addressA,
-      title: currentState.title,
-      workStart: currentState.startTime,
-      workEnd: currentState.endTime,
-      minPay: currentState.formatedSalary,
-      maxPay: currentState.formatedSalary,
-      welfare: currentState.welfare.join(","),
-      sido: currentState.areaA?.sido,
-      sigungu: currentState.areaA?.sigungu,
-      dongEubMyun: currentState.areaA?.dongEubMyun,
-      grade: Number(currentState.grade),
-      salary: currentState.formatedSalary,
-      salaryType: currentState.payType,
-      jobType: currentState.occupation.join(","),
-      employmentType: currentState.employType.join(","),
-      recruitCount:
-        currentState.headCountA === "직접입력"
-          ? currentState.headCountB
-          : currentState.headCountA,
-      workPeriod: currentState.period,
-      workDays: currentState.workDateList.join(","),
-      gender: currentState.gender,
-      age: currentState.age,
-      education: currentState.education,
-      preConditions: currentState.treat.join(","),
-      etcConditions: currentState.condition.join(","),
-      applyMethod: currentState.applyRoute.join(","),
-      nearUniversity: currentState.university,
-      x: currentState.areaX,
-      y: currentState.areaY,
-      managerName: currentState.managerName,
-      managerEmail: currentState.emailId,
-      managerPhone: `${currentState.contact.first}${currentState.contact.second}${currentState.contact.third}`,
-      managerSubPhone: currentState.addContact
-        ? `${currentState.subContact.first}${currentState.subContact.second}${currentState.subContact.third}`
-        : null,
-      probation: currentState.probation,
-      periodDiscussion: currentState.periodDiscussion,
-      workDate: currentState.workDate,
-      workTime: currentState.workTime,
-      workTimeDetail: currentState.workTimeDetail,
-      minAge: currentState.minAge,
-      maxAge: currentState.maxAge,
-      endLimit: currentState.limit === "마감일지정",
-      applyUrl: currentState.applyUrl,
-      zipCode: currentState.zipCode,
-      photoList: currentState.photoList?.join(","),
-      adLink: currentState.imgApply,
-      focus: currentState.focus,
-      detailContent: currentState.detailContent,
-      phoneShow: currentState.phoneShow,
-      subPhoneShow: currentState.subPhoneShow,
-      detailImages: currentState.detailImages?.join(","),
-      companyUserId: currentState.companyUserId,
-    };
-
-    // Compare `beforeData` and `mappedState`
-    return !deepEqual(beforeData, mappedState);
   };
 
   //입력용 데이터
