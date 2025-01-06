@@ -995,6 +995,7 @@ function AdInput() {
     const data = {};
     let result = "성공";
     //data.cid = "0825232a-9353-4be3-af82-69f9962b1f27"; // 임시 CID
+
     data.companyUserId = login.userId || null;
     if (!title) {
       result = "제목을 작성해 주세요";
@@ -1210,8 +1211,10 @@ function AdInput() {
       data.logoImg = beforeData.logoImg;
     }
     if (!beforeData.photoList) {
-      const photoLists = await getMultipleImg(photoList, "office");
-      data.photoList = photoLists.join(",");
+      if (photoList.length > 0) {
+        const photoLists = await getMultipleImg(photoList, "office");
+        data.photoList = photoLists.join(",");
+      }
     } else if (photoList.length > 0) {
       const photoLists = await getMultipleImg(photoList, "office");
       const fullPhotoList = beforePhotoList.concat(photoLists);
