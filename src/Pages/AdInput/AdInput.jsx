@@ -933,7 +933,7 @@ function AdInput() {
           : "/api/v1/formMail_ad/addAd";
 
       if (adStat === "수정") data.aid = aid;
-
+      console.log(data);
       const res = await api[adStat === "수정" ? "put" : "post"](apiUrl, {
         json: data,
       }).json();
