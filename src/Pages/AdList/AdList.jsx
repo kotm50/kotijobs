@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { api } from "../../Api/Api";
-import { grades } from "../../Data/Data";
+import { adStats, grades, searchTypes } from "../../Data/Data";
 import queryString from "query-string";
 import Pagenation from "../../Components/Pagenation";
 import dayjs from "dayjs";
@@ -10,12 +10,17 @@ import sorry from "../../assets/sorry.png";
 
 function AdList() {
   const navi = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [startedCount, setStartedCount] = useState(0);
   const [waitingCount, setWaitingCount] = useState(0);
   const [endedCount, setEndedCount] = useState(0);
+  const [searchCount, setSearchCount] = useState(0);
   const [adList, setAdList] = useState([]);
   const [last, setLast] = useState(1);
+  const [sType, setSType] = useState("title");
+  const [searchKeyword, setSearchKeyword] = useState("");
+  const [errMsg, setErrMsg] = useState("조회 된 내용이 없습니다");
 
   const [modalOn, setModalOn] = useState(false); //모달창 오픈 설정
   const [modalType, setModalType] = useState(""); //모달창 종류 설정
@@ -26,8 +31,14 @@ function AdList() {
   const status = parsed.status || "";
   const page = parsed.page || 1;
   const size = parsed.size || 20;
+  const keyword = parsed.keyword || null;
+  const searchtype = parsed.searchtype || null;
   useEffect(() => {
-    getAdList();
+    if (searchtype === "unique") {
+      getNumAd();
+    } else {
+      getAdList();
+    }
     //eslint-disable-next-line
   }, [thisLocation]);
 
@@ -37,12 +48,32 @@ function AdList() {
     }
   }, [modalOn]);
 
+  const getNumAd = async () => {
+    setLoading(true);
+    if (isNaN(keyword)) {
+      navi("/admin/adlist");
+      return alert("잘못된 경로로 들어오셨습니다");
+    }
+
+    setSType(searchtype);
+    setSearchKeyword(keyword);
+    const data = {
+      num: Number(keyword),
+    };
+    const res = await api
+      .post("/api/v1/formMail_ad/search/one/num", { json: data })
+      .json();
+    console.log(res);
+    setLoading(false);
+  };
+
   const getGrade = async grade => {
     const item = grades.find(el => el.value === grade);
     return item ? item.txt : "미사용";
   };
 
   const getAdList = async () => {
+    setLoading(true);
     let data = {
       page: page,
       size: size,
@@ -52,17 +83,33 @@ function AdList() {
       url = "/api/v1/formMail_ad/allAdList";
     } else {
       url = "/api/v1/formMail_ad/statusList";
-      if (status === "started") {
-        data.status = "진행중";
-      } else if (status === "ended") {
-        data.status = "종료";
-      } else if (status === "waiting") {
-        data.status = "대기중";
-      } else {
+      const stat = await getStat(status);
+      console.log(stat);
+      if (stat === "에러") {
         alert("잘못된 접근 경로입니다");
         navi("/admin/adlist");
+        return false;
+      } else {
+        data.status = stat;
       }
     }
+    if (searchtype && keyword) {
+      url = "/api/v1/formMail_ad/statusList";
+      setSType(searchtype);
+      setSearchKeyword(keyword);
+      const type = await getType(searchtype);
+
+      if (type === "에러") {
+        setErrMsg("잘못된 경로로 접속하셨습니다");
+        setAdList(null);
+        navi("/admin/adlist");
+        return false;
+      } else {
+        data.searchType = type;
+        data.keyword = keyword;
+      }
+    }
+    console.log(data);
     const res = await api.post(url, { json: data }).json();
     const count = await api.get("/api/v1/formMail_ad/count/ads").json();
     console.log(res);
@@ -100,6 +147,19 @@ function AdList() {
     setEndedCount(count.closeAds);
     setLast(res.totalPages);
     setAdList(list2);
+    if (searchtype && keyword) setSearchCount(res.totalCount);
+    setLoading(false);
+  };
+
+  const getType = value => {
+    const result = searchTypes.find(item => item.value === value);
+    return result ? result.txt : "에러";
+  };
+
+  const getStat = value => {
+    console.log(value);
+    const result = adStats.find(item => item.value === value);
+    return result ? result.txt : "전체";
   };
 
   const getStatus = (start, end) => {
@@ -129,7 +189,6 @@ function AdList() {
     const res = await api
       .put("/api/v1/formMail_ad/update/close", { json: data })
       .json();
-    console.log(res);
     if (res.code === "C000") {
       alert("마감되었습니다");
       getAdList();
@@ -145,10 +204,27 @@ function AdList() {
     const res = await api
       .delete("/api/v1/formMail_ad/deleteAd", { json: data })
       .json();
-    console.log(res);
     if (res.code === "C000") {
       alert("공고가 삭제되었습니다");
       getAdList();
+    }
+  };
+
+  const searchIt = value => {
+    let sKeyword;
+    if (value) {
+      sKeyword = value;
+    } else {
+      sKeyword = searchKeyword;
+    }
+    if (sKeyword === "") {
+      if (keyword) {
+        navi("/admin/adlist");
+      } else {
+        return false;
+      }
+    } else {
+      navi(`/admin/adlist?searchtype=${sType}&keyword=${sKeyword}`);
     }
   };
   return (
@@ -157,7 +233,11 @@ function AdList() {
         <h2 className="lg:text-2xl font-extra text-[#069]">공고 관리</h2>
         <div className="border-b flex justify-start gap-x-0">
           <Link
-            to={`/admin/adlist`}
+            to={`/admin/adlist${
+              searchtype && keyword
+                ? `?searchtype=${searchtype}&keyword=${keyword}`
+                : ""
+            }`}
             className={`${
               !status || status === "all"
                 ? "bg-primary text-white hover:bg-opacity-50"
@@ -174,7 +254,11 @@ function AdList() {
             </span>
           </Link>
           <Link
-            to={`/admin/adlist?status=started`}
+            to={`/admin/adlist?status=started${
+              searchtype && keyword
+                ? `&searchtype=${searchtype}&keyword=${keyword}`
+                : ""
+            }`}
             className={`${
               status === "started"
                 ? "bg-primary text-white hover:bg-opacity-50"
@@ -191,7 +275,11 @@ function AdList() {
             </span>
           </Link>
           <Link
-            to={`/admin/adlist?status=waiting`}
+            to={`/admin/adlist?status=waiting${
+              searchtype && keyword
+                ? `&searchtype=${searchtype}&keyword=${keyword}`
+                : ""
+            }`}
             className={`${
               status === "waiting"
                 ? "bg-primary text-white hover:bg-opacity-50"
@@ -208,7 +296,11 @@ function AdList() {
             </span>
           </Link>
           <Link
-            to={`/admin/adlist?status=ended`}
+            to={`/admin/adlist?status=ended${
+              searchtype && keyword
+                ? `&searchtype=${searchtype}&keyword=${keyword}`
+                : ""
+            }`}
             className={`${
               status === "ended"
                 ? "bg-primary text-white hover:bg-opacity-50"
@@ -225,34 +317,74 @@ function AdList() {
             </span>
           </Link>
         </div>
-        {totalCount > 0 && (
-          <div className="grid grid-cols-1 gap-y-2">
-            <div>
-              {!status || status === "all"
-                ? "전체"
-                : status === "started"
-                ? "진행중"
-                : status === "waiting"
-                ? "대기중"
-                : status === "ended"
-                ? "종료"
-                : ""}{" "}
-              공고 |{" "}
-              <span className="text-primary font-bold">
-                {!status || status === "all"
-                  ? totalCount
-                  : status === "started"
-                  ? startedCount
-                  : status === "waiting"
-                  ? waitingCount
-                  : status === "ended"
-                  ? endedCount
-                  : ""}
-              </span>{" "}
-              건
+        <div className="flex justify-between">
+          {totalCount > 0 ? (
+            <div className="grid grid-cols-1 gap-y-2">
+              <div>
+                {getStat(status)} 공고 |{" "}
+                <span className="text-primary font-bold">
+                  {!status || status === "all"
+                    ? totalCount
+                    : status === "started"
+                    ? startedCount
+                    : status === "waiting"
+                    ? waitingCount
+                    : status === "ended"
+                    ? endedCount
+                    : ""}
+                </span>{" "}
+                건{" "}
+                {searchtype && keyword && (
+                  <span>
+                    중{" "}
+                    <span className="text-success font-bold">
+                      {searchCount}
+                    </span>
+                    건 검색됨
+                  </span>
+                )}
+              </div>
             </div>
+          ) : (
+            <div></div>
+          )}
+          <div className="flex justify-end gap-x-2 text-[14px] whitespace-nowrap break-keep">
+            <select
+              id="searchType"
+              name="searchType"
+              className="border border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block w-fit p-1 py-2"
+              value={sType || ""}
+              onChange={e => {
+                setSType(e.currentTarget.value);
+              }}
+            >
+              {searchTypes.map((type, idx) => (
+                <option key={idx} value={type.value}>
+                  {type.txt}
+                </option>
+              ))}
+            </select>
+            <input
+              type="text"
+              className="w-full p-2 border border-[#ccc] rounded-sm"
+              value={searchKeyword || ""}
+              onChange={e => setSearchKeyword(e.currentTarget.value)}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  searchIt(e.currentTarget.value);
+                }
+              }}
+            />
+            <button
+              className="bg-primary hover:bg-opacity-80 text-white p-2 rounded"
+              onClick={() => {
+                searchIt();
+              }}
+            >
+              검색하기
+            </button>
           </div>
-        )}
+        </div>
 
         {adList && adList.length > 0 ? (
           <div className="grid grid-cols-1 gap-y-0">
@@ -299,6 +431,21 @@ function AdList() {
                           href={`https://goalba.co.kr/joblist/${ad.aid}`}
                           className="font-extra"
                           target="_blank"
+                          onClick={e => {
+                            if (
+                              getStatus(ad.startDate, ad.endDate) === "종료"
+                            ) {
+                              e.preventDefault();
+                              alert("마감된 공고는 재등록 후 확인 가능합니다");
+                            } else if (
+                              getStatus(ad.startDate, ad.endDate) === "대기"
+                            ) {
+                              e.preventDefault();
+                              alert(
+                                "대기중 공고는 수정/재등록 페이지에서 확인 가능합니다"
+                              );
+                            }
+                          }}
                         >
                           {ad.title}
                         </a>
@@ -374,31 +521,23 @@ function AdList() {
                     <div className="flex  flex-col justify-center gap-y-2 h-full text-sm">
                       <div className="flex flex-row justify-between w-[85%] mx-auto">
                         <div className="text-left">조회수</div>
-                        <div className="text-right">
-                          {Math.round(Math.random() * 100) + 20} 회
-                        </div>
+                        <div className="text-right">{ad.viewCount || 0} 회</div>
                       </div>
-                      <div className="flex flex-row justify-between w-[85%] mx-auto">
+                      <div className="hidden flex-row justify-between w-[85%] mx-auto">
                         <div className="text-left">전체지원자</div>
-                        <div className="text-right">
-                          {Math.round(Math.random() * 15)} 명
-                        </div>
+                        <div className="text-right">00 명</div>
                       </div>
                     </div>
                   </div>
-                  <div className="w-[160px] text-center">
+                  <div className="w-[160px] text-center ">
                     <div className="flex flex-col justify-center gap-y-2 h-full text-sm">
                       <div className="flex flex-row justify-between w-[85%] mx-auto">
                         <div className="text-left">열람</div>
-                        <div className="text-right">
-                          {Math.round(Math.random() * 10) + 10} 회
-                        </div>
+                        <div className="text-right">000 명</div>
                       </div>
                       <div className="flex flex-row justify-between w-[85%] mx-auto text-success font-extra">
                         <div className="text-left">미열람</div>
-                        <div className="text-right">
-                          {Math.round(Math.random() * 5)} 명
-                        </div>
+                        <div className="text-right">0 명</div>
                       </div>
                     </div>
                   </div>
@@ -431,14 +570,18 @@ function AdList() {
             </>
           </div>
         ) : (
-          <div className="text-2xl text-bold text-center">
-            <img
-              src={sorry}
-              className="mx-auto w-[240px] h-auto mb-5 mt-20"
-              alt="오류"
-            />
-            조회 된 내용이 없습니다
-          </div>
+          <>
+            {!loading && (
+              <div className="text-2xl text-bold text-center">
+                <img
+                  src={sorry}
+                  className="mx-auto w-[240px] h-auto mb-5 mt-20"
+                  alt="오류"
+                />
+                {errMsg}
+              </div>
+            )}
+          </>
         )}
         {adList && adList.length > 0 ? <Pagenation last={last} /> : null}
       </div>
@@ -451,6 +594,17 @@ function AdList() {
         selectedAd={selectedAd}
         getAdList={getAdList}
       />
+
+      {loading && (
+        <div className="bg-white bg-opacity-55 w-[100vw] h-[100vh] fixed top-0 left-0 overflow-hidden z-[9999999999]">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-fit min-w-[50px] text-center flex flex-col justify-center z-[10000000000]">
+            <div className="loader" />
+            <span className="absolute w-[50vw] bottom-0 left-1/2 -translate-x-1/2 translate-y-8">
+              불러오는 중...
+            </span>
+          </div>
+        </div>
+      )}
     </>
   );
 }

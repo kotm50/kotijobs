@@ -251,3 +251,18 @@ export const sidoList = [
   "제주",
   "세종",
 ];
+
+export const searchTypes = [
+  { value: "title", txt: "공고제목" },
+  { value: "company", txt: "근무회사명" },
+  { value: "manager", txt: "채용담당자" },
+  { value: "contact", txt: "연락처" },
+  { value: "num", txt: "공고번호 일부" },
+  { value: "unique", txt: "공고번호 전체" },
+];
+
+export const adStats = [
+  { value: "started", txt: "진행중" },
+  { value: "ended", txt: "종료" },
+  { value: "waiting", txt: "대기중" },
+];

@@ -48,7 +48,7 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/test" element={<Test />} />
         <Route path="/admin" element={<AdminMain />}>
-          <Route path="" element={<AdInput />} />
+          <Route path="" element={<AdList />} />
           <Route path="adinput" element={<AdInput />} />
           <Route path="adlist" element={<AdList />} />
         </Route>

@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     host: true, // 네트워크 노출 활성화
-    port: 5173, // 기본 포트 (필요 시 변경 가능)
+    port: 5555, // 기본 포트 (필요 시 변경 가능)
     proxy: {
       "/api": {
         //target: "http://192.168.0.35:8080", // 로컬 프록시

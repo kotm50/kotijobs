@@ -17,6 +17,7 @@ function Pagenation(props) {
   const size = parsed.size ? Number(parsed.size) : 20;
   const status = parsed.status || null;
   const keyword = parsed.keyword || null;
+  const searchtype = parsed.searchtype || null;
 
   useEffect(() => {
     getUrls(page, props.last);
@@ -140,13 +141,16 @@ function Pagenation(props) {
       formattedUrl = formattedUrl + `&status=${status}`;
     }
     if (keyword) {
-      formattedUrl = formattedUrl + `&keyword=${status}`;
+      formattedUrl = formattedUrl + `&keyword=${keyword}`;
+    }
+    if (searchtype) {
+      formattedUrl = formattedUrl + `&searchtype=${searchtype}`;
     }
     return formattedUrl;
   };
   return (
     <>
-      <div className="w-[90%] mx-auto flex justify-between  mt-4">
+      <div className="w-full mx-auto flex justify-between  mt-4">
         <div>
           <select
             value={size}
