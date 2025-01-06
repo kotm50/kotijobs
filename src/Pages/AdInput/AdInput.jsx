@@ -907,7 +907,7 @@ function AdInput() {
 
   const submit = async () => {
     const confirm = window.confirm(
-      adStat === "등록"
+      adStat !== "수정"
         ? "공고 등록을 하면 예약한 날짜부터 바로 공개됩니다. 진행할까요?"
         : "수정을 진행하면 이전 내용을 완전히 덮어쓰게 됩니다. 진행할까요?"
     );
@@ -942,6 +942,7 @@ function AdInput() {
         alert("완료");
         navi("/admin/adlist");
       } else {
+        console.log(res.code);
         if (adStat === "등록") await deleteAllFiles(data);
         alert("서버 오류로 작업이 실패했습니다.");
       }
