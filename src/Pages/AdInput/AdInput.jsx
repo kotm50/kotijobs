@@ -1189,7 +1189,9 @@ function AdInput() {
       data.nearInfoList = nearStation;
     }
     if (!beforeData.logoImg) {
-      data.logoImg = await uploadFile(logoImg, "logo");
+      if (logoImg) {
+        data.logoImg = await uploadFile(logoImg, "logo");
+      }
     } else if (logoImg) {
       data.logoImg = await uploadFile(logoImg, "logo");
     } else {
