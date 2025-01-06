@@ -907,7 +907,9 @@ function AdInput() {
 
   const submit = async () => {
     const confirm = window.confirm(
-      "공고 등록을 하면 예약한 날짜부터 바로 공개됩니다. 진행할까요?"
+      adStat === "등록"
+        ? "공고 등록을 하면 예약한 날짜부터 바로 공개됩니다. 진행할까요?"
+        : "수정을 진행하면 이전 내용을 완전히 덮어쓰게 됩니다. 진행할까요?"
     );
 
     if (!confirm) return;
