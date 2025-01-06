@@ -975,6 +975,20 @@ function AdInput() {
     }
   };
 
+  const processLogoImage = async (logoImg, beforeLogoImg) => {
+    if (logoImg) {
+      return await uploadFile(logoImg, "logo");
+    }
+    return beforeLogoImg || null;
+  };
+  const processPhotoList = async (photoList, beforePhotoList) => {
+    if (photoList.length > 0) {
+      const photoLists = await getMultipleImg(photoList, "office");
+      return beforePhotoList.concat(photoLists).join(",");
+    }
+    return beforePhotoList ? beforePhotoList.join(",") : null;
+  };
+
   //입력용 데이터
   const getData = async () => {
     const data = {};
@@ -1188,27 +1202,10 @@ function AdInput() {
     if (nearStation.length > 0) {
       data.nearInfoList = nearStation;
     }
-    if (!beforeData.logoImg) {
-      if (logoImg) {
-        data.logoImg = await uploadFile(logoImg, "logo");
-      }
-    } else if (logoImg) {
-      data.logoImg = await uploadFile(logoImg, "logo");
-    } else {
-      data.logoImg = beforeData.logoImg;
-    }
-    if (!beforeData.photoList) {
-      if (photoList.length > 0) {
-        const photoLists = await getMultipleImg(photoList, "office");
-        data.photoList = photoLists.join(",");
-      }
-    } else if (photoList.length > 0) {
-      const photoLists = await getMultipleImg(photoList, "office");
-      const fullPhotoList = beforePhotoList.concat(photoLists);
-      data.photoList = fullPhotoList.join(",");
-    } else if (beforeData.photoList !== beforePhotoList) {
-      data.photoList = beforePhotoList.join(",");
-    }
+    data.logoImg = await processLogoImage(logoImg, beforeData?.logoImg);
+
+    data.photoList = await processPhotoList(photoList, beforePhotoList);
+
     if (detailImages.length > 0) {
       const { detailContent: updatedContent, images } = await filterImg(
         detailImages,
@@ -1225,7 +1222,7 @@ function AdInput() {
     } else {
       const mixedContent = await getMixed(detailContent);
       data.detailContent = escapeHTML(mixedContent);
-      if (uploadedImgs.legnth > 0) {
+      if (uploadedImgs.length > 0) {
         data.detailImages = uploadedImgs.join(",");
       }
     }
