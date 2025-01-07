@@ -960,7 +960,7 @@ function AdInput() {
           return alert("유효기간이 경과했습니다 다시 로그인 해주세요");
         }
         if (adStat === "등록") await deleteAllFiles(data);
-        alert("서버 오류로 작업이 실패했습니다.");
+        alert("서버 오류로 작업이 실패했습니다. 오류코드 : ", res.code);
       }
     } catch (error) {
       console.error("Submit error:", error);
