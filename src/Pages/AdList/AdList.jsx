@@ -119,6 +119,11 @@ function AdList() {
     console.log(data);
     const res = await api.post(url, { json: data }).json();
     const count = await api.get("/api/v1/formMail_ad/count/ads").json();
+
+    if (res.code === "E403") {
+      logout();
+      return alert("유효기간이 경과했습니다 다시 로그인 해주세요");
+    }
     console.log(res);
 
     const list = [];
