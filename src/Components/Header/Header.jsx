@@ -1,17 +1,8 @@
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { clearUser } from "../../Reducer/userSlice";
+import { useLogout } from "../../Api/Api";
 
 function Header({ thisLocation }) {
-  const dispatch = useDispatch();
-  const handleLogout = async () => {
-    try {
-      dispatch(clearUser()); // Redux 상태 초기화
-    } catch (error) {
-      console.error("로그아웃 오류:", error);
-      // 오류 처리 로직 추가 가능
-    }
-  };
+  const logout = useLogout();
   return (
     <>
       {thisLocation.pathname !== "/" ? (
@@ -43,7 +34,7 @@ function Header({ thisLocation }) {
               </div>
               <button
                 className="hover:bg-warning py-2 px-4 rounded-full"
-                onClick={handleLogout}
+                onClick={logout}
               >
                 로그아웃
               </button>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
-import { api } from "../../Api/Api";
+import { api, useLogout } from "../../Api/Api";
 import { adStats, grades, searchTypes } from "../../Data/Data";
 import queryString from "query-string";
 import Pagenation from "../../Components/Pagenation";
@@ -10,6 +10,7 @@ import sorry from "../../assets/sorry.png";
 
 function AdList() {
   const navi = useNavigate();
+  const logout = useLogout();
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const [startedCount, setStartedCount] = useState(0);
@@ -31,9 +32,10 @@ function AdList() {
   const status = parsed.status || "";
   const page = parsed.page || 1;
   const size = parsed.size || 20;
-  const keyword = parsed.keyword || null;
-  const searchtype = parsed.searchtype || null;
+  const keyword = parsed.keyword || "";
+  const searchtype = parsed.searchtype || "";
   useEffect(() => {
+    setSType("title");
     if (searchtype === "unique") {
       getNumAd();
     } else {
@@ -50,6 +52,7 @@ function AdList() {
 
   const getNumAd = async () => {
     setLoading(true);
+    setAdList([]);
     if (isNaN(keyword)) {
       navi("/admin/adlist");
       return alert("잘못된 경로로 들어오셨습니다");
@@ -63,7 +66,11 @@ function AdList() {
     const res = await api
       .post("/api/v1/formMail_ad/search/one/num", { json: data })
       .json();
-    console.log(res);
+    if (res.code === "E403") {
+      logout();
+      return alert("유효기간이 경과했습니다 다시 로그인 해주세요");
+    }
+    setAdList(res.fmAdList);
     setLoading(false);
   };
 
@@ -74,6 +81,7 @@ function AdList() {
 
   const getAdList = async () => {
     setLoading(true);
+    setAdList([]);
     let data = {
       page: page,
       size: size,
@@ -84,7 +92,6 @@ function AdList() {
     } else {
       url = "/api/v1/formMail_ad/statusList";
       const stat = await getStat(status);
-      console.log(stat);
       if (stat === "에러") {
         alert("잘못된 접근 경로입니다");
         navi("/admin/adlist");
@@ -98,7 +105,7 @@ function AdList() {
       setSType(searchtype);
       setSearchKeyword(keyword);
       const type = await getType(searchtype);
-
+      console.log(url);
       if (type === "에러") {
         setErrMsg("잘못된 경로로 접속하셨습니다");
         setAdList(null);
@@ -129,12 +136,15 @@ function AdList() {
         counter = 0;
       }
     }
-    res.fmAdList.forEach((ad, idx) => {
-      const index = ad.index ?? idx; // ad.index가 없으면 배열 인덱스를 사용
-      ad.number = (counter || 0) - (index + (Number(page) - 1) * Number(size));
+    if (res.fmAdList && res.fmAdList.length > 0) {
+      res.fmAdList.forEach((ad, idx) => {
+        const index = ad.index ?? idx; // ad.index가 없으면 배열 인덱스를 사용
+        ad.number =
+          (counter || 0) - (index + (Number(page) - 1) * Number(size));
 
-      list.push(ad);
-    });
+        list.push(ad);
+      });
+    }
     const list2 = [];
     for (const ad of list) {
       ad.gradeTxt = await getGrade(ad.grade);
@@ -153,11 +163,10 @@ function AdList() {
 
   const getType = value => {
     const result = searchTypes.find(item => item.value === value);
-    return result ? result.txt : "에러";
+    return result ? result.type : "에러";
   };
 
   const getStat = value => {
-    console.log(value);
     const result = adStats.find(item => item.value === value);
     return result ? result.txt : "전체";
   };

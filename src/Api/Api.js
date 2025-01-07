@@ -1,7 +1,7 @@
 import ky from "ky";
 import { useDispatch } from "react-redux";
 import { clearUser } from "../Reducer/userSlice";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 // ky API 인스턴스 생성
 export const api = ky.create({
@@ -73,23 +73,14 @@ export const deleteFile = async url => {
 // 인스턴스 내보내기
 export const useLogout = () => {
   const dispatch = useDispatch();
-  const location = useLocation();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      if (location.pathname.includes("formmail")) {
-        const res = await api.post("/api/v1/formMail_admin/logout").json();
-        if (res.code === "C000" || res.code === "E403") {
-          navigate("/formmail"); // 로그아웃 후 홈 화면으로 리디렉션
-          dispatch(clearUser()); // Redux 상태 초기화
-        }
-      } else {
-        const res = await api.post("/api/v1/jobsite/user/logout").json();
-        if (res.code === "C000" || res.code === "E403") {
-          navigate("/");
-          dispatch(clearUser()); // Redux 상태 초기화
-        }
+      const res = await api.post("/api/v1/formMail_admin/logout").json();
+      if (res.code === "C000" || res.code === "E403") {
+        navigate("/"); // 로그아웃 후 홈 화면으로 리디렉션
+        dispatch(clearUser()); // Redux 상태 초기화
       }
     } catch (error) {
       console.error("로그아웃 오류:", error);

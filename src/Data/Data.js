@@ -253,12 +253,12 @@ export const sidoList = [
 ];
 
 export const searchTypes = [
-  { value: "title", txt: "공고제목" },
-  { value: "company", txt: "근무회사명" },
-  { value: "manager", txt: "채용담당자" },
-  { value: "contact", txt: "연락처" },
-  { value: "num", txt: "공고번호 일부" },
-  { value: "unique", txt: "공고번호 전체" },
+  { value: "title", txt: "공고제목", type: "공고제목" },
+  { value: "company", txt: "근무회사명", type: "근무회사명" },
+  { value: "manager", txt: "채용담당자", type: "담당자명" },
+  { value: "contact", txt: "연락처", type: "연락처" },
+  { value: "num", txt: "공고번호 일부", type: "공고번호" },
+  { value: "unique", txt: "공고번호 전체", type: "공고번호전체" },
 ];
 
 export const adStats = [

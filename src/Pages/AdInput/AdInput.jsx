@@ -30,6 +30,7 @@ import {
   unescapeHTML,
   api,
   deleteFile,
+  useLogout,
 } from "../../Api/Api";
 
 import { DayPicker, getDefaultClassNames } from "react-day-picker";
@@ -221,6 +222,11 @@ function AdInput() {
       const res = await api
         .post("/api/v1/formMail_ad/findOneAd", { json: data })
         .json();
+
+      if (res.code === "E403") {
+        logout();
+        return alert("유효기간이 경과했습니다 다시 로그인 해주세요");
+      }
       console.log(res.fmAdList[0]);
       await putData(res.fmAdList[0]);
     }
@@ -230,7 +236,7 @@ function AdInput() {
   useEffect(() => {
     console.log(beforeData);
   }, [beforeData]);
-
+  const logout = useLogout();
   // 데이터 불러오기
   const putData = async adInfo => {
     setBeforeData(adInfo);
@@ -942,7 +948,10 @@ function AdInput() {
         alert("완료");
         navi("/admin/adlist");
       } else {
-        console.log(res.code);
+        if (res.code === "E403") {
+          logout();
+          return alert("유효기간이 경과했습니다 다시 로그인 해주세요");
+        }
         if (adStat === "등록") await deleteAllFiles(data);
         alert("서버 오류로 작업이 실패했습니다.");
       }
