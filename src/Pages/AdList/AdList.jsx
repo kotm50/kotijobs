@@ -36,6 +36,7 @@ function AdList() {
   const searchtype = parsed.searchtype || "";
   useEffect(() => {
     setSType("title");
+    setSearchKeyword("");
     if (searchtype === "unique") {
       getNumAd();
     } else {
@@ -241,6 +242,10 @@ function AdList() {
       navi(`/admin/adlist?searchtype=${sType}&keyword=${sKeyword}`);
     }
   };
+
+  const searchCancel = () => {
+    navi("/admin/adlist");
+  };
   return (
     <>
       <div className="w-full max-w-[1240px] mx-auto mt-[100px] bg-white py-10 grid grid-cols-1 gap-y-[40px] mb-20 px-5">
@@ -397,14 +402,24 @@ function AdList() {
             >
               검색하기
             </button>
+            {keyword && (
+              <button
+                className="bg-green-600 hover:bg-opacity-80 text-white p-2 rounded"
+                onClick={() => {
+                  searchCancel();
+                }}
+              >
+                초기화
+              </button>
+            )}
           </div>
         </div>
 
         {adList && adList.length > 0 ? (
           <div className="grid grid-cols-1 gap-y-0">
-            <div className="flex justify-center py-2 border-y text-[14px]">
-              <div className="w-[60px] text-center">번호</div>
-              <div className="w-[180px] text-center">등록일</div>
+            <div className="flex justify-around py-2 border-y text-[14px]">
+              <div className="w-[60px] text-center hidden">번호</div>
+              <div className="w-[180px] text-center">번호/등록일</div>
               <div className="w-[360px] text-center">제목</div>
               <div className="w-[80px] text-center">등록관리</div>
               <div className="w-[160px] text-center">모집현황</div>
@@ -414,10 +429,11 @@ function AdList() {
             <>
               {adList.map((ad, idx) => (
                 <div
-                  className="flex justify-center py-2 border-y text-[14px]"
+                  className="flex justify-around py-2 border-y text-[14px]"
                   key={idx}
+                  data={ad.aid}
                 >
-                  <div className="w-[60px] text-center" data={ad.aid}>
+                  <div className="w-[60px] text-center hidden">
                     <div className="flex flex-col justify-center h-full">
                       {ad.number}
                     </div>

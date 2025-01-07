@@ -47,7 +47,7 @@ import PopupDom from "../../Api/Kakao/PopupDom";
 import PopupPostCode from "../../Api/Kakao/PopupPostCode";
 import DetailUploadImg from "../../Components/DetailUploadImg";
 
-function AdInput() {
+function AdInput2() {
   const login = useSelector(state => state.user);
   const navi = useNavigate();
   const noUse = false;
@@ -81,7 +81,7 @@ function AdInput() {
   const [workTimePeriod, setWorkTimePeriod] = useState("0"); //근무시간 기간(일일 근무시간 계산)
   const [isNightWork, setIsNightWork] = useState(false); //야간근무여부(익일 새벽까지 근무할 때 시간 계산하기 위한 변수)
 
-  const [payType, setPayType] = useState("시급"); //급여 종류(시급 ~ 연봉)
+  const [payType, setPayType] = useState("월급"); //급여 종류(시급 ~ 연봉)
   const [salary, setSalary] = useState(""); //급여 금액(입력용)
   const [formattedSalary, setFormatedSalary] = useState(""); //급여 금액(쉼표 추가)
 
@@ -92,7 +92,7 @@ function AdInput() {
   const [treat, setTreat] = useState([]); //우대조건
   const [condition, setCondition] = useState([]); //기타조건
 
-  const [gender, setGender] = useState(""); //성별
+  const [gender, setGender] = useState("성별무관"); //성별
 
   const [age, setAge] = useState(false); //나이조건 false=무관 true=지정
   const [minAge, setMinAge] = useState(""); //최소나이(age=true일때 설정 가능)
@@ -736,8 +736,11 @@ function AdInput() {
   };
 
   useEffect(() => {
+    console.log(dayjs(limitDate).format("2025MMDD"));
+
     const todayNum = Number(dayjs(new Date()).format("YYYYMMDD"));
-    const selectedNum = Number(dayjs(limitDate).format("YYYYMMDD"));
+    const selectedNum = Number(dayjs(limitDate).format("2025MMDD"));
+    console.log(selectedNum);
     if (selectedNum <= todayNum) {
       alert("마감일은 오늘 이후로 지정하세요");
       setLimitDate("");
@@ -911,7 +914,7 @@ function AdInput() {
     setLoadMsg(message || "작업 중...");
   };
 
-  const submit = async () => {
+  const submit = async repeat => {
     const confirm = window.confirm(
       adStat !== "수정"
         ? "공고 등록을 하면 예약한 날짜부터 바로 공개됩니다. 진행할까요?"
@@ -946,14 +949,23 @@ function AdInput() {
 
       if (res.code === "C000") {
         alert("완료");
-        navi("/admin/adlist");
+        if (repeat !== "repeat") {
+          navi("/admin/adlist");
+        } else {
+          window.scrollTo({
+            top: 0, // 맨 위로 이동
+            left: 0, // 수평 위치 (왼쪽)
+            behavior: "smooth", // 부드러운 스크롤
+          });
+          window.location.reload();
+        }
       } else {
         if (res.code === "E403") {
           logout();
           return alert("유효기간이 경과했습니다 다시 로그인 해주세요");
         }
         if (adStat === "등록") await deleteAllFiles(data);
-        alert("서버 오류로 작업이 실패했습니다.");
+        alert("서버 오류로 작업이 실패했습니다. 오류코드 : ", res.code);
       }
     } catch (error) {
       console.error("Submit error:", error);
@@ -1327,6 +1339,11 @@ function AdInput() {
   const handleRemovePreview = preview => {
     const updatedPreviews = beforePhotoList.filter(item => item !== preview);
     setBeforePhotoList(updatedPreviews);
+  };
+
+  const handleLimitDate = event => {
+    const value = event.target.value;
+    setLimitDate(dayjs(value).format("2025-MM-DD"));
   };
 
   return (
@@ -2368,14 +2385,41 @@ function AdInput() {
                     <label htmlFor="dayLimit" className="text-sm break-keep">
                       마감일지정
                     </label>
+                    {limit === "마감일지정" && (
+                      <input
+                        type="text"
+                        className="w-fit min-w-[100px] py-1 px-2 border border-[#ccc] rounded-sm"
+                        defaultValue={
+                          limitDate ? dayjs(limitDate).format("YYYY-MM-DD") : ""
+                        }
+                        disabled={limit !== "마감일지정"}
+                      />
+                    )}
+                  </div>
+
+                  <div data="마감일 지정" className="flex items-center gap-x-2">
                     <input
-                      type="text"
-                      className="w-fit min-w-[100px] py-1 px-2 border border-[#ccc] rounded-sm"
-                      defaultValue={
-                        limitDate ? dayjs(limitDate).format("YYYY-MM-DD") : ""
-                      }
-                      disabled={limit !== "마감일지정"}
+                      id="limitInput"
+                      type="radio"
+                      value="마감일직접입력"
+                      name="limit"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                      checked={limit === "마감일직접입력"}
+                      onChange={handleLimitChange}
                     />
+                    <label htmlFor="limitInput" className="text-sm break-keep">
+                      마감일직접입력
+                    </label>
+                    {limit === "마감일직접입력" && (
+                      <input
+                        type="text"
+                        className="w-fit min-w-[100px] py-1 px-2 border border-[#ccc] rounded-sm"
+                        value={limitDate}
+                        onBlur={handleLimitDate}
+                        onChange={e => setLimitDate(e.currentTarget.value)}
+                        disabled={limit !== "마감일직접입력"}
+                      />
+                    )}
                   </div>
                 </div>
                 {limit === "마감일지정" ? (
@@ -2484,7 +2528,7 @@ function AdInput() {
                 />
                 <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
                   <span className="text-success">{companyName.length}</span> /
-                  20자
+                  40자
                 </div>
               </div>
             </div>
@@ -3502,9 +3546,16 @@ function AdInput() {
           </button>
           <button
             className="border border-primary bg-primary text-white hover:bg-opacity-80 rounded py-2 px-5 text-lg"
-            onClick={() => submit()}
+            onClick={() => submit("norepeat")}
           >
             공고 {!aid ? "등록" : reinput !== "y" ? "수정" : "재등록"}
+          </button>
+
+          <button
+            className="border border-primary bg-primary text-white hover:bg-opacity-80 rounded py-2 px-5 text-lg"
+            onClick={() => submit("repeat")}
+          >
+            공고 연속등록
           </button>
         </div>
       </div>
@@ -3546,4 +3597,4 @@ function AdInput() {
   );
 }
 
-export default AdInput;
+export default AdInput2;

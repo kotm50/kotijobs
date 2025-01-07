@@ -119,5 +119,9 @@ export const unescapeHTML = text => {
 
   return filtertxt
     .replace(/<center>/g, '<p class="ql-align-center">') // <center> 태그 변경
-    .replace(/<\/center>/g, "</p>"); // </center> 태그 변경;
+    .replace(/<\/center>/g, "</p>") // </center> 태그 변경;
+    .replace(
+      /<center\s*style=["']text-align:\s*center;["']>/g,
+      '<p class="ql-align-center">'
+    ); // <center style="text-align:center;"> 태그 변경
 };
