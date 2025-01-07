@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../Reducer/userSlice";
 import dayjs from "dayjs";
@@ -7,8 +7,16 @@ import { api } from "../../Api/Api";
 
 function Login() {
   const dispatch = useDispatch();
+  const idRef = useRef(null);
   const [id, setId] = useState("");
   const [pw, setPw] = useState("");
+
+  // 페이지 로드 시 포커스 설정
+  useEffect(() => {
+    if (idRef.current) {
+      idRef.current.focus();
+    }
+  }, []);
 
   const loginAdmin = async e => {
     e.preventDefault();
@@ -61,6 +69,7 @@ function Login() {
             id="id"
             className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-indigo-500 dark:focus:border-indigo-500 dark:shadow-sm-light"
             value={id}
+            ref={idRef}
             onChange={e => setId(e.currentTarget.value)}
             onBlur={e => setId(e.currentTarget.value)}
             required
