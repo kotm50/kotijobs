@@ -9,6 +9,7 @@ import AdList from "./Pages/AdList";
 import Test from "./Pages/Test";
 import { loginUser, clearUser } from "./Reducer/userSlice";
 import dayjs from "dayjs";
+import AdInput2 from "./Pages/AdInput2";
 
 function App() {
   const thisLocation = useLocation();
@@ -51,6 +52,7 @@ function App() {
         <Route path="/admin" element={<AdminMain />}>
           <Route path="" element={<AdList />} />
           <Route path="adinput" element={<AdInput />} />
+          <Route path="adinput2" element={<AdInput2 />} />
           <Route path="adlist" element={<AdList />} />
         </Route>
       </Routes>
