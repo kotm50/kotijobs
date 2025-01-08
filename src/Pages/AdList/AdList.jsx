@@ -21,6 +21,7 @@ function AdList() {
   const [last, setLast] = useState(1);
   const [sType, setSType] = useState("title");
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [checkedAd, setCheckedAd] = useState([]);
   const [errMsg, setErrMsg] = useState("조회 된 내용이 없습니다");
 
   const [modalOn, setModalOn] = useState(false); //모달창 오픈 설정
@@ -69,7 +70,6 @@ function AdList() {
       .json();
     if (res.code === "E403") {
       logout();
-      return alert("유효기간이 경과했습니다 다시 로그인 해주세요");
     }
     setAdList(res.fmAdList);
     setLoading(false);
@@ -117,7 +117,6 @@ function AdList() {
         data.keyword = keyword;
       }
     }
-    console.log(data);
     const res = await api.post(url, { json: data }).json();
     const count = await api.get("/api/v1/formMail_ad/count/ads").json();
 
@@ -125,36 +124,12 @@ function AdList() {
       logout();
       return alert("유효기간이 경과했습니다 다시 로그인 해주세요");
     }
-    console.log(res);
-
     const list = [];
-    let counter;
-    if (!status || status === "all") {
-      counter = Number(count.totalAds);
-    } else {
-      if (status === "started") {
-        counter = Number(count.activeAds);
-      } else if (status === "ended") {
-        counter = Number(count.closeAds);
-      } else if (status === "waiting") {
-        counter = Number(count.waitAds);
-      } else {
-        counter = 0;
-      }
-    }
     if (res.fmAdList && res.fmAdList.length > 0) {
-      res.fmAdList.forEach((ad, idx) => {
-        const index = ad.index ?? idx; // ad.index가 없으면 배열 인덱스를 사용
-        ad.number =
-          (counter || 0) - (index + (Number(page) - 1) * Number(size));
-
+      for (const ad of res.fmAdList) {
+        ad.gradeTxt = await getGrade(ad.grade);
         list.push(ad);
-      });
-    }
-    const list2 = [];
-    for (const ad of list) {
-      ad.gradeTxt = await getGrade(ad.grade);
-      list2.push(ad);
+      }
     }
 
     setTotalCount(count.totalAds);
@@ -162,10 +137,30 @@ function AdList() {
     setWaitingCount(count.waitAds);
     setEndedCount(count.closeAds);
     setLast(res.totalPages);
-    setAdList(list2);
+    setAdList(list);
     if (searchtype && keyword) setSearchCount(res.totalCount);
     setLoading(false);
   };
+
+  const checkAllAds = async e => {
+    if (e.target.checked) {
+      const checkedList = [];
+      for (const ad of adList) {
+        let data = {};
+        data.aid = ad.aid;
+        data.stat = await getStatus(ad.startDate, ad.endDate);
+        checkedList.push(data);
+      }
+      console.log(checkedList);
+      setCheckedAd(checkedList);
+    } else {
+      setCheckedAd([]);
+    }
+  };
+
+  useEffect(() => {
+    console.log(checkedAd);
+  }, [checkedAd]);
 
   const getType = value => {
     const result = searchTypes.find(item => item.value === value);
@@ -245,6 +240,18 @@ function AdList() {
 
   const searchCancel = () => {
     navi("/admin/adlist");
+  };
+
+  const checkAd = async (e, ad) => {
+    const checked = e.target.checked;
+    let data = {};
+    data.aid = ad.aid;
+    data.stat = await getStatus(ad.startDate, ad.endDate);
+    if (checked) {
+      setCheckedAd(prev => [...prev, data]);
+    } else {
+      setCheckedAd(prev => prev.filter(item => item.aid !== data.aid));
+    }
   };
   return (
     <>
@@ -339,7 +346,7 @@ function AdList() {
         <div className="flex justify-between">
           {totalCount > 0 ? (
             <div className="grid grid-cols-1 gap-y-2">
-              <div>
+              <div className="py-2">
                 {getStat(status)} 공고 |{" "}
                 <span className="text-primary font-bold">
                   {!status || status === "all"
@@ -418,7 +425,16 @@ function AdList() {
         {adList && adList.length > 0 ? (
           <div className="grid grid-cols-1 gap-y-0">
             <div className="flex justify-around py-2 border-y text-[14px]">
-              <div className="w-[60px] text-center hidden">번호</div>
+              <div className="w-[60px] text-center">
+                <input
+                  id="checkAll"
+                  type="checkbox"
+                  name="checkAll"
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                  checked={checkedAd.length === adList.length}
+                  onChange={checkAllAds}
+                />
+              </div>
               <div className="w-[180px] text-center">번호/등록일</div>
               <div className="w-[360px] text-center">제목</div>
               <div className="w-[80px] text-center">등록관리</div>
@@ -433,9 +449,16 @@ function AdList() {
                   key={idx}
                   data={ad.aid}
                 >
-                  <div className="w-[60px] text-center hidden">
+                  <div className="w-[60px] text-center flex justify-center">
                     <div className="flex flex-col justify-center h-full">
-                      {ad.number}
+                      <input
+                        id={`checkAll-${ad.aid}`}
+                        type="checkbox"
+                        name={`checkAll-${ad.aid}`}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                        checked={checkedAd.some(item => item.aid === ad.aid)}
+                        onChange={e => checkAd(e, ad)}
+                      />
                     </div>
                   </div>
                   <div className="w-[180px] text-center">

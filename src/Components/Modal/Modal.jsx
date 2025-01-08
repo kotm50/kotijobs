@@ -1,4 +1,5 @@
 import GradeEdit from "../GradeEdit";
+import ReLogin from "../ReLogin";
 import SearchArea from "../SearchArea";
 
 function Modal(props) {
@@ -30,6 +31,12 @@ function Modal(props) {
                 setModalType={props.setModalType}
                 selectedAd={props.selectedAd}
                 getAdList={props.getAdList}
+              />
+            ) : props.modalType === "limit" ? (
+              <ReLogin
+                limit={props.limit}
+                setLimit={props.setLimit}
+                extendLogin={props.extendLogin}
               />
             ) : null}
           </div>
