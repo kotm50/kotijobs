@@ -10,13 +10,13 @@ export default defineConfig({
     proxy: {
       "/api": {
         //target: "http://192.168.0.35:8080", // 로컬 프록시
-        target: "https://cafecon.co.kr/", // AWS 프록시
+        target: "https://api.inssain.co.kr/", // AWS 프록시
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, ""), // API 경로 재작성 (필요한 경우)
       },
       "/images": {
         target: "https://goalba.co.kr", // 로컬 프록시
-        //target: "https://cafecon.co.kr/", // AWS 프록시
+        //target: "https://goalba.co.kr/", // AWS 프록시
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, ""), // API 경로 재작성 (필요한 경우)
       },

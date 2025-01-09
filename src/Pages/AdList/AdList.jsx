@@ -30,7 +30,7 @@ function AdList() {
   //const [selected, setSelected] = useState([])
   const thisLocation = useLocation();
   const parsed = queryString.parse(thisLocation.search);
-  const status = parsed.status || "";
+  const status = parsed.status || "all";
   const page = parsed.page || 1;
   const size = parsed.size || 20;
   const keyword = parsed.keyword || "";
@@ -122,7 +122,6 @@ function AdList() {
 
     if (res.code === "E403") {
       logout();
-      return alert("유효기간이 경과했습니다 다시 로그인 해주세요");
     }
     const list = [];
     if (res.fmAdList && res.fmAdList.length > 0) {
@@ -185,12 +184,14 @@ function AdList() {
     return "진행";
   };
 
-  const endIt = async aid => {
-    const confirm = window.confirm(
-      "마감 후에는 삭제와 재등록만 가능합니다\n진행할까요?"
-    );
-    if (!confirm) {
-      return false;
+  const endIt = async (aid, multiple) => {
+    if (!multiple) {
+      const confirm = window.confirm(
+        "마감 후에는 삭제와 재등록만 가능합니다\n진행할까요?"
+      );
+      if (!confirm) {
+        return false;
+      }
     }
     const data = {
       aid: aid,
@@ -200,14 +201,60 @@ function AdList() {
       .put("/api/v1/formMail_ad/update/close", { json: data })
       .json();
     if (res.code === "C000") {
-      alert("마감되었습니다");
+      if (!multiple) alert("마감되었습니다");
       getAdList();
     }
+    if (multiple) return res;
   };
 
-  const deleteAd = async aid => {
-    const confirm = window.confirm("삭제하면 복구할 수 없습니다!\n진행할까요?");
+  const checkedAction = async type => {
+    let count = 0;
+    const err = [];
+    let txt;
+    if (type === "end") {
+      txt = "마감 후에는 삭제와 재등록만 가능합니다\n진행할까요?";
+    } else {
+      txt = "삭제하면 복구할 수 없습니다!\n진행할까요?";
+    }
+    const confirm = window.confirm(txt);
     if (!confirm) return false;
+    for (const ad of checkedAd) {
+      if (type === "end") {
+        if (ad.stat === "종료") {
+          continue;
+        }
+        const res = await endIt(ad.aid, true);
+        if (res.code === "C000") {
+          count = count + 1;
+        } else {
+          err.push(ad.aid);
+        }
+      } else if (type === "delete") {
+        if (ad.stat !== "종료") {
+          continue;
+        }
+        const res = await deleteAd(ad.aid, true);
+        if (res.code === "C000") {
+          count = count + 1;
+        } else {
+          err.push(ad.aid);
+        }
+      } else {
+        return alert("올바르지 않은 접근입니다");
+      }
+    }
+    console.log(count === checkedAd.length);
+    alert("완료");
+    getAdList();
+  };
+
+  const deleteAd = async (aid, multiple) => {
+    if (!multiple) {
+      const confirm = window.confirm(
+        "삭제하면 복구할 수 없습니다!\n진행할까요?"
+      );
+      if (!confirm) return false;
+    }
     const data = {
       aid: aid,
     };
@@ -215,9 +262,10 @@ function AdList() {
       .delete("/api/v1/formMail_ad/deleteAd", { json: data })
       .json();
     if (res.code === "C000") {
-      alert("공고가 삭제되었습니다");
+      if (!multiple) alert("공고가 삭제되었습니다");
       getAdList();
     }
+    if (multiple) return res;
   };
 
   const searchIt = value => {
@@ -257,96 +305,97 @@ function AdList() {
     <>
       <div className="w-full max-w-[1240px] mx-auto mt-[100px] bg-white py-10 grid grid-cols-1 gap-y-[40px] mb-20 px-5">
         <h2 className="lg:text-2xl font-extra text-[#069]">공고 관리</h2>
-        <div className="border-b flex justify-start gap-x-0">
-          <Link
-            to={`/admin/adlist${
-              searchtype && keyword
-                ? `?searchtype=${searchtype}&keyword=${keyword}`
-                : ""
-            }`}
-            className={`${
-              !status || status === "all"
-                ? "bg-primary text-white hover:bg-opacity-50"
-                : "bg-white text-black hover:bg-gray-50"
-            } py-5 px-4 border border-b-0 rounded-t-lg`}
-          >
-            전체공고{" "}
-            <span
+
+        <div className="flex justify-between border-b">
+          <div className="flex justify-start gap-x-0">
+            <Link
+              to={`/admin/adlist${
+                searchtype && keyword
+                  ? `?searchtype=${searchtype}&keyword=${keyword}`
+                  : ""
+              }`}
               className={`${
-                !status || status === "all" ? "text-warning" : "text-primary"
-              } font-extra`}
+                !status || status === "all"
+                  ? "bg-primary text-white hover:bg-opacity-50"
+                  : "bg-white text-black hover:bg-gray-50"
+              } py-5 px-4 border border-b-0 rounded-t-lg`}
             >
-              {totalCount ? Number(totalCount).toLocaleString() : ""}
-            </span>
-          </Link>
-          <Link
-            to={`/admin/adlist?status=started${
-              searchtype && keyword
-                ? `&searchtype=${searchtype}&keyword=${keyword}`
-                : ""
-            }`}
-            className={`${
-              status === "started"
-                ? "bg-primary text-white hover:bg-opacity-50"
-                : "bg-white text-black hover:bg-gray-50"
-            } py-5 px-4 border border-b-0 rounded-t-lg`}
-          >
-            진행중{" "}
-            <span
+              전체공고{" "}
+              <span
+                className={`${
+                  !status || status === "all" ? "text-warning" : "text-primary"
+                } font-extra`}
+              >
+                {totalCount ? Number(totalCount).toLocaleString() : ""}
+              </span>
+            </Link>
+            <Link
+              to={`/admin/adlist?status=started${
+                searchtype && keyword
+                  ? `&searchtype=${searchtype}&keyword=${keyword}`
+                  : ""
+              }`}
               className={`${
-                status === "started" ? "text-warning" : "text-primary"
-              } font-extra`}
+                status === "started"
+                  ? "bg-primary text-white hover:bg-opacity-50"
+                  : "bg-white text-black hover:bg-gray-50"
+              } py-5 px-4 border border-b-0 rounded-t-lg`}
             >
-              {totalCount ? Number(startedCount).toLocaleString() : ""}
-            </span>
-          </Link>
-          <Link
-            to={`/admin/adlist?status=waiting${
-              searchtype && keyword
-                ? `&searchtype=${searchtype}&keyword=${keyword}`
-                : ""
-            }`}
-            className={`${
-              status === "waiting"
-                ? "bg-primary text-white hover:bg-opacity-50"
-                : "bg-white text-black hover:bg-gray-50"
-            } py-5 px-4 border border-b-0 rounded-t-lg`}
-          >
-            대기중{" "}
-            <span
+              진행중{" "}
+              <span
+                className={`${
+                  status === "started" ? "text-warning" : "text-primary"
+                } font-extra`}
+              >
+                {totalCount ? Number(startedCount).toLocaleString() : ""}
+              </span>
+            </Link>
+            <Link
+              to={`/admin/adlist?status=waiting${
+                searchtype && keyword
+                  ? `&searchtype=${searchtype}&keyword=${keyword}`
+                  : ""
+              }`}
               className={`${
-                status === "waiting" ? "text-warning" : "text-primary"
-              } font-extra`}
+                status === "waiting"
+                  ? "bg-primary text-white hover:bg-opacity-50"
+                  : "bg-white text-black hover:bg-gray-50"
+              } py-5 px-4 border border-b-0 rounded-t-lg`}
             >
-              {totalCount ? Number(waitingCount).toLocaleString() : ""}
-            </span>
-          </Link>
-          <Link
-            to={`/admin/adlist?status=ended${
-              searchtype && keyword
-                ? `&searchtype=${searchtype}&keyword=${keyword}`
-                : ""
-            }`}
-            className={`${
-              status === "ended"
-                ? "bg-primary text-white hover:bg-opacity-50"
-                : "bg-white text-black hover:bg-gray-50"
-            } py-5 px-4 border border-b-0 rounded-t-lg`}
-          >
-            종료{" "}
-            <span
+              대기중{" "}
+              <span
+                className={`${
+                  status === "waiting" ? "text-warning" : "text-primary"
+                } font-extra`}
+              >
+                {totalCount ? Number(waitingCount).toLocaleString() : ""}
+              </span>
+            </Link>
+            <Link
+              to={`/admin/adlist?status=ended${
+                searchtype && keyword
+                  ? `&searchtype=${searchtype}&keyword=${keyword}`
+                  : ""
+              }`}
               className={`${
-                status === "ended" ? "text-warning" : "text-primary"
-              } font-extra`}
+                status === "ended"
+                  ? "bg-primary text-white hover:bg-opacity-50"
+                  : "bg-white text-black hover:bg-gray-50"
+              } py-5 px-4 border border-b-0 rounded-t-lg`}
             >
-              {totalCount ? Number(endedCount).toLocaleString() : ""}
-            </span>
-          </Link>
-        </div>
-        <div className="flex justify-between">
+              종료{" "}
+              <span
+                className={`${
+                  status === "ended" ? "text-warning" : "text-primary"
+                } font-extra`}
+              >
+                {totalCount ? Number(endedCount).toLocaleString() : ""}
+              </span>
+            </Link>
+          </div>
           {totalCount > 0 ? (
             <div className="grid grid-cols-1 gap-y-2">
-              <div className="py-2">
+              <div className="py-5">
                 {getStat(status)} 공고 |{" "}
                 <span className="text-primary font-bold">
                   {!status || status === "all"
@@ -374,6 +423,35 @@ function AdList() {
           ) : (
             <div></div>
           )}
+        </div>
+
+        <div
+          className={`flex ${
+            adList && adList.length > 0 ? "justify-between" : "justify-end"
+          }`}
+        >
+          {adList && adList.length > 0 ? (
+            <div className="flex flex-row justify-start gap-x-4">
+              <div className="py-2">{checkedAd.length}개 선택됨</div>
+              {status !== "ended" && (
+                <button
+                  className="p-2 border hover:bg-gray-100"
+                  onClick={() => checkedAction("end")}
+                >
+                  {checkedAd.length === adList.length ? "전체" : "선택"} 마감
+                </button>
+              )}
+              {status === "ended" ||
+                (status === "all" && (
+                  <button
+                    className="p-2 border hover:bg-gray-100"
+                    onClick={() => checkedAction("delete")}
+                  >
+                    {checkedAd.length === adList.length ? "전체" : "선택"} 삭제
+                  </button>
+                ))}
+            </div>
+          ) : null}
           <div className="flex justify-end gap-x-2 text-[14px] whitespace-nowrap break-keep">
             <select
               id="searchType"
@@ -421,7 +499,6 @@ function AdList() {
             )}
           </div>
         </div>
-
         {adList && adList.length > 0 ? (
           <div className="grid grid-cols-1 gap-y-0">
             <div className="flex justify-around py-2 border-y text-[14px]">
