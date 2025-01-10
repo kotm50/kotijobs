@@ -271,7 +271,7 @@ function AdInput() {
       setCondition(adInfo.etcConditions.split(","));
     }
     setGender(adInfo.gender);
-    setAge(adInfo.age);
+    setAge(adInfo.age === "Y");
     setMaxAge(adInfo.maxAge);
     setMinAge(adInfo.minAge);
     setPeriod(adInfo.workPeriod);
@@ -738,7 +738,7 @@ function AdInput() {
   useEffect(() => {
     const todayNum = Number(dayjs(new Date()).format("YYYYMMDD"));
     const selectedNum = Number(dayjs(limitDate).format("YYYYMMDD"));
-    if (selectedNum <= todayNum) {
+    if (selectedNum < todayNum) {
       alert("마감일은 오늘 이후로 지정하세요");
       setLimitDate("");
     }
