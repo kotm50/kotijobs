@@ -1262,7 +1262,7 @@ function AdInput() {
   const getMixed = async text => {
     return text.replace(
       /src="http:\/\//g,
-      'src="https://cafecon.co.kr/redirect?url=http://'
+      'src="https://api.inssain.co.kr/redirect?url=http://'
     );
   };
 
