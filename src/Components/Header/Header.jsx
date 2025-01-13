@@ -8,9 +8,9 @@ function Header({ thisLocation }) {
       {thisLocation.pathname !== "/" ? (
         <header className="fixed top-0 left-0 w-full bg-white drop-shadow z-[500]">
           <div className="w-full max-w-[1200px] mx-auto grid grid-cols-1">
-            <div className="py-2 px-6 text-xl font-bold text-success">
-              코티잡 관리자 페이지
-            </div>
+            <h1 className="py-2 px-6 text-xl font-bold text-success">
+              고알바 관리자 페이지
+            </h1>
             <div className="flex justify-between">
               <div className="flex flex-row justify-start gap-x-2 p-2">
                 <Link
@@ -26,18 +26,20 @@ function Header({ thisLocation }) {
                   공고관리
                 </Link>
                 <Link
-                  to="/admin"
+                  to="/admin/applylist"
                   className="hover:bg-warning py-2 px-4 rounded-full"
                 >
-                  채용담당자 관리
+                  회원 관리
                 </Link>
               </div>
-              <button
-                className="hover:bg-warning py-2 px-4 rounded-full"
-                onClick={logout}
-              >
-                로그아웃
-              </button>
+              <div>
+                <button
+                  className="hover:bg-warning py-2 px-4 rounded-full hover:text-red-500"
+                  onClick={logout}
+                >
+                  로그아웃
+                </button>
+              </div>
             </div>
           </div>
         </header>

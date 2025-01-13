@@ -13,6 +13,7 @@ import AdInput2 from "./Pages/AdInput2";
 import { api, useLogout } from "./Api/Api";
 import Clock from "./Components/Clock";
 import Modal from "./Components/Modal";
+import ApplyList from "./Pages/ApplyList";
 
 function App() {
   const logout = useLogout();
@@ -95,6 +96,7 @@ function App() {
           <Route path="adinput" element={<AdInput />} />
           <Route path="adinput2" element={<AdInput2 />} />
           <Route path="adlist" element={<AdList />} />
+          <Route path="applylist" element={<ApplyList />} />
         </Route>
       </Routes>
       {thisLocation.pathname !== "/" && <Clock time={time} />}
