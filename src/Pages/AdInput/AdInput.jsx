@@ -50,7 +50,6 @@ import DetailUploadImg from "../../Components/DetailUploadImg";
 function AdInput() {
   const login = useSelector(state => state.user);
   const navi = useNavigate();
-  const noUse = false;
   const applyRef = useRef();
   const defaultClassNames = getDefaultClassNames();
   const thisLocation = useLocation();
@@ -115,7 +114,7 @@ function AdInput() {
   const [locationY, setLocationY] = useState(0);
 
   const [modalOn, setModalOn] = useState(false); //모달창 오픈 설정
-  const [modalType, setModalType] = useState("0"); //모달창 종류 설정
+  const [modalType, setModalType] = useState(""); //모달창 종류 설정
 
   const [university, setUniversity] = useState(""); //주변대학교
   const [universityShow, setUniversityShow] = useState("선택"); //주변대학교
@@ -146,10 +145,6 @@ function AdInput() {
   const [photoList, setPhotoList] = useState([]); //사무실사진
   const [beforePhotoList, setBeforePhotoList] = useState([]); //사무실사진
 
-  useEffect(() => {
-    console.log(beforePhotoList.length);
-  }, [beforePhotoList]);
-
   const [detailImages, setDetailImages] = useState([]);
   const [uploadedImgs, setUploadedImgs] = useState([]);
 
@@ -172,10 +167,6 @@ function AdInput() {
     reveal: false,
   });
   const [addContact, setAddContact] = useState(false); //추가 연락처 사용여부 (true=사용, false=비사용)
-
-  const [adImg, setAdImg] = useState("");
-  const [imgApply, setImgApply] = useState(false);
-  const [adPosition, setAdPosition] = useState("Up");
 
   const [detailContent, setDetailContent] = useState(""); // 상세내용
 
@@ -227,15 +218,11 @@ function AdInput() {
         logout();
         return alert("유효기간이 경과했습니다 다시 로그인 해주세요");
       }
-      console.log(res.fmAdList[0]);
       await putData(res.fmAdList[0]);
     }
     setLoading(false);
     setLoadMsg("작업 중...");
   };
-  useEffect(() => {
-    console.log(beforeData);
-  }, [beforeData]);
   const logout = useLogout();
   // 데이터 불러오기
   const putData = async adInfo => {
@@ -335,7 +322,6 @@ function AdInput() {
     setFocus(adInfo.focus);
     const reserveDay = dayjs(adInfo.startDate).format("YYMMDD");
     const today = dayjs(new Date()).format("YYMMDD");
-    console.log(Number(reserveDay) > Number(today));
     setReserve(Number(reserveDay) > Number(today));
     if (Number(reserveDay) > Number(today)) {
       setReserveDate(adInfo.startDate);
@@ -459,22 +445,11 @@ function AdInput() {
     const res = await api
       .get(`/api/v1/common/get/coordinates?address=${address}`)
       .json();
-    console.log(res);
     setLocationX(res.x);
     setLocationY(res.y);
     await getSubwayUniversity(res.x, res.y);
   };
-  //지원경로로 이동
-  const scrollToApply = () => {
-    if (applyRef.current) {
-      const offsetTop =
-        applyRef.current.getBoundingClientRect().top + window.pageYOffset;
-      window.scrollTo({
-        top: offsetTop - 120, // 실제 위치에서 120px 보정
-        behavior: "smooth",
-      });
-    }
-  };
+
   const handleManagerName = e => {
     const value = e.target.value;
     if (value.length <= 20) {
@@ -902,8 +877,109 @@ function AdInput() {
     }
   };
 
-  const reset = () => {
-    console.log("초기화");
+  const reset = async () => {
+    const confirm = window.confirm("입력하신 모든 내용을 초기화 하시겠습니까?");
+    if (!confirm) return false;
+    setLoading(true);
+    setLoadMsg("초기화 중...");
+    setTitle("");
+    setOccupation([]);
+    setEmployType([]);
+    setHeadCountA("");
+    setHeadCountB("");
+    setPeriod("");
+    setProbation(false);
+    setPeriodDiscussion(false);
+    setWorkDate(false);
+    setWorkDateList([]);
+    setWorkDateDetail("");
+    setWorkTime(false);
+    setStartTime("10:00");
+    setEndTime("17:00");
+    setWorkTimeDetail("");
+    setRestTime("");
+    setRest("분");
+    setWorkTimePeriod("0");
+    setPayType("시급");
+    setSalary("");
+    setFormatedSalary("");
+    setInsurance([]);
+    setVacation([]);
+    setIncentive([]);
+    setSupport([]);
+    setCondition([]);
+    setGender("");
+    setAge(false);
+    setMinAge("");
+    setMaxAge("");
+    setEducation("");
+    setLimit(false);
+    setLimitDate("");
+    setApplyRoute([]);
+    setApplyUrl("");
+    setCompanyName("");
+    setZipCode("");
+    setAddressA("");
+    setAddressB("");
+    setLocationX(0);
+    setLocationY(0);
+    setModalType("");
+    setUniversity("");
+    setUniversityShow("선택");
+    setStation([]);
+    setAreaCount(1);
+    setAreaA({
+      sido: "",
+      sigugun: "",
+      dongEubMyun: "",
+    });
+    setAreaB({
+      sido: "",
+      sigugun: "",
+      dongEubMyun: "",
+    });
+    setAreaC({
+      sido: "",
+      sigugun: "",
+      dongEubMyun: "",
+    });
+    if (logoImg && logoImg !== beforeData.logoImg) {
+      await deleteFile(logoImg);
+    }
+    setLogoImg("");
+    setPhotoList([]);
+    setDetailImages([]);
+    setManagerName("");
+    setEmailId("");
+    setContact({
+      // 연락처 1
+      first: "",
+      second: "",
+      third: "",
+      reveal: false,
+    });
+    setSubContact({
+      // 연락처 1
+      first: "",
+      second: "",
+      third: "",
+      reveal: false,
+    });
+    setAddContact(false);
+    setDetailContent("");
+    setReserve(false);
+    setReserveDate("");
+    setGrade("0");
+    setFocus(false);
+    setIsPopupOpen(false);
+    setIsHtml(false);
+
+    //초기화끝
+    setLoading(false);
+    setLoadMsg("작업 중...");
+    if (aid) {
+      getJobData(aid);
+    }
   };
 
   const handleLoading = (loading, message) => {
@@ -1236,7 +1312,6 @@ function AdInput() {
       }
     }
 
-    data.adLink = imgApply;
     data.applyMethod = applyRoute.join(",");
     if (reserve) {
       if (!reserveDate) {
@@ -2448,13 +2523,6 @@ function AdInput() {
                           className="min-w-[300px] px-2 py-1 border border-[#ccc] rounded-sm"
                           value={applyUrl || ""}
                           onChange={e => setApplyUrl(e.currentTarget.value)}
-                          onBlur={() => {
-                            if (applyUrl !== "") {
-                              setImgApply(true);
-                            } else {
-                              setImgApply(false);
-                            }
-                          }}
                           placeholder="지원 가능한 URL을 입력해 주세요"
                         />
                       ) : null}
@@ -3172,116 +3240,6 @@ function AdInput() {
             상세모집내용
           </h3>
           <div className="grid grid-cols-1 gap-y-[50px] px-5">
-            {!noUse ? null : (
-              <>
-                <div className="flex flex-row justify-start gap-x-1 text-sm font-bold py-1">
-                  <div className="lg:w-fit min-w-[84px] py-4">광고 이미지</div>
-                  <div className="lg:w-fit min-w-[48px] text-success py-1"></div>
-                  <div className="w-full bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold py-1 pr-2">
-                      <div className="lg:w-fit min-w-[112px] py-1 pl-2 flex flex-col justify-center break-keep whitespace-nowrap mx-4">
-                        광고 이미지 선택
-                      </div>
-                      <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full px-2 py-1">
-                        <UploadImg
-                          title={"로고이미지"}
-                          file={adImg}
-                          setFile={setAdImg}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                  <div className="lg:w-fit min-w-[84px] py-1">바로지원연동</div>
-                  <div className="lg:w-fit min-w-[48px] text-success py-1"></div>
-                  <div className="grid grid-cols-1 gap-y-1">
-                    <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-1">
-                      <div data="연동함" className="flex items-center gap-x-2">
-                        <input
-                          id="ad-apply"
-                          type="radio"
-                          name="ad-applyIt"
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                          checked={imgApply}
-                          onChange={() => {
-                            if (applyUrl) {
-                              setImgApply(true);
-                            } else {
-                              alert(
-                                "지원방법 기업바로지원 체크 후 기업바로지원 URL을 등록하셔야 연동 가능합니다."
-                              );
-                              scrollToApply();
-                            }
-                          }} // value 대신 직접 boolean 값 설정
-                        />
-                        <label htmlFor="ad-apply" className="text-sm">
-                          연동함
-                        </label>
-                      </div>
-                      <div
-                        data="연동안함"
-                        className="flex items-center gap-x-2"
-                      >
-                        <input
-                          id="ad-no-apply"
-                          type="radio"
-                          name="ad-applyIt"
-                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                          checked={!imgApply}
-                          onChange={() => setImgApply(false)} // value 대신 직접 boolean 값 설정
-                        />
-                        <label
-                          htmlFor="ad-no-apply"
-                          className="text-sm break-keep"
-                        >
-                          연동안함
-                        </label>
-                      </div>
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-bold">
-                        지원방법 &gt; 기업바로지원 URL
-                      </span>
-                      을 광고이미지와 연동합니다 (없으면 불가능)
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                  <div className="lg:w-fit min-w-[84px] py-1">이미지 위치</div>
-                  <div className="lg:w-fit min-w-[48px] text-success py-1"></div>
-                  <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-1">
-                    <div data="바로등록" className="flex items-center gap-x-2">
-                      <input
-                        id="ad-up"
-                        type="radio"
-                        name="ad-side"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                        checked={adPosition === "up"}
-                        onChange={() => setAdPosition("up")} // value 대신 직접 boolean 값 설정
-                      />
-                      <label htmlFor="ad-up" className="text-sm">
-                        상세내용 위로
-                      </label>
-                    </div>
-                    <div data="예약일" className="flex items-center gap-x-2">
-                      <input
-                        id="ad-down"
-                        type="radio"
-                        name="ad-side"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                        checked={adPosition === "down"}
-                        onChange={() => setAdPosition("down")} // value 대신 직접 boolean 값 설정
-                      />
-                      <label htmlFor="ad-down" className="text-sm break-keep">
-                        상세내용 아래로
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
             <div className="flex flex-row justify-start gap-x-1 text-sm font-bold py-1">
               <div className="lg:w-fit min-w-[84px] py-1">광고 상세내용</div>
               <div className="lg:w-fit min-w-[48px] text-success py-1"></div>

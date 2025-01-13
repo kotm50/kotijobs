@@ -106,7 +106,6 @@ function AdList() {
       setSType(searchtype);
       setSearchKeyword(keyword);
       const type = await getType(searchtype);
-      console.log(url);
       if (type === "에러") {
         setErrMsg("잘못된 경로로 접속하셨습니다");
         setAdList(null);
@@ -150,16 +149,11 @@ function AdList() {
         data.stat = await getStatus(ad.startDate, ad.endDate);
         checkedList.push(data);
       }
-      console.log(checkedList);
       setCheckedAd(checkedList);
     } else {
       setCheckedAd([]);
     }
   };
-
-  useEffect(() => {
-    console.log(checkedAd);
-  }, [checkedAd]);
 
   const getType = value => {
     const result = searchTypes.find(item => item.value === value);
@@ -243,7 +237,6 @@ function AdList() {
         return alert("올바르지 않은 접근입니다");
       }
     }
-    console.log(count === checkedAd.length);
     alert("완료");
     getAdList();
   };
