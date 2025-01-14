@@ -1015,7 +1015,6 @@ function AdInput() {
           : "/api/v1/formMail_ad/addAd";
 
       if (adStat === "수정") data.aid = aid;
-      console.log(data);
       const res = await api[adStat === "수정" ? "put" : "post"](apiUrl, {
         json: data,
       }).json();
@@ -1053,7 +1052,6 @@ function AdInput() {
 
     try {
       await Promise.all(fileUrls.map(url => deleteFile(url)));
-      console.log("All files deleted successfully");
     } catch (error) {
       console.error("Error deleting files:", error);
       throw error;
@@ -1330,10 +1328,6 @@ function AdInput() {
     return { data, result };
   };
 
-  useEffect(() => {
-    console.log(locationX, locationY);
-  }, [locationX, locationY]);
-
   const getMixed = async text => {
     return text.replace(
       /src="http:\/\//g,
@@ -1406,1760 +1400,1715 @@ function AdInput() {
 
   return (
     <>
-      <div className="w-full max-w-[1240px] mx-auto mt-[100px] bg-white py-10 grid grid-cols-1 gap-y-[100px] mb-20 px-5">
-        <div data="모집내용" className="grid grid-cols-1 gap-y-[30px] px-5">
-          <h3 className="py-[10px] border-b border-[#ccc] lg:text-2xl font-extra text-[#069]">
-            모집내용
-          </h3>
-          <div className="grid grid-cols-1 gap-y-[50px] px-5">
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="lg:w-fit min-w-[84px] py-2">공고제목</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="w-full relative">
-                <input
-                  type="text"
-                  className="w-full p-2 border border-[#ccc] rounded-sm"
-                  value={title || ""}
-                  onChange={handleTitle}
-                />
-                <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
-                  <span className="text-success">{title.length}</span> / 60자
+      <div className="w-full max-w-[1200px] bg-white py-10 mb-20 px-5">
+        <h2 className="lg:text-2xl font-extra text-[#069] bg-white py-5 px-5 border-b w-full">
+          공고 등록
+        </h2>
+        <div className=" grid grid-cols-1 gap-y-[100px]">
+          <div data="모집내용" className="grid grid-cols-1 gap-y-[30px] px-5">
+            <h3 className="py-[10px] border-b border-[#ccc] lg:text-xl font-extra text-[#069]">
+              모집내용
+            </h3>
+            <div className="grid grid-cols-1 gap-y-[50px] px-5">
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="lg:w-fit min-w-[84px] py-2">공고제목</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="w-full relative">
+                  <input
+                    type="text"
+                    className="w-full p-2 border border-[#ccc] rounded-sm"
+                    value={title || ""}
+                    onChange={handleTitle}
+                  />
+                  <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
+                    <span className="text-success">{title.length}</span> / 60자
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="lg:w-fit min-w-[84px] py-2">업직종</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                {occupations.map((occ, idx) => (
-                  <div
-                    data={`업직종${idx + 1}`}
-                    className="flex items-center gap-x-2"
-                    key={idx}
-                  >
-                    <input
-                      id={`occupation-${idx + 1}`}
-                      type="checkbox"
-                      value={occ}
-                      name={`occupation-${idx + 1}`}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                      checked={occupation.includes(occ)}
-                      onChange={handleOccupationChange}
-                    />
-                    <label
-                      htmlFor={`occupation-${idx + 1}`}
-                      className="text-sm"
-                    >
-                      {occ}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="lg:w-fit min-w-[84px] py-2">고용형태</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="grid grid-cols-1">
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="lg:w-fit min-w-[84px] py-2">업직종</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
                 <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                  {employTypes.map((employ, idx) => (
+                  {occupations.map((occ, idx) => (
                     <div
-                      data={`고용형태${idx + 1}`}
+                      data={`업직종${idx + 1}`}
                       className="flex items-center gap-x-2"
                       key={idx}
                     >
                       <input
-                        id={`employType-${idx + 1}`}
+                        id={`occupation-${idx + 1}`}
                         type="checkbox"
-                        value={employ}
-                        name={`employType-${idx + 1}`}
+                        value={occ}
+                        name={`occupation-${idx + 1}`}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                        checked={employType.includes(employ)}
-                        onChange={handleEmployTypeChange}
+                        checked={occupation.includes(occ)}
+                        onChange={handleOccupationChange}
                       />
                       <label
-                        htmlFor={`employType-${idx + 1}`}
+                        htmlFor={`occupation-${idx + 1}`}
                         className="text-sm"
                       >
-                        {employ}
+                        {occ}
                       </label>
                     </div>
                   ))}
                 </div>
-                <div className="text-[#666] font-normal text-xs">
-                  ※다중 선택 가능합니다 (교육생/연수생은 다중 선택 불가능)
+              </div>
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="lg:w-fit min-w-[84px] py-2">고용형태</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
                 </div>
-              </div>
-            </div>
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="lg:w-fit min-w-[84px] py-2">모집인원</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-1">
-                {headCounts.map((head, idx) => (
-                  <div
-                    data={`모집인원${idx + 1}`}
-                    className="flex items-center gap-x-2"
-                    key={idx}
-                  >
-                    <input
-                      id={`headCount-${idx + 1}`}
-                      type="radio"
-                      value={head}
-                      name={`headCount-${idx + 1}`}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                      checked={headCountA === head}
-                      onChange={handleHeadCountChange}
-                    />
-                    <label
-                      htmlFor={`headCount-${idx + 1}`}
-                      className="text-sm break-keep"
-                    >
-                      {head}
-                    </label>
-                    {idx + 1 === headCounts.length && (
-                      <input
-                        type="text"
-                        className="w-full py-1 px-2 border border-[#ccc] rounded-sm"
-                        value={headCountB || ""}
-                        onChange={e => setHeadCountB(e.currentTarget.value)}
-                        disabled={headCountA !== "직접입력"}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div data="근무조건" className="grid grid-cols-1 gap-y-[30px] px-5">
-          <h3 className="py-[10px] border-b border-[#ccc] lg:text-2xl font-extra text-[#069]">
-            근무조건
-          </h3>
-          <div className="grid grid-cols-1 gap-y-[50px] px-5">
-            <div
-              data="근무기간"
-              className="flex flex-row justify-start gap-x-1 text-sm font-bold"
-            >
-              <div className="lg:w-fit min-w-[84px] py-2">근무기간</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="grid grid-cols-1">
-                <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                  {workPeriods.map((per, idx) => (
-                    <div
-                      data={`"근무기간${idx + 1}"`}
-                      className="flex items-center gap-x-2"
-                      key={idx}
-                    >
-                      <input
-                        id={`period-${idx + 1}`}
-                        type="radio"
-                        value={per}
-                        name={`period-${idx + 1}`}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                        checked={period === per}
-                        onChange={handlePeriodChange}
-                      />
-                      <label htmlFor={`period-${idx + 1}`} className="text-sm">
-                        {per}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-                <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                  <div
-                    data="기간협의가능"
-                    className="flex items-center gap-x-2"
-                  >
-                    <input
-                      id="probation"
-                      type="checkbox"
-                      name="probation"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                      checked={probation}
-                      onChange={handleProbationChange}
-                    />
-                    <label htmlFor="probation" className="text-sm">
-                      기간협의가능
-                    </label>
-                  </div>
-                  <div
-                    data="수습기간있음"
-                    className="flex items-center gap-x-2"
-                  >
-                    <input
-                      id="periodDiscussion"
-                      type="checkbox"
-                      name="periodDiscussion"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                      checked={periodDiscussion}
-                      onChange={handlePeriodDiscussionChange}
-                    />
-                    <label htmlFor="periodDiscussion" className="text-sm">
-                      수습기간있음
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              data="근무요일"
-              className="flex flex-row justify-start gap-x-1 text-sm font-bold"
-            >
-              <div className="lg:w-fit min-w-[84px] py-2">근무요일</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="w-full grid grid-cols-1 gap-y-2">
-                <div className="w-full relative flex flex-row justify-start gap-x-1 font-normal">
-                  <button
-                    className={`p-2 ${
-                      !workDate
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => setWorkDate(false)}
-                  >
-                    요일협의
-                  </button>
-                  <button
-                    className={`p-2 ${
-                      workDate
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => setWorkDate(true)}
-                  >
-                    요일선택
-                  </button>
-                </div>
-                {workDate ? (
-                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                        요일 선택
+                <div className="grid grid-cols-1">
+                  <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                    {employTypes.map((employ, idx) => (
+                      <div
+                        data={`고용형태${idx + 1}`}
+                        className="flex items-center gap-x-2"
+                        key={idx}
+                      >
+                        <input
+                          id={`employType-${idx + 1}`}
+                          type="checkbox"
+                          value={employ}
+                          name={`employType-${idx + 1}`}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                          checked={employType.includes(employ)}
+                          onChange={handleEmployTypeChange}
+                        />
+                        <label
+                          htmlFor={`employType-${idx + 1}`}
+                          className="text-sm"
+                        >
+                          {employ}
+                        </label>
                       </div>
-                      <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
-                        <div className="flex items-center gap-x-2">
-                          <input
-                            id="workDay_1"
-                            type="checkbox"
-                            value="1"
-                            onChange={handleWorkday}
-                            checked={workDateList.includes("1")}
-                            name="inline-checkbox-group0"
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
-                          />
-                          <label
-                            htmlFor="workDay_1"
-                            className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
-                          >
-                            월
-                          </label>
-                        </div>
-                        <div className="flex items-center gap-x-2">
-                          <input
-                            id="workDay_2"
-                            type="checkbox"
-                            value="2"
-                            onChange={handleWorkday}
-                            checked={workDateList.includes("2")}
-                            name="inline-checkbox-group0"
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
-                          />
-                          <label
-                            htmlFor="workDay_2"
-                            className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
-                          >
-                            화
-                          </label>
-                        </div>
-                        <div className="flex items-center gap-x-2">
-                          <input
-                            id="workDay_3"
-                            type="checkbox"
-                            value="3"
-                            onChange={handleWorkday}
-                            checked={workDateList.includes("3")}
-                            name="inline-checkbox-group0"
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
-                          />
-                          <label
-                            htmlFor="workDay_3"
-                            className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
-                          >
-                            수
-                          </label>
-                        </div>
-                        <div className="flex items-center gap-x-2">
-                          <input
-                            id="workDay_4"
-                            type="checkbox"
-                            value="4"
-                            onChange={handleWorkday}
-                            checked={workDateList.includes("4")}
-                            name="inline-checkbox-group0"
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
-                          />
-                          <label
-                            htmlFor="workDay_4"
-                            className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
-                          >
-                            목
-                          </label>
-                        </div>
-                        <div className="flex items-center gap-x-2">
-                          <input
-                            id="workDay_5"
-                            type="checkbox"
-                            value="5"
-                            onChange={handleWorkday}
-                            checked={workDateList.includes("5")}
-                            name="inline-checkbox-group0"
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
-                          />
-                          <label
-                            htmlFor="workDay_5"
-                            className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
-                          >
-                            금
-                          </label>
-                        </div>
-                        <div className="flex items-center gap-x-2">
-                          <input
-                            id="workDay_6"
-                            type="checkbox"
-                            value="6"
-                            onChange={handleWorkday}
-                            checked={workDateList.includes("6")}
-                            name="inline-checkbox-group0"
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
-                          />
-                          <label
-                            htmlFor="workDay_6"
-                            className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
-                          >
-                            토
-                          </label>
-                        </div>
-                        <div className="flex items-center gap-x-2">
-                          <input
-                            id="workDay_0"
-                            type="checkbox"
-                            value="0"
-                            onChange={handleWorkday}
-                            checked={workDateList.includes("0")}
-                            name="inline-checkbox-group0"
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
-                          />
-                          <label
-                            htmlFor="workDay_0"
-                            className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
-                          >
-                            일
-                          </label>
-                        </div>
-                        <div className="items-center py-4 text-sm font-normal">
-                          주{" "}
-                          <span className="font-bold">
-                            {workDateList.length}
-                          </span>{" "}
-                          일
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-                <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                  <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                    <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                      참고사항
-                    </div>
-                    <div className="w-full relative p-2 bg-white">
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
-                        value={workDateDetail || ""}
-                        onChange={e => setWorkDateDetail(e.currentTarget.value)}
-                        placeholder="예시) 주 3일 근무, 격주 토요일 등등"
-                      />
-                      <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
-                        <span className="text-success">
-                          {workDateDetail.length}
-                        </span>{" "}
-                        / 40자
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              data="근무시간"
-              className="flex flex-row justify-start gap-x-1 text-sm font-bold"
-            >
-              <div className="lg:w-fit min-w-[84px] py-2">근무시간</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="w-full grid grid-cols-1 gap-y-2">
-                <div className="w-full relative flex flex-row justify-start gap-x-1 font-normal">
-                  <button
-                    className={`p-2 ${
-                      !workTime
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => setWorkTime(false)}
-                  >
-                    시간협의
-                  </button>
-                  <button
-                    className={`p-2 ${
-                      workTime
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => setWorkTime(true)}
-                  >
-                    시간지정
-                  </button>
-                </div>
-                {workTime ? (
-                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                        시간 선택
-                      </div>
-                      <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
-                        <div className="flex items-center gap-x-2">
-                          <select
-                            id="startTime"
-                            className="border border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block w-full p-1 py-2"
-                            value={startTime || ""}
-                            onChange={e => {
-                              setStartTime(e.currentTarget.value);
-                            }}
-                          >
-                            <option value="">시간 선택</option>
-                            {times.map((time, idx) => (
-                              <option key={idx} value={time}>
-                                {time}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-                        <div className="flex items-center gap-x-2">~</div>
-                        <div className="flex items-center gap-x-2">
-                          <select
-                            id="endTime"
-                            className="border border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block w-full p-1 py-2"
-                            value={endTime || ""}
-                            onChange={e => {
-                              setEndTime(e.currentTarget.value);
-                            }}
-                          >
-                            <option value="">시간 선택</option>
-                            {times.map((time, idx) => (
-                              <option key={idx} value={time}>
-                                {time}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div className="flex items-center gap-x-2">
-                          휴게시간
-                        </div>
-                        <div className="flex items-center gap-x-2">
-                          <input
-                            type="text"
-                            className="w-full p-2 border border-[#ccc] rounded-sm font-normal min-w-[200px]"
-                            value={restTime || ""}
-                            onChange={handleRestTime}
-                            placeholder="점심포함 휴게시간"
-                          />
-                          <select
-                            id="rest"
-                            className="border border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block w-full p-1 py-2"
-                            value={rest || ""}
-                            onChange={e => {
-                              setRest(e.currentTarget.value);
-                            }}
-                          >
-                            <option value="시간">시간</option>
-                            <option value="분">분</option>
-                          </select>
-                        </div>
-                        {startTime && endTime ? (
-                          <div className="items-center py-4 text-sm font-normal">
-                            일일{" "}
-                            <span className="font-bold">{workTimePeriod}</span>{" "}
-                            근무(휴게시간 포함){" "}
-                            {isNightWork && (
-                              <span className="text-xs text-[#666]">
-                                (종료시간이 더 적을 경우 자동으로 익일로
-                                지정됩니다)
-                              </span>
-                            )}
-                          </div>
-                        ) : null}
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-                <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                  <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                    <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                      참고사항
-                    </div>
-                    <div className="w-full relative p-2 bg-white">
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
-                        value={workTimeDetail || ""}
-                        onChange={e => setWorkTimeDetail(e.currentTarget.value)}
-                        placeholder="예시) 평일 오전, 주말 오전 근무 등"
-                      />
-                      <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
-                        <span className="text-success">
-                          {workTimeDetail ? workTimeDetail.length : 0}
-                        </span>{" "}
-                        / 40자
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              data="급여조건"
-              className="flex flex-row justify-start gap-x-1 text-sm font-bold"
-            >
-              <div className="lg:w-fit min-w-[84px] py-2">급여</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="w-full grid grid-cols-1 gap-y-2">
-                <div className="w-full relative flex flex-row justify-start gap-x-1 font-normal">
-                  <button
-                    className={`p-2 ${
-                      payType === "시급"
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => setPayType("시급")}
-                  >
-                    시급
-                  </button>
-                  <button
-                    className={`p-2 ${
-                      payType === "일급"
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => setPayType("일급")}
-                  >
-                    일급
-                  </button>
-                  <button
-                    className={`p-2 ${
-                      payType === "주급"
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => setPayType("주급")}
-                  >
-                    주급
-                  </button>
-                  <button
-                    className={`p-2 ${
-                      payType === "월급"
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => setPayType("월급")}
-                  >
-                    월급
-                  </button>
-                  <button
-                    className={`p-2 ${
-                      payType === "연봉"
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => setPayType("연봉")}
-                  >
-                    연봉
-                  </button>
-                  <button
-                    className={`p-2 ${
-                      payType === "건별"
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => setPayType("건별")}
-                  >
-                    건별
-                  </button>
-                </div>
-                <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                  <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                    <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                      급여
-                    </div>
-                    <div className="w-full relative p-2 bg-white">
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
-                        value={salary || ""}
-                        onChange={e => {
-                          setSalary(e.currentTarget.value);
-                          setFormatedSalary(e.currentTarget.value);
-                        }}
-                        onFocus={() => setSalary(formattedSalary)}
-                        onBlur={e =>
-                          setSalary(
-                            Number(e.currentTarget.value).toLocaleString()
-                          )
-                        }
-                        placeholder="2025년 최저시급 10,030원"
-                      />
-                      <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
-                        원
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div
-              data="복지"
-              className="flex flex-row justify-start gap-x-1 text-sm font-bold"
-            >
-              <div className="lg:w-fit min-w-[84px] py-4">복지</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-4"></div>
-              <div className="w-full grid grid-cols-1 gap-y-2">
-                <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                  <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                    <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                      4대보험
-                    </div>
-                    <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
-                      <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                        {insurances.map((ins, idx) => (
-                          <div
-                            data={`4대보험${idx + 1}`}
-                            className="flex items-center gap-x-2"
-                            key={idx}
-                          >
-                            <input
-                              id={`insurance-${idx + 1}`}
-                              type="checkbox"
-                              value={ins}
-                              name={`insurance-${idx + 1}`}
-                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                              checked={insurance.includes(ins)}
-                              onChange={handleInsuranceChange}
-                            />
-                            <label
-                              htmlFor={`insurance-${idx + 1}`}
-                              className="text-sm"
-                            >
-                              {ins}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                  <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                    <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                      휴일제도
-                    </div>
-                    <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
-                      <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                        {vacations.map((vac, idx) => (
-                          <div
-                            data={`휴일제도${idx + 1}`}
-                            className="flex items-center gap-x-2"
-                            key={idx}
-                          >
-                            <input
-                              id={`vacation-${idx + 1}`}
-                              type="checkbox"
-                              value={vac}
-                              name={`vacation-${idx + 1}`}
-                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                              checked={vacation.includes(vac)}
-                              onChange={handleVacationChange}
-                            />
-                            <label
-                              htmlFor={`vacation-${idx + 1}`}
-                              className="text-sm"
-                            >
-                              {vac}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                  <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                    <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                      수당제도
-                    </div>
-                    <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
-                      <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                        {incentives.map((inc, idx) => (
-                          <div
-                            data={`수당제도${idx + 1}`}
-                            className="flex items-center gap-x-2"
-                            key={idx}
-                          >
-                            <input
-                              id={`incentive-${idx + 1}`}
-                              type="checkbox"
-                              value={inc}
-                              name={`incentive-${idx + 1}`}
-                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                              checked={incentive.includes(inc)}
-                              onChange={handleIncentiveChange}
-                            />
-                            <label
-                              htmlFor={`incentive-${idx + 1}`}
-                              className="text-sm"
-                            >
-                              {inc}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                  <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                    <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                      기타복지
-                    </div>
-                    <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
-                      <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                        {supports.map((sup, idx) => (
-                          <div
-                            data={`기타복지${idx + 1}`}
-                            className="flex items-center gap-x-2"
-                            key={idx}
-                          >
-                            <input
-                              id={`support-${idx + 1}`}
-                              type="checkbox"
-                              value={sup}
-                              name={`support-${idx + 1}`}
-                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                              checked={support.includes(sup)}
-                              onChange={handleSupportChange}
-                            />
-                            <label
-                              htmlFor={`support-${idx + 1}`}
-                              className="text-sm"
-                            >
-                              {sup}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div
-              data="우대기타"
-              className="flex flex-row justify-start gap-x-1 text-sm font-bold"
-            >
-              <div className="lg:w-fit min-w-[84px] py-4">
-                우대/
-                <br />
-                기타조건
-              </div>
-              <div className="lg:w-fit min-w-[48px] text-success py-4"></div>
-              <div className="w-full grid grid-cols-1 gap-y-2">
-                <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                  <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                    <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                      우대조건
-                    </div>
-                    <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
-                      <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                        {treats.map((tre, idx) => (
-                          <div
-                            data={`우대조건${idx + 1}`}
-                            className="flex items-center gap-x-2"
-                            key={idx}
-                          >
-                            <input
-                              id={`treat-${idx + 1}`}
-                              type="checkbox"
-                              value={tre}
-                              name={`treat-${idx + 1}`}
-                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                              checked={treat.includes(tre)}
-                              onChange={handleTreatChange}
-                            />
-                            <label
-                              htmlFor={`treat-${idx + 1}`}
-                              className="text-sm"
-                            >
-                              {tre}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                  <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                    <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                      기타조건
-                    </div>
-                    <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
-                      <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                        {conditions.map((con, idx) => (
-                          <div
-                            data={`기타조건${idx + 1}`}
-                            className="flex items-center gap-x-2"
-                            key={idx}
-                          >
-                            <input
-                              id={`condition-${idx + 1}`}
-                              type="checkbox"
-                              value={con}
-                              name={`condition-${idx + 1}`}
-                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                              checked={condition.includes(con)}
-                              onChange={handleConditionChange}
-                            />
-                            <label
-                              htmlFor={`condition-${idx + 1}`}
-                              className="text-sm"
-                            >
-                              {con}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div data="지원조건" className="grid grid-cols-1 gap-y-[30px] px-5">
-          <h3 className="py-[10px] border-b border-[#ccc] lg:text-2xl font-extra text-[#069]">
-            지원조건
-          </h3>
-          <div className="grid grid-cols-1 gap-y-[50px] px-5">
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="lg:w-fit min-w-[84px] py-2">성별</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                {genders.map((gen, idx) => (
-                  <div
-                    data={`성별${idx + 1}`}
-                    className="flex items-center gap-x-2"
-                    key={idx}
-                  >
-                    <input
-                      id={`gender-${idx + 1}`}
-                      type="radio"
-                      value={gen}
-                      name={`gender-${idx + 1}`}
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                      checked={gender === gen}
-                      onChange={handleGenderChange}
-                    />
-                    <label htmlFor={`gender-${idx + 1}`} className="text-sm">
-                      {gen}
-                    </label>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div
-              data="연령"
-              className="flex flex-row justify-start gap-x-1 text-sm font-bold"
-            >
-              <div className="lg:w-fit min-w-[84px] py-2">연령</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="w-full grid grid-cols-1 gap-y-2">
-                <div className="w-full relative flex flex-row justify-start gap-x-1 font-normal">
-                  <button
-                    className={`p-2 ${
-                      !age
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => {
-                      setAge(false);
-                      setMinAge("");
-                      setMaxAge("");
-                    }}
-                  >
-                    연령무관
-                  </button>
-                  <button
-                    className={`p-2 ${
-                      age
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => setAge(true)}
-                  >
-                    연령선택
-                  </button>
-                </div>
-                {age && (
-                  <div className="flex flex-row justify-start gap-x-2 text-sm font-bold">
-                    <div className="w-[200px] relative bg-white">
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
-                        value={minAge || ""}
-                        onChange={e => {
-                          setMinAge(e.currentTarget.value);
-                        }}
-                      />
-                      <div className="absolute top-1/2 -translate-y-1/2 right-2 text-xs">
-                        세
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-x-2">부터</div>
-                    <div className="w-[200px] relative bg-white">
-                      <input
-                        type="text"
-                        className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
-                        value={maxAge || ""}
-                        onChange={e => {
-                          setMaxAge(e.currentTarget.value);
-                        }}
-                      />
-                      <div className="absolute top-1/2 -translate-y-1/2 right-2 text-xs">
-                        세
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-x-2">까지</div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div
-              data="학력"
-              className="flex flex-row justify-start gap-x-1 text-sm font-bold"
-            >
-              <div className="lg:w-fit min-w-[84px] py-2">학력</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="flex flex-row justify-start gap-x-2 text-sm font-bold">
-                <div className="flex items-center gap-x-2">
-                  <select
-                    id="startTime"
-                    className="border border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block w-full p-1 py-2"
-                    value={education || ""}
-                    onChange={e => {
-                      setEducation(e.currentTarget.value);
-                    }}
-                  >
-                    {educations.map((edu, idx) => (
-                      <option key={idx} value={edu === "학력선택" ? "" : edu}>
-                        {edu}
-                      </option>
                     ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div data="접수기간방법" className="grid grid-cols-1 gap-y-[30px] px-5">
-          <h3 className="py-[10px] border-b border-[#ccc] lg:text-2xl font-extra text-[#069]">
-            접수기간/방법
-          </h3>
-          <div className="grid grid-cols-1 gap-y-[50px] px-5">
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="lg:w-fit min-w-[84px] py-4">모집마감일</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-4">
-                필수
-              </div>
-              <div className="w-full grid grid-cols-1 gap-y-2">
-                <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                  <div data="상시모집" className="flex items-center gap-x-2">
-                    <input
-                      id="no-limit"
-                      type="radio"
-                      value="상시모집"
-                      name="limit"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                      checked={limit === "상시모집"}
-                      onChange={handleLimitChange}
-                    />
-                    <label htmlFor="no-limit" className="text-sm">
-                      상시모집
-                    </label>
                   </div>
-                  <div data="마감일 지정" className="flex items-center gap-x-2">
-                    <input
-                      id="dayLimit"
-                      type="radio"
-                      value="마감일지정"
-                      name="limit"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                      checked={limit === "마감일지정"}
-                      onChange={handleLimitChange}
-                    />
-                    <label htmlFor="dayLimit" className="text-sm break-keep">
-                      마감일지정
-                    </label>
-                    <input
-                      type="text"
-                      className="w-fit min-w-[100px] py-1 px-2 border border-[#ccc] rounded-sm"
-                      defaultValue={
-                        limitDate ? dayjs(limitDate).format("YYYY-MM-DD") : ""
-                      }
-                      disabled={limit !== "마감일지정"}
-                    />
+                  <div className="text-[#666] font-normal text-xs">
+                    ※다중 선택 가능합니다 (교육생/연수생은 다중 선택 불가능)
                   </div>
                 </div>
-                {limit === "마감일지정" ? (
-                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y w-fit">
-                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold pr-4">
-                      <div className="lg:w-fit text-center min-w-[120px] pl-2 py-4 flex flex-col justify-center">
-                        마감일 지정
-                      </div>
-                      <div className="pl-2 py-4">
-                        <div className="bg-white w-fit border border-[#ccc]">
-                          <DayPicker
-                            mode="single"
-                            timeZone="Asia/Seoul"
-                            locale={ko}
-                            numberOfMonths={2}
-                            selected={limitDate}
-                            onSelect={setLimitDate}
-                            classNames={{
-                              today: `bg-green-100 rounded-full`, // Add a border to today's date
-                              selected: `bg-blue-100 rounded-full important`, // Highlight the selected day
-                              root: `${defaultClassNames.root} p-5`, // Add a shadow to the root element
-                              caption_label: `${defaultClassNames.caption_label}`,
-                              chevron: `${defaultClassNames.chevron} fill-amber-500`, // Change the color of the chevron
-                              months: `${defaultClassNames.months} grid grid-cols-2 gap-x-2`,
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
               </div>
-            </div>
-
-            <div
-              className="flex flex-row justify-start gap-x-1 text-sm font-bold"
-              ref={applyRef}
-            >
-              <div className="lg:w-fit min-w-[84px] py-2">지원방법</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="grid grid-cols-1">
-                <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                  {applyRoutes.map((route, idx) => (
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="lg:w-fit min-w-[84px] py-2">모집인원</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-1">
+                  {headCounts.map((head, idx) => (
                     <div
-                      data={`지원방법${idx + 1}`}
+                      data={`모집인원${idx + 1}`}
                       className="flex items-center gap-x-2"
                       key={idx}
                     >
                       <input
-                        id={`applyRoute-${idx + 1}`}
-                        type="checkbox"
-                        value={route}
-                        name={`applyRoute-${idx + 1}`}
+                        id={`headCount-${idx + 1}`}
+                        type="radio"
+                        value={head}
+                        name={`headCount-${idx + 1}`}
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                        checked={applyRoute.includes(route)}
-                        onChange={handleApplyRouteChange}
+                        checked={headCountA === head}
+                        onChange={handleHeadCountChange}
                       />
                       <label
-                        htmlFor={`applyRoute-${idx + 1}`}
-                        className="text-sm"
+                        htmlFor={`headCount-${idx + 1}`}
+                        className="text-sm break-keep"
                       >
-                        {route}
+                        {head}
                       </label>
-                      {route === "기업바로지원" &&
-                      applyRoute.includes("기업바로지원") ? (
+                      {idx + 1 === headCounts.length && (
                         <input
                           type="text"
-                          className="min-w-[300px] px-2 py-1 border border-[#ccc] rounded-sm"
-                          value={applyUrl || ""}
-                          onChange={e => setApplyUrl(e.currentTarget.value)}
-                          placeholder="지원 가능한 URL을 입력해 주세요"
+                          className="w-full py-1 px-2 border border-[#ccc] rounded-sm"
+                          value={headCountB || ""}
+                          onChange={e => setHeadCountB(e.currentTarget.value)}
+                          disabled={headCountA !== "직접입력"}
                         />
-                      ) : null}
+                      )}
                     </div>
                   ))}
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div data="근무지정보" className="grid grid-cols-1 gap-y-[30px] px-5">
-          <h3 className="py-[10px] border-b border-[#ccc] lg:text-2xl font-extra text-[#069]">
-            근무지 정보
-          </h3>
-          <div className="grid grid-cols-1 gap-y-[50px] px-5">
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="lg:w-fit min-w-[84px] py-2">근무 회사명</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
+          <div data="근무조건" className="grid grid-cols-1 gap-y-[30px] px-5">
+            <h3 className="py-[10px] border-b border-[#ccc] lg:text-xl font-extra text-[#069]">
+              근무조건
+            </h3>
+            <div className="grid grid-cols-1 gap-y-[50px] px-5">
+              <div
+                data="근무기간"
+                className="flex flex-row justify-start gap-x-1 text-sm font-bold"
+              >
+                <div className="lg:w-fit min-w-[84px] py-2">근무기간</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="grid grid-cols-1">
+                  <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                    {workPeriods.map((per, idx) => (
+                      <div
+                        data={`"근무기간${idx + 1}"`}
+                        className="flex items-center gap-x-2"
+                        key={idx}
+                      >
+                        <input
+                          id={`period-${idx + 1}`}
+                          type="radio"
+                          value={per}
+                          name={`period-${idx + 1}`}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                          checked={period === per}
+                          onChange={handlePeriodChange}
+                        />
+                        <label
+                          htmlFor={`period-${idx + 1}`}
+                          className="text-sm"
+                        >
+                          {per}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                    <div
+                      data="기간협의가능"
+                      className="flex items-center gap-x-2"
+                    >
+                      <input
+                        id="probation"
+                        type="checkbox"
+                        name="probation"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                        checked={probation}
+                        onChange={handleProbationChange}
+                      />
+                      <label htmlFor="probation" className="text-sm">
+                        기간협의가능
+                      </label>
+                    </div>
+                    <div
+                      data="수습기간있음"
+                      className="flex items-center gap-x-2"
+                    >
+                      <input
+                        id="periodDiscussion"
+                        type="checkbox"
+                        name="periodDiscussion"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                        checked={periodDiscussion}
+                        onChange={handlePeriodDiscussionChange}
+                      />
+                      <label htmlFor="periodDiscussion" className="text-sm">
+                        수습기간있음
+                      </label>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="w-full relative">
-                <input
-                  type="text"
-                  className="w-full p-2 border border-[#ccc] rounded-sm"
-                  value={companyName || ""}
-                  onChange={handleCompanyNameChange}
-                />
-                <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
-                  <span className="text-success">{companyName.length}</span> /
-                  20자
+              <div
+                data="근무요일"
+                className="flex flex-row justify-start gap-x-1 text-sm font-bold"
+              >
+                <div className="lg:w-fit min-w-[84px] py-2">근무요일</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="w-full grid grid-cols-1 gap-y-2">
+                  <div className="w-full relative flex flex-row justify-start gap-x-1 font-normal">
+                    <button
+                      className={`p-2 ${
+                        !workDate
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
+                      onClick={() => setWorkDate(false)}
+                    >
+                      요일협의
+                    </button>
+                    <button
+                      className={`p-2 ${
+                        workDate
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
+                      onClick={() => setWorkDate(true)}
+                    >
+                      요일선택
+                    </button>
+                  </div>
+                  {workDate ? (
+                    <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                      <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                        <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                          요일 선택
+                        </div>
+                        <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
+                          <div className="flex items-center gap-x-2">
+                            <input
+                              id="workDay_1"
+                              type="checkbox"
+                              value="1"
+                              onChange={handleWorkday}
+                              checked={workDateList.includes("1")}
+                              name="inline-checkbox-group0"
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
+                            />
+                            <label
+                              htmlFor="workDay_1"
+                              className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
+                            >
+                              월
+                            </label>
+                          </div>
+                          <div className="flex items-center gap-x-2">
+                            <input
+                              id="workDay_2"
+                              type="checkbox"
+                              value="2"
+                              onChange={handleWorkday}
+                              checked={workDateList.includes("2")}
+                              name="inline-checkbox-group0"
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
+                            />
+                            <label
+                              htmlFor="workDay_2"
+                              className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
+                            >
+                              화
+                            </label>
+                          </div>
+                          <div className="flex items-center gap-x-2">
+                            <input
+                              id="workDay_3"
+                              type="checkbox"
+                              value="3"
+                              onChange={handleWorkday}
+                              checked={workDateList.includes("3")}
+                              name="inline-checkbox-group0"
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
+                            />
+                            <label
+                              htmlFor="workDay_3"
+                              className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
+                            >
+                              수
+                            </label>
+                          </div>
+                          <div className="flex items-center gap-x-2">
+                            <input
+                              id="workDay_4"
+                              type="checkbox"
+                              value="4"
+                              onChange={handleWorkday}
+                              checked={workDateList.includes("4")}
+                              name="inline-checkbox-group0"
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
+                            />
+                            <label
+                              htmlFor="workDay_4"
+                              className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
+                            >
+                              목
+                            </label>
+                          </div>
+                          <div className="flex items-center gap-x-2">
+                            <input
+                              id="workDay_5"
+                              type="checkbox"
+                              value="5"
+                              onChange={handleWorkday}
+                              checked={workDateList.includes("5")}
+                              name="inline-checkbox-group0"
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
+                            />
+                            <label
+                              htmlFor="workDay_5"
+                              className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
+                            >
+                              금
+                            </label>
+                          </div>
+                          <div className="flex items-center gap-x-2">
+                            <input
+                              id="workDay_6"
+                              type="checkbox"
+                              value="6"
+                              onChange={handleWorkday}
+                              checked={workDateList.includes("6")}
+                              name="inline-checkbox-group0"
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
+                            />
+                            <label
+                              htmlFor="workDay_6"
+                              className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
+                            >
+                              토
+                            </label>
+                          </div>
+                          <div className="flex items-center gap-x-2">
+                            <input
+                              id="workDay_0"
+                              type="checkbox"
+                              value="0"
+                              onChange={handleWorkday}
+                              checked={workDateList.includes("0")}
+                              name="inline-checkbox-group0"
+                              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2 hover:cursor-pointer"
+                            />
+                            <label
+                              htmlFor="workDay_0"
+                              className="min-w-[20px] text-sm font-medium text-[#666] dark:text-gray-300"
+                            >
+                              일
+                            </label>
+                          </div>
+                          <div className="items-center py-4 text-sm font-normal">
+                            주{" "}
+                            <span className="font-bold">
+                              {workDateList.length}
+                            </span>{" "}
+                            일
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                        참고사항
+                      </div>
+                      <div className="w-full relative p-2 bg-white">
+                        <input
+                          type="text"
+                          className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
+                          value={workDateDetail || ""}
+                          onChange={e =>
+                            setWorkDateDetail(e.currentTarget.value)
+                          }
+                          placeholder="예시) 주 3일 근무, 격주 토요일 등등"
+                        />
+                        <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
+                          <span className="text-success">
+                            {workDateDetail.length}
+                          </span>{" "}
+                          / 40자
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                data="근무시간"
+                className="flex flex-row justify-start gap-x-1 text-sm font-bold"
+              >
+                <div className="lg:w-fit min-w-[84px] py-2">근무시간</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="w-full grid grid-cols-1 gap-y-2">
+                  <div className="w-full relative flex flex-row justify-start gap-x-1 font-normal">
+                    <button
+                      className={`p-2 ${
+                        !workTime
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
+                      onClick={() => setWorkTime(false)}
+                    >
+                      시간협의
+                    </button>
+                    <button
+                      className={`p-2 ${
+                        workTime
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
+                      onClick={() => setWorkTime(true)}
+                    >
+                      시간지정
+                    </button>
+                  </div>
+                  {workTime ? (
+                    <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                      <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                        <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                          시간 선택
+                        </div>
+                        <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
+                          <div className="flex items-center gap-x-2">
+                            <select
+                              id="startTime"
+                              className="border border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block w-full p-1 py-2"
+                              value={startTime || ""}
+                              onChange={e => {
+                                setStartTime(e.currentTarget.value);
+                              }}
+                            >
+                              <option value="">시간 선택</option>
+                              {times.map((time, idx) => (
+                                <option key={idx} value={time}>
+                                  {time}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          <div className="flex items-center gap-x-2">~</div>
+                          <div className="flex items-center gap-x-2">
+                            <select
+                              id="endTime"
+                              className="border border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block w-full p-1 py-2"
+                              value={endTime || ""}
+                              onChange={e => {
+                                setEndTime(e.currentTarget.value);
+                              }}
+                            >
+                              <option value="">시간 선택</option>
+                              {times.map((time, idx) => (
+                                <option key={idx} value={time}>
+                                  {time}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+
+                          <div className="flex items-center gap-x-2">
+                            휴게시간
+                          </div>
+                          <div className="flex items-center gap-x-2">
+                            <input
+                              type="text"
+                              className="w-full p-2 border border-[#ccc] rounded-sm font-normal min-w-[200px]"
+                              value={restTime || ""}
+                              onChange={handleRestTime}
+                              placeholder="점심포함 휴게시간"
+                            />
+                            <select
+                              id="rest"
+                              className="border border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block w-full p-1 py-2"
+                              value={rest || ""}
+                              onChange={e => {
+                                setRest(e.currentTarget.value);
+                              }}
+                            >
+                              <option value="시간">시간</option>
+                              <option value="분">분</option>
+                            </select>
+                          </div>
+                          {startTime && endTime ? (
+                            <div className="items-center py-4 text-sm font-normal">
+                              일일{" "}
+                              <span className="font-bold">
+                                {workTimePeriod}
+                              </span>{" "}
+                              근무(휴게시간 포함){" "}
+                              {isNightWork && (
+                                <span className="text-xs text-[#666]">
+                                  (종료시간이 더 적을 경우 자동으로 익일로
+                                  지정됩니다)
+                                </span>
+                              )}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                        참고사항
+                      </div>
+                      <div className="w-full relative p-2 bg-white">
+                        <input
+                          type="text"
+                          className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
+                          value={workTimeDetail || ""}
+                          onChange={e =>
+                            setWorkTimeDetail(e.currentTarget.value)
+                          }
+                          placeholder="예시) 평일 오전, 주말 오전 근무 등"
+                        />
+                        <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
+                          <span className="text-success">
+                            {workTimeDetail ? workTimeDetail.length : 0}
+                          </span>{" "}
+                          / 40자
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div
+                data="급여조건"
+                className="flex flex-row justify-start gap-x-1 text-sm font-bold"
+              >
+                <div className="lg:w-fit min-w-[84px] py-2">급여</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="w-full grid grid-cols-1 gap-y-2">
+                  <div className="w-full relative flex flex-row justify-start gap-x-1 font-normal">
+                    <button
+                      className={`p-2 ${
+                        payType === "시급"
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
+                      onClick={() => setPayType("시급")}
+                    >
+                      시급
+                    </button>
+                    <button
+                      className={`p-2 ${
+                        payType === "일급"
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
+                      onClick={() => setPayType("일급")}
+                    >
+                      일급
+                    </button>
+                    <button
+                      className={`p-2 ${
+                        payType === "주급"
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
+                      onClick={() => setPayType("주급")}
+                    >
+                      주급
+                    </button>
+                    <button
+                      className={`p-2 ${
+                        payType === "월급"
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
+                      onClick={() => setPayType("월급")}
+                    >
+                      월급
+                    </button>
+                    <button
+                      className={`p-2 ${
+                        payType === "연봉"
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
+                      onClick={() => setPayType("연봉")}
+                    >
+                      연봉
+                    </button>
+                    <button
+                      className={`p-2 ${
+                        payType === "건별"
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
+                      onClick={() => setPayType("건별")}
+                    >
+                      건별
+                    </button>
+                  </div>
+                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                        급여
+                      </div>
+                      <div className="w-full relative p-2 bg-white">
+                        <input
+                          type="text"
+                          className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
+                          value={salary || ""}
+                          onChange={e => {
+                            setSalary(e.currentTarget.value);
+                            setFormatedSalary(e.currentTarget.value);
+                          }}
+                          onFocus={() => setSalary(formattedSalary)}
+                          onBlur={e =>
+                            setSalary(
+                              Number(e.currentTarget.value).toLocaleString()
+                            )
+                          }
+                          placeholder="2025년 최저시급 10,030원"
+                        />
+                        <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
+                          원
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                data="복지"
+                className="flex flex-row justify-start gap-x-1 text-sm font-bold"
+              >
+                <div className="lg:w-fit min-w-[84px] py-4">복지</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-4"></div>
+                <div className="w-full grid grid-cols-1 gap-y-2">
+                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                        4대보험
+                      </div>
+                      <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
+                        <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                          {insurances.map((ins, idx) => (
+                            <div
+                              data={`4대보험${idx + 1}`}
+                              className="flex items-center gap-x-2"
+                              key={idx}
+                            >
+                              <input
+                                id={`insurance-${idx + 1}`}
+                                type="checkbox"
+                                value={ins}
+                                name={`insurance-${idx + 1}`}
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                                checked={insurance.includes(ins)}
+                                onChange={handleInsuranceChange}
+                              />
+                              <label
+                                htmlFor={`insurance-${idx + 1}`}
+                                className="text-sm"
+                              >
+                                {ins}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                        휴일제도
+                      </div>
+                      <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
+                        <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                          {vacations.map((vac, idx) => (
+                            <div
+                              data={`휴일제도${idx + 1}`}
+                              className="flex items-center gap-x-2"
+                              key={idx}
+                            >
+                              <input
+                                id={`vacation-${idx + 1}`}
+                                type="checkbox"
+                                value={vac}
+                                name={`vacation-${idx + 1}`}
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                                checked={vacation.includes(vac)}
+                                onChange={handleVacationChange}
+                              />
+                              <label
+                                htmlFor={`vacation-${idx + 1}`}
+                                className="text-sm"
+                              >
+                                {vac}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                        수당제도
+                      </div>
+                      <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
+                        <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                          {incentives.map((inc, idx) => (
+                            <div
+                              data={`수당제도${idx + 1}`}
+                              className="flex items-center gap-x-2"
+                              key={idx}
+                            >
+                              <input
+                                id={`incentive-${idx + 1}`}
+                                type="checkbox"
+                                value={inc}
+                                name={`incentive-${idx + 1}`}
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                                checked={incentive.includes(inc)}
+                                onChange={handleIncentiveChange}
+                              />
+                              <label
+                                htmlFor={`incentive-${idx + 1}`}
+                                className="text-sm"
+                              >
+                                {inc}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                        기타복지
+                      </div>
+                      <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
+                        <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                          {supports.map((sup, idx) => (
+                            <div
+                              data={`기타복지${idx + 1}`}
+                              className="flex items-center gap-x-2"
+                              key={idx}
+                            >
+                              <input
+                                id={`support-${idx + 1}`}
+                                type="checkbox"
+                                value={sup}
+                                name={`support-${idx + 1}`}
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                                checked={support.includes(sup)}
+                                onChange={handleSupportChange}
+                              />
+                              <label
+                                htmlFor={`support-${idx + 1}`}
+                                className="text-sm"
+                              >
+                                {sup}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                data="우대기타"
+                className="flex flex-row justify-start gap-x-1 text-sm font-bold"
+              >
+                <div className="lg:w-fit min-w-[84px] py-4">
+                  우대/
+                  <br />
+                  기타조건
+                </div>
+                <div className="lg:w-fit min-w-[48px] text-success py-4"></div>
+                <div className="w-full grid grid-cols-1 gap-y-2">
+                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                        우대조건
+                      </div>
+                      <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
+                        <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                          {treats.map((tre, idx) => (
+                            <div
+                              data={`우대조건${idx + 1}`}
+                              className="flex items-center gap-x-2"
+                              key={idx}
+                            >
+                              <input
+                                id={`treat-${idx + 1}`}
+                                type="checkbox"
+                                value={tre}
+                                name={`treat-${idx + 1}`}
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                                checked={treat.includes(tre)}
+                                onChange={handleTreatChange}
+                              />
+                              <label
+                                htmlFor={`treat-${idx + 1}`}
+                                className="text-sm"
+                              >
+                                {tre}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                        기타조건
+                      </div>
+                      <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
+                        <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                          {conditions.map((con, idx) => (
+                            <div
+                              data={`기타조건${idx + 1}`}
+                              className="flex items-center gap-x-2"
+                              key={idx}
+                            >
+                              <input
+                                id={`condition-${idx + 1}`}
+                                type="checkbox"
+                                value={con}
+                                name={`condition-${idx + 1}`}
+                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                                checked={condition.includes(con)}
+                                onChange={handleConditionChange}
+                              />
+                              <label
+                                htmlFor={`condition-${idx + 1}`}
+                                className="text-sm"
+                              >
+                                {con}
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="lg:w-fit min-w-[84px] py-2">근무지 주소</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
+          </div>
+          <div data="지원조건" className="grid grid-cols-1 gap-y-[30px] px-5">
+            <h3 className="py-[10px] border-b border-[#ccc] lg:text-xl font-extra text-[#069]">
+              지원조건
+            </h3>
+            <div className="grid grid-cols-1 gap-y-[50px] px-5">
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="lg:w-fit min-w-[84px] py-2">성별</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                  {genders.map((gen, idx) => (
+                    <div
+                      data={`성별${idx + 1}`}
+                      className="flex items-center gap-x-2"
+                      key={idx}
+                    >
+                      <input
+                        id={`gender-${idx + 1}`}
+                        type="radio"
+                        value={gen}
+                        name={`gender-${idx + 1}`}
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                        checked={gender === gen}
+                        onChange={handleGenderChange}
+                      />
+                      <label htmlFor={`gender-${idx + 1}`} className="text-sm">
+                        {gen}
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="w-full grid grid-cols-1 gap-y-2">
-                <div className="w-full flex justify-start gap-x-1">
-                  <input
-                    type="text"
-                    className="w-[70px] py-1 px-2 border border-[#ccc] rounded-sm"
-                    value={zipCode || ""}
-                    onChange={e => setZipCode(e.currentTarget.value)}
-                    disabled
-                  />
-                  <input
-                    type="text"
-                    className="w-[300px] py-1 px-2 border border-[#ccc] rounded-sm"
-                    value={addressA || ""}
-                    onChange={e => setAddressA(e.currentTarget.value)}
-                    placeholder="주소찾기를 눌러주세요"
-                    disabled
-                  />
-                  <input
-                    type="text"
-                    className="w-[300px] py-1 px-2 border border-[#ccc] rounded-sm"
-                    value={addressB || ""}
-                    onChange={e => setAddressB(e.currentTarget.value)}
-                    placeholder="건물명 등 상세주소 입력"
-                    disabled={!addressA}
-                  />
-                  <div className="w-[300px] grid grid-cols-2 gap-x-2">
+
+              <div
+                data="연령"
+                className="flex flex-row justify-start gap-x-1 text-sm font-bold"
+              >
+                <div className="lg:w-fit min-w-[84px] py-2">연령</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="w-full grid grid-cols-1 gap-y-2">
+                  <div className="w-full relative flex flex-row justify-start gap-x-1 font-normal">
                     <button
-                      className={`p-2 bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700`}
+                      className={`p-2 ${
+                        !age
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
                       onClick={() => {
-                        openPostCode();
+                        setAge(false);
+                        setMinAge("");
+                        setMaxAge("");
                       }}
                     >
-                      주소 찾기
+                      연령무관
                     </button>
                     <button
-                      className={`p-2 border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700 hidden`}
-                      onClick={() => {
-                        setModalOn(true);
-                        setModalType("map");
-                        setZipCode("01234");
-                        setAddressA("서울시 중구 다산로38길 66-47");
-                      }}
+                      className={`p-2 ${
+                        age
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
+                      onClick={() => setAge(true)}
                     >
-                      지도 확인
+                      연령선택
                     </button>
                   </div>
+                  {age && (
+                    <div className="flex flex-row justify-start gap-x-2 text-sm font-bold">
+                      <div className="w-[200px] relative bg-white">
+                        <input
+                          type="text"
+                          className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
+                          value={minAge || ""}
+                          onChange={e => {
+                            setMinAge(e.currentTarget.value);
+                          }}
+                        />
+                        <div className="absolute top-1/2 -translate-y-1/2 right-2 text-xs">
+                          세
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-x-2">부터</div>
+                      <div className="w-[200px] relative bg-white">
+                        <input
+                          type="text"
+                          className="w-full p-2 border border-[#ccc] rounded-sm font-normal"
+                          value={maxAge || ""}
+                          onChange={e => {
+                            setMaxAge(e.currentTarget.value);
+                          }}
+                        />
+                        <div className="absolute top-1/2 -translate-y-1/2 right-2 text-xs">
+                          세
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-x-2">까지</div>
+                    </div>
+                  )}
                 </div>
-                {zipCode && addressA ? (
-                  <>
-                    {university && (
-                      <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                        <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                          <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                            주변대학교
+              </div>
+
+              <div
+                data="학력"
+                className="flex flex-row justify-start gap-x-1 text-sm font-bold"
+              >
+                <div className="lg:w-fit min-w-[84px] py-2">학력</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="flex flex-row justify-start gap-x-2 text-sm font-bold">
+                  <div className="flex items-center gap-x-2">
+                    <select
+                      id="startTime"
+                      className="border border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block w-full p-1 py-2"
+                      value={education || ""}
+                      onChange={e => {
+                        setEducation(e.currentTarget.value);
+                      }}
+                    >
+                      {educations.map((edu, idx) => (
+                        <option key={idx} value={edu === "학력선택" ? "" : edu}>
+                          {edu}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            data="접수기간방법"
+            className="grid grid-cols-1 gap-y-[30px] px-5"
+          >
+            <h3 className="py-[10px] border-b border-[#ccc] lg:text-xl font-extra text-[#069]">
+              접수기간/방법
+            </h3>
+            <div className="grid grid-cols-1 gap-y-[50px] px-5">
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="lg:w-fit min-w-[84px] py-4">모집마감일</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-4">
+                  필수
+                </div>
+                <div className="w-full grid grid-cols-1 gap-y-2">
+                  <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                    <div data="상시모집" className="flex items-center gap-x-2">
+                      <input
+                        id="no-limit"
+                        type="radio"
+                        value="상시모집"
+                        name="limit"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                        checked={limit === "상시모집"}
+                        onChange={handleLimitChange}
+                      />
+                      <label htmlFor="no-limit" className="text-sm">
+                        상시모집
+                      </label>
+                    </div>
+                    <div
+                      data="마감일 지정"
+                      className="flex items-center gap-x-2"
+                    >
+                      <input
+                        id="dayLimit"
+                        type="radio"
+                        value="마감일지정"
+                        name="limit"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                        checked={limit === "마감일지정"}
+                        onChange={handleLimitChange}
+                      />
+                      <label htmlFor="dayLimit" className="text-sm break-keep">
+                        마감일지정
+                      </label>
+                      <input
+                        type="text"
+                        className="w-fit min-w-[100px] py-1 px-2 border border-[#ccc] rounded-sm"
+                        defaultValue={
+                          limitDate ? dayjs(limitDate).format("YYYY-MM-DD") : ""
+                        }
+                        disabled={limit !== "마감일지정"}
+                      />
+                    </div>
+                  </div>
+                  {limit === "마감일지정" ? (
+                    <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y w-fit">
+                      <div className="flex flex-row justify-start gap-x-1 text-sm font-bold pr-4">
+                        <div className="lg:w-fit text-center min-w-[120px] pl-2 py-4 flex flex-col justify-center">
+                          마감일 지정
+                        </div>
+                        <div className="pl-2 py-4">
+                          <div className="bg-white w-fit border border-[#ccc]">
+                            <DayPicker
+                              mode="single"
+                              timeZone="Asia/Seoul"
+                              locale={ko}
+                              numberOfMonths={2}
+                              selected={limitDate}
+                              onSelect={setLimitDate}
+                              classNames={{
+                                today: `bg-green-100 rounded-full`, // Add a border to today's date
+                                selected: `bg-blue-100 rounded-full important`, // Highlight the selected day
+                                root: `${defaultClassNames.root} p-5`, // Add a shadow to the root element
+                                caption_label: `${defaultClassNames.caption_label}`,
+                                chevron: `${defaultClassNames.chevron} fill-amber-500`, // Change the color of the chevron
+                                months: `${defaultClassNames.months} grid grid-cols-2 gap-x-2`,
+                              }}
+                            />
                           </div>
-                          <div className="w-full flex flex-row justify-start gap-x-10 flex-nowrap bg-white">
-                            <div className="px-2 py-4 break-keep w-[200px] text-center">
-                              {university}
+                        </div>
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+
+              <div
+                className="flex flex-row justify-start gap-x-1 text-sm font-bold"
+                ref={applyRef}
+              >
+                <div className="lg:w-fit min-w-[84px] py-2">지원방법</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="grid grid-cols-1">
+                  <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                    {applyRoutes.map((route, idx) => (
+                      <div
+                        data={`지원방법${idx + 1}`}
+                        className="flex items-center gap-x-2"
+                        key={idx}
+                      >
+                        <input
+                          id={`applyRoute-${idx + 1}`}
+                          type="checkbox"
+                          value={route}
+                          name={`applyRoute-${idx + 1}`}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                          checked={applyRoute.includes(route)}
+                          onChange={handleApplyRouteChange}
+                        />
+                        <label
+                          htmlFor={`applyRoute-${idx + 1}`}
+                          className="text-sm"
+                        >
+                          {route}
+                        </label>
+                        {route === "기업바로지원" &&
+                        applyRoute.includes("기업바로지원") ? (
+                          <input
+                            type="text"
+                            className="min-w-[300px] px-2 py-1 border border-[#ccc] rounded-sm"
+                            value={applyUrl || ""}
+                            onChange={e => setApplyUrl(e.currentTarget.value)}
+                            placeholder="지원 가능한 URL을 입력해 주세요"
+                          />
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div data="근무지정보" className="grid grid-cols-1 gap-y-[30px] px-5">
+            <h3 className="py-[10px] border-b border-[#ccc] lg:text-xl font-extra text-[#069]">
+              근무지 정보
+            </h3>
+            <div className="grid grid-cols-1 gap-y-[50px] px-5">
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="lg:w-fit min-w-[84px] py-2">근무 회사명</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="w-full relative">
+                  <input
+                    type="text"
+                    className="w-full p-2 border border-[#ccc] rounded-sm"
+                    value={companyName || ""}
+                    onChange={handleCompanyNameChange}
+                  />
+                  <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
+                    <span className="text-success">{companyName.length}</span> /
+                    20자
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="lg:w-fit min-w-[84px] py-2">근무지 주소</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="w-full grid grid-cols-1 gap-y-2">
+                  <div className="w-full flex justify-start gap-x-1">
+                    <input
+                      type="text"
+                      className="w-[70px] py-1 px-2 border border-[#ccc] rounded-sm"
+                      value={zipCode || ""}
+                      onChange={e => setZipCode(e.currentTarget.value)}
+                      disabled
+                    />
+                    <input
+                      type="text"
+                      className="w-[300px] py-1 px-2 border border-[#ccc] rounded-sm"
+                      value={addressA || ""}
+                      onChange={e => setAddressA(e.currentTarget.value)}
+                      placeholder="주소찾기를 눌러주세요"
+                      disabled
+                    />
+                    <input
+                      type="text"
+                      className="w-[300px] py-1 px-2 border border-[#ccc] rounded-sm"
+                      value={addressB || ""}
+                      onChange={e => setAddressB(e.currentTarget.value)}
+                      placeholder="건물명 등 상세주소 입력"
+                      disabled={!addressA}
+                    />
+                    <div className="w-[300px] grid grid-cols-2 gap-x-2">
+                      <button
+                        className={`p-2 bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700`}
+                        onClick={() => {
+                          openPostCode();
+                        }}
+                      >
+                        주소 찾기
+                      </button>
+                      <button
+                        className={`p-2 border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700 hidden`}
+                        onClick={() => {
+                          setModalOn(true);
+                          setModalType("map");
+                          setZipCode("01234");
+                          setAddressA("서울시 중구 다산로38길 66-47");
+                        }}
+                      >
+                        지도 확인
+                      </button>
+                    </div>
+                  </div>
+                  {zipCode && addressA ? (
+                    <>
+                      {university && (
+                        <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                          <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                            <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                              주변대학교
                             </div>
-                            <div className="flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2 bg-white">
-                              <div
-                                data="근처대학교 선택"
-                                className="flex items-center gap-x-2"
-                              >
-                                <input
-                                  id="universitySelect"
-                                  type="radio"
-                                  value="선택"
-                                  name="universitySelect"
-                                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                                  checked={universityShow === "선택"}
-                                  onChange={handleUniversityChange}
-                                />
-                                <label
-                                  htmlFor="universitySelect"
-                                  className="text-sm"
-                                >
-                                  선택
-                                </label>
+                            <div className="w-full flex flex-row justify-start gap-x-10 flex-nowrap bg-white">
+                              <div className="px-2 py-4 break-keep w-[200px] text-center">
+                                {university}
                               </div>
-                              <div
-                                data="근처대학교 선택"
-                                className="flex items-center gap-x-2"
-                              >
-                                <input
-                                  id="universityDontSelect"
-                                  type="radio"
-                                  value="미선택"
-                                  name="universityDontSelect"
-                                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                                  checked={universityShow === "미선택"}
-                                  onChange={handleUniversityChange}
-                                />
-                                <label
-                                  htmlFor="universityDontSelect"
-                                  className="text-sm break-keep"
+                              <div className="flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2 bg-white">
+                                <div
+                                  data="근처대학교 선택"
+                                  className="flex items-center gap-x-2"
                                 >
-                                  미선택
-                                </label>
+                                  <input
+                                    id="universitySelect"
+                                    type="radio"
+                                    value="선택"
+                                    name="universitySelect"
+                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                                    checked={universityShow === "선택"}
+                                    onChange={handleUniversityChange}
+                                  />
+                                  <label
+                                    htmlFor="universitySelect"
+                                    className="text-sm"
+                                  >
+                                    선택
+                                  </label>
+                                </div>
+                                <div
+                                  data="근처대학교 선택"
+                                  className="flex items-center gap-x-2"
+                                >
+                                  <input
+                                    id="universityDontSelect"
+                                    type="radio"
+                                    value="미선택"
+                                    name="universityDontSelect"
+                                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                                    checked={universityShow === "미선택"}
+                                    onChange={handleUniversityChange}
+                                  />
+                                  <label
+                                    htmlFor="universityDontSelect"
+                                    className="text-sm break-keep"
+                                  >
+                                    미선택
+                                  </label>
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    )}
-                    {station.length > 0 ? (
-                      <>
-                        <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                          <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                            <div
-                              className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center"
-                              onClick={() => console.log(station)}
-                            >
-                              주변지하철
+                      )}
+                      {station.length > 0 ? (
+                        <>
+                          <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                              <div
+                                className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center"
+                                onClick={() => console.log(station)}
+                              >
+                                주변지하철
+                              </div>
+                              <div className="grid grid-cols-1 gap-y-[1px] w-full">
+                                {station.map((stat, idx) => (
+                                  <div
+                                    className="w-full flex flex-row justify-start gap-x-10 flex-nowrap bg-white py-2"
+                                    key={idx}
+                                  >
+                                    <div className="px-2 py-2 break-keep w-[150px] text-center">
+                                      {stat.nearStation}
+                                    </div>
+                                    <div className="p-2 break-keep w-[150px] text-center rounded-full text-white font-bold">
+                                      <span
+                                        style={{
+                                          backgroundColor: stat.subwayColor,
+                                        }}
+                                        className="px-2 py-1 rounded-full"
+                                      >
+                                        {stat.line}
+                                      </span>
+                                    </div>
+                                    <input
+                                      type="text"
+                                      className="w-[200px] py-1 px-2 border border-[#ccc] rounded-sm"
+                                      value={`${stat.distance} (${stat.durationTime})`}
+                                      disabled
+                                    />
+                                    <div className="flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-1 bg-white">
+                                      <div
+                                        data="지하철역 선택"
+                                        className="flex items-center gap-x-2"
+                                      >
+                                        <input
+                                          id={`stateionSelect-${idx}`}
+                                          type="radio"
+                                          value="선택"
+                                          name={`stateionSelect-${idx}`}
+                                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                                          checked={stat.show}
+                                          onChange={() =>
+                                            handleStationChange(idx, true)
+                                          }
+                                        />
+                                        <label
+                                          htmlFor={`stateionSelect-${idx}`}
+                                          className="text-sm"
+                                        >
+                                          선택
+                                        </label>
+                                      </div>
+                                      <div
+                                        data="지하철역 비선택"
+                                        className="flex items-center gap-x-2"
+                                      >
+                                        <input
+                                          id={`noStationSelect-${idx}`}
+                                          type="radio"
+                                          value="미선택"
+                                          name={`stateionSelect-${idx}`}
+                                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                                          checked={!stat.show}
+                                          onChange={() =>
+                                            handleStationChange(idx, false)
+                                          }
+                                        />
+                                        <label
+                                          htmlFor={`noStationSelect-${idx}`}
+                                          className="text-sm break-keep"
+                                        >
+                                          미선택
+                                        </label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
-                            <div className="grid grid-cols-1 gap-y-[1px] w-full">
-                              {station.map((stat, idx) => (
-                                <div
-                                  className="w-full flex flex-row justify-start gap-x-10 flex-nowrap bg-white py-2"
-                                  key={idx}
+                          </div>
+                        </>
+                      ) : null}
+                    </>
+                  ) : null}
+                </div>
+              </div>
+
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="flex flex-col justify-start w-fit gap-0">
+                  <div className="lg:w-fit min-w-[84px] py-1">공고노출지역</div>
+                  <div className="text-center text-xs py-1">
+                    ({areaCount}/3)
+                  </div>
+                </div>
+                <div className="lg:w-fit min-w-[48px] text-success py-1">
+                  필수
+                </div>
+                <div className="w-full grid grid-cols-1 gap-y-2">
+                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                        지역선택 1
+                      </div>
+                      <div className="w-full flex flex-row justify-start gap-x-10 flex-nowrap bg-white">
+                        <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
+                          {areaA.sido !== "" &&
+                          areaA.sigungu !== "" &&
+                          areaA.dongEubMyun !== "" ? (
+                            <div className="flex items-center gap-x-2 w-full">
+                              <div className="min-w-[400px]">
+                                {areaA.sido} {areaA.sigungu} {areaA.dongEubMyun}
+                              </div>
+                              <button
+                                className="p-2 bg-blue-500 hover:bg-blue-600 text-white w-[20%] rounded font-bold"
+                                onClick={() => {
+                                  setModalOn(true);
+                                  setModalType("areaA");
+                                }}
+                              >
+                                노출지역 1 재설정
+                              </button>
+                              {areaCount === 1 && (
+                                <button
+                                  className="border border-success border-dashed p-2 text-success font-normal break-keep"
+                                  onClick={() => deleteArea("A")}
                                 >
-                                  <div className="px-2 py-2 break-keep w-[150px] text-center">
-                                    {stat.nearStation}
+                                  초기화
+                                </button>
+                              )}
+                            </div>
+                          ) : (
+                            <div className="flex items-center gap-x-2 w-full">
+                              <button
+                                className="p-2 bg-blue-500 hover:bg-blue-600 text-white w-[80%] rounded font-bold"
+                                onClick={() => {
+                                  setModalOn(true);
+                                  setModalType("areaA");
+                                }}
+                              >
+                                노출지역 1 설정
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  {areaCount >= 2 && (
+                    <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                      <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                        <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                          지역선택 2
+                        </div>
+                        <div className="w-full flex flex-row justify-start gap-x-10 flex-nowrap bg-white">
+                          <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
+                            {areaB.sido !== "" &&
+                            areaB.sigungu !== "" &&
+                            areaB.dongEubMyun !== "" ? (
+                              <div className="flex items-center gap-x-2 w-full">
+                                <div className="min-w-[400px]">
+                                  {areaB.sido} {areaB.sigungu}{" "}
+                                  {areaB.dongEubMyun}
+                                </div>
+                                <button
+                                  className="p-2 bg-blue-500 hover:bg-blue-600 text-white w-[20%] rounded font-bold"
+                                  onClick={() => {
+                                    setModalOn(true);
+                                    setModalType("areaB");
+                                  }}
+                                >
+                                  노출지역 2 재설정
+                                </button>
+
+                                {areaCount === 2 && (
+                                  <button
+                                    className="border border-success border-dashed p-2 text-success font-normal break-keep"
+                                    onClick={() => deleteArea("B")}
+                                  >
+                                    - 삭제하기
+                                  </button>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-x-2 w-full">
+                                <button
+                                  className="p-2 bg-blue-500 hover:bg-blue-600 text-white w-[80%] rounded font-bold"
+                                  onClick={() => {
+                                    setModalOn(true);
+                                    setModalType("areaB");
+                                  }}
+                                >
+                                  노출지역 2 설정
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {areaCount >= 3 && (
+                    <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                      <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                        <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
+                          지역선택 3
+                        </div>
+                        <div className="w-full flex flex-row justify-start gap-x-10 flex-nowrap bg-white">
+                          <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
+                            {areaC.sido !== "" &&
+                            areaC.sigungu !== "" &&
+                            areaC.dongEubMyun !== "" ? (
+                              <div className="flex items-center gap-x-2 w-full">
+                                <div className="min-w-[400px]">
+                                  {areaC.sido} {areaC.sigungu}{" "}
+                                  {areaC.dongEubMyun}
+                                </div>
+                                <button
+                                  className="p-2 bg-blue-500 hover:bg-blue-600 text-white w-[20%] rounded font-bold"
+                                  onClick={() => {
+                                    setModalOn(true);
+                                    setModalType("areaC");
+                                  }}
+                                >
+                                  노출지역 3 재설정
+                                </button>
+
+                                {areaCount === 3 && (
+                                  <button
+                                    className="border border-success border-dashed p-2 text-success font-normal break-keep"
+                                    onClick={() => deleteArea("C")}
+                                  >
+                                    - 삭제하기
+                                  </button>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-x-2 w-full">
+                                <button
+                                  className="p-2 bg-blue-500 hover:bg-blue-600 text-white w-[80%] rounded font-bold"
+                                  onClick={() => {
+                                    setModalOn(true);
+                                    setModalType("areaC");
+                                  }}
+                                >
+                                  노출지역 3 설정
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  {areaCount < 3 && (
+                    <button
+                      className="border border-primary border-dashed p-2 text-primary font-normal"
+                      onClick={() => addArea()}
+                    >
+                      +추가하기
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="lg:w-fit min-w-[84px] py-4">근무지 로고</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-4">
+                  필수
+                </div>
+                <div className="w-full bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                  <div className="flex flex-row justify-start gap-x-1 text-sm font-bold py-1 pr-2">
+                    <div className="lg:w-fit min-w-[112px] py-1 pl-2 flex flex-col justify-center break-keep whitespace-nowrap mx-4">
+                      로고 이미지 선택
+                    </div>
+                    <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full px-2 py-1">
+                      <UploadImg
+                        title={"로고이미지"}
+                        type={"logo"}
+                        file={logoImg}
+                        setFile={setLogoImg}
+                      />
+                      {beforeData && beforeData.logoImg && (
+                        <div className="flex gap-x-2">
+                          <div className="flex flex-col justify-center h-full bg-[#eaeaea] px-2">
+                            기존 로고
+                          </div>
+                          <img
+                            src={beforeData.logoImg}
+                            alt="기존로고"
+                            className="min-w-[60px] w-auto max-w-[100px] h-auto max-h-[150px]"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="lg:w-fit min-w-[84px] py-4">근무지 사진</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-4"></div>
+                <div className="w-full bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                  <div className="flex flex-row justify-start gap-x-1 text-sm font-bold py-1 pr-2">
+                    <div className="lg:w-fit min-w-[112px] py-1 pl-2 flex flex-col justify-center break-keep whitespace-nowrap mx-4">
+                      근무지 사진
+                    </div>
+                    <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full px-2 py-1">
+                      <MultipleUploadImg
+                        title={"근무지 사진"}
+                        type={"photo"}
+                        files={photoList}
+                        setFiles={setPhotoList}
+                        before={beforePhotoList}
+                      />
+                      {beforePhotoList && beforePhotoList.length > 0 && (
+                        <div className="flex gap-x-2 w-full">
+                          <div className="flex flex-col justify-center h-full bg-[#eaeaea] px-2">
+                            기존 사진
+                          </div>
+                          <div className="grid grid-cols-1 gap-y-2">
+                            <div className="w-full relative flex flex-row justify-end gap-x-[50px] gap-y-3 flex-wrap font-normal py-1">
+                              <button
+                                type="button"
+                                className="px-2 py-0.5 bg-[#efefef] hover:bg-[#e5e5e5] rounded-sm border border-black"
+                                onClick={() => {
+                                  setBeforePhotoList([]); // 미리보기 이미지 초기화
+                                }}
+                              >
+                                기존 파일 초기화
+                              </button>
+                            </div>
+                            <div className="grid grid-cols-5 gap-x-4 gap-y-4">
+                              {beforePhotoList.map((preview, index) => (
+                                <div
+                                  key={index}
+                                  className="relative p-1 border border-[#ccc] h-fit z-0 hover:cursor-pointer"
+                                >
+                                  <div className="w-full h-full">
+                                    <img
+                                      src={preview} // 미리보기 이미지 경로 사용
+                                      className="min-w-[60px] w-auto max-w-[100px] h-auto max-h-[150px] mx-auto"
+                                      alt={`미리보기 ${index + 1}`}
+                                    />
                                   </div>
-                                  <div className="p-2 break-keep w-[150px] text-center rounded-full text-white font-bold">
-                                    <span
-                                      style={{
-                                        backgroundColor: stat.subwayColor,
-                                      }}
-                                      className="px-2 py-1 rounded-full"
-                                    >
-                                      {stat.line}
-                                    </span>
-                                  </div>
-                                  <input
-                                    type="text"
-                                    className="w-[200px] py-1 px-2 border border-[#ccc] rounded-sm"
-                                    value={`${stat.distance} (${stat.durationTime})`}
-                                    disabled
-                                  />
-                                  <div className="flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-1 bg-white">
-                                    <div
-                                      data="지하철역 선택"
-                                      className="flex items-center gap-x-2"
-                                    >
-                                      <input
-                                        id={`stateionSelect-${idx}`}
-                                        type="radio"
-                                        value="선택"
-                                        name={`stateionSelect-${idx}`}
-                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                                        checked={stat.show}
-                                        onChange={() =>
-                                          handleStationChange(idx, true)
-                                        }
-                                      />
-                                      <label
-                                        htmlFor={`stateionSelect-${idx}`}
-                                        className="text-sm"
-                                      >
-                                        선택
-                                      </label>
-                                    </div>
-                                    <div
-                                      data="지하철역 비선택"
-                                      className="flex items-center gap-x-2"
-                                    >
-                                      <input
-                                        id={`noStationSelect-${idx}`}
-                                        type="radio"
-                                        value="미선택"
-                                        name={`stateionSelect-${idx}`}
-                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                                        checked={!stat.show}
-                                        onChange={() =>
-                                          handleStationChange(idx, false)
-                                        }
-                                      />
-                                      <label
-                                        htmlFor={`noStationSelect-${idx}`}
-                                        className="text-sm break-keep"
-                                      >
-                                        미선택
-                                      </label>
-                                    </div>
-                                  </div>
+                                  {/* X 버튼 */}
+                                  <button
+                                    className="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 hover:bg-red-600"
+                                    onClick={() => handleRemovePreview(preview)}
+                                  >
+                                    삭제
+                                  </button>
                                 </div>
                               ))}
                             </div>
                           </div>
                         </div>
-                      </>
-                    ) : null}
-                  </>
-                ) : null}
-              </div>
-            </div>
-
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="flex flex-col justify-start w-fit gap-0">
-                <div className="lg:w-fit min-w-[84px] py-1">공고노출지역</div>
-                <div className="text-center text-xs py-1">({areaCount}/3)</div>
-              </div>
-              <div className="lg:w-fit min-w-[48px] text-success py-1">
-                필수
-              </div>
-              <div className="w-full grid grid-cols-1 gap-y-2">
-                <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                  <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                    <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                      지역선택 1
+                      )}
                     </div>
-                    <div className="w-full flex flex-row justify-start gap-x-10 flex-nowrap bg-white">
-                      <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
-                        {areaA.sido !== "" &&
-                        areaA.sigungu !== "" &&
-                        areaA.dongEubMyun !== "" ? (
-                          <div className="flex items-center gap-x-2 w-full">
-                            <div className="min-w-[400px]">
-                              {areaA.sido} {areaA.sigungu} {areaA.dongEubMyun}
-                            </div>
-                            <button
-                              className="p-2 bg-blue-500 hover:bg-blue-600 text-white w-[20%] rounded font-bold"
-                              onClick={() => {
-                                setModalOn(true);
-                                setModalType("areaA");
-                              }}
-                            >
-                              노출지역 1 재설정
-                            </button>
-                            {areaCount === 1 && (
-                              <button
-                                className="border border-success border-dashed p-2 text-success font-normal break-keep"
-                                onClick={() => deleteArea("A")}
-                              >
-                                초기화
-                              </button>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="flex items-center gap-x-2 w-full">
-                            <button
-                              className="p-2 bg-blue-500 hover:bg-blue-600 text-white w-[80%] rounded font-bold"
-                              onClick={() => {
-                                setModalOn(true);
-                                setModalType("areaA");
-                              }}
-                            >
-                              노출지역 1 설정
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                {areaCount >= 2 && (
-                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                        지역선택 2
-                      </div>
-                      <div className="w-full flex flex-row justify-start gap-x-10 flex-nowrap bg-white">
-                        <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
-                          {areaB.sido !== "" &&
-                          areaB.sigungu !== "" &&
-                          areaB.dongEubMyun !== "" ? (
-                            <div className="flex items-center gap-x-2 w-full">
-                              <div className="min-w-[400px]">
-                                {areaB.sido} {areaB.sigungu} {areaB.dongEubMyun}
-                              </div>
-                              <button
-                                className="p-2 bg-blue-500 hover:bg-blue-600 text-white w-[20%] rounded font-bold"
-                                onClick={() => {
-                                  setModalOn(true);
-                                  setModalType("areaB");
-                                }}
-                              >
-                                노출지역 2 재설정
-                              </button>
-
-                              {areaCount === 2 && (
-                                <button
-                                  className="border border-success border-dashed p-2 text-success font-normal break-keep"
-                                  onClick={() => deleteArea("B")}
-                                >
-                                  - 삭제하기
-                                </button>
-                              )}
-                            </div>
-                          ) : (
-                            <div className="flex items-center gap-x-2 w-full">
-                              <button
-                                className="p-2 bg-blue-500 hover:bg-blue-600 text-white w-[80%] rounded font-bold"
-                                onClick={() => {
-                                  setModalOn(true);
-                                  setModalType("areaB");
-                                }}
-                              >
-                                노출지역 2 설정
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {areaCount >= 3 && (
-                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                      <div className="lg:w-fit min-w-[84px] py-4 pl-2 flex flex-col justify-center">
-                        지역선택 3
-                      </div>
-                      <div className="w-full flex flex-row justify-start gap-x-10 flex-nowrap bg-white">
-                        <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full pl-2">
-                          {areaC.sido !== "" &&
-                          areaC.sigungu !== "" &&
-                          areaC.dongEubMyun !== "" ? (
-                            <div className="flex items-center gap-x-2 w-full">
-                              <div className="min-w-[400px]">
-                                {areaC.sido} {areaC.sigungu} {areaC.dongEubMyun}
-                              </div>
-                              <button
-                                className="p-2 bg-blue-500 hover:bg-blue-600 text-white w-[20%] rounded font-bold"
-                                onClick={() => {
-                                  setModalOn(true);
-                                  setModalType("areaC");
-                                }}
-                              >
-                                노출지역 3 재설정
-                              </button>
-
-                              {areaCount === 3 && (
-                                <button
-                                  className="border border-success border-dashed p-2 text-success font-normal break-keep"
-                                  onClick={() => deleteArea("C")}
-                                >
-                                  - 삭제하기
-                                </button>
-                              )}
-                            </div>
-                          ) : (
-                            <div className="flex items-center gap-x-2 w-full">
-                              <button
-                                className="p-2 bg-blue-500 hover:bg-blue-600 text-white w-[80%] rounded font-bold"
-                                onClick={() => {
-                                  setModalOn(true);
-                                  setModalType("areaC");
-                                }}
-                              >
-                                노출지역 3 설정
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {areaCount < 3 && (
-                  <button
-                    className="border border-primary border-dashed p-2 text-primary font-normal"
-                    onClick={() => addArea()}
-                  >
-                    +추가하기
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="lg:w-fit min-w-[84px] py-4">근무지 로고</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-4">
-                필수
-              </div>
-              <div className="w-full bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                <div className="flex flex-row justify-start gap-x-1 text-sm font-bold py-1 pr-2">
-                  <div className="lg:w-fit min-w-[112px] py-1 pl-2 flex flex-col justify-center break-keep whitespace-nowrap mx-4">
-                    로고 이미지 선택
-                  </div>
-                  <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full px-2 py-1">
-                    <UploadImg
-                      title={"로고이미지"}
-                      type={"logo"}
-                      file={logoImg}
-                      setFile={setLogoImg}
-                    />
-                    {beforeData && beforeData.logoImg && (
-                      <div className="flex gap-x-2">
-                        <div className="flex flex-col justify-center h-full bg-[#eaeaea] px-2">
-                          기존 로고
-                        </div>
-                        <img
-                          src={beforeData.logoImg}
-                          alt="기존로고"
-                          className="min-w-[60px] w-auto max-w-[100px] h-auto max-h-[150px]"
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="lg:w-fit min-w-[84px] py-4">근무지 사진</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-4"></div>
-              <div className="w-full bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                <div className="flex flex-row justify-start gap-x-1 text-sm font-bold py-1 pr-2">
-                  <div className="lg:w-fit min-w-[112px] py-1 pl-2 flex flex-col justify-center break-keep whitespace-nowrap mx-4">
-                    근무지 사진
-                  </div>
-                  <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full px-2 py-1">
-                    <MultipleUploadImg
-                      title={"근무지 사진"}
-                      type={"photo"}
-                      files={photoList}
-                      setFiles={setPhotoList}
-                      before={beforePhotoList}
-                    />
-                    {beforePhotoList && beforePhotoList.length > 0 && (
-                      <div className="flex gap-x-2 w-full">
-                        <div className="flex flex-col justify-center h-full bg-[#eaeaea] px-2">
-                          기존 사진
-                        </div>
-                        <div className="grid grid-cols-1 gap-y-2">
-                          <div className="w-full relative flex flex-row justify-end gap-x-[50px] gap-y-3 flex-wrap font-normal py-1">
-                            <button
-                              type="button"
-                              className="px-2 py-0.5 bg-[#efefef] hover:bg-[#e5e5e5] rounded-sm border border-black"
-                              onClick={() => {
-                                setBeforePhotoList([]); // 미리보기 이미지 초기화
-                              }}
-                            >
-                              기존 파일 초기화
-                            </button>
-                          </div>
-                          <div className="grid grid-cols-5 gap-x-4 gap-y-4">
-                            {beforePhotoList.map((preview, index) => (
-                              <div
-                                key={index}
-                                className="relative p-1 border border-[#ccc] h-fit z-0 hover:cursor-pointer"
-                              >
-                                <div className="w-full h-full">
-                                  <img
-                                    src={preview} // 미리보기 이미지 경로 사용
-                                    className="min-w-[60px] w-auto max-w-[100px] h-auto max-h-[150px] mx-auto"
-                                    alt={`미리보기 ${index + 1}`}
-                                  />
-                                </div>
-                                {/* X 버튼 */}
-                                <button
-                                  className="absolute top-0 right-0 bg-red-500 text-white text-xs px-2 py-1 hover:bg-red-600"
-                                  onClick={() => handleRemovePreview(preview)}
-                                >
-                                  삭제
-                                </button>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div data="담당자 정보" className="grid grid-cols-1 gap-y-[30px] px-5">
-          <h3 className="py-[10px] border-b border-[#ccc] lg:text-2xl font-extra text-[#069]">
-            담당자 정보
-          </h3>
-          <div className="grid grid-cols-1 gap-y-[50px] px-5">
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="lg:w-fit min-w-[84px] py-2">담당자명</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="w-full relative">
-                <input
-                  type="text"
-                  className="w-full p-2 border border-[#ccc] rounded-sm"
-                  value={managerName || ""}
-                  onChange={handleManagerName}
-                  placeholder="최대 20자 (공백포함)"
-                />
-                <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
-                  <span className="text-success">{title.length}</span> / 20자
+          <div
+            data="담당자 정보"
+            className="grid grid-cols-1 gap-y-[30px] px-5"
+          >
+            <h3 className="py-[10px] border-b border-[#ccc] lg:text-xl font-extra text-[#069]">
+              담당자 정보
+            </h3>
+            <div className="grid grid-cols-1 gap-y-[50px] px-5">
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="lg:w-fit min-w-[84px] py-2">담당자명</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
                 </div>
-              </div>
-            </div>
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="lg:w-fit min-w-[84px] py-2">이메일 주소</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="w-full flex justify-start gap-x-1">
-                <input
-                  type="text"
-                  className="w-full p-2 border border-[#ccc] rounded-sm"
-                  value={emailId || ""}
-                  onChange={handleEmail}
-                  placeholder="예시) abcde@fghijklmn.com"
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="flex flex-col justify-start w-fit gap-0">
-                <div className="lg:w-fit min-w-[84px] py-2">연락처</div>
-              </div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="w-full grid grid-cols-1 gap-y-2">
-                <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-                  <select
-                    id="contact"
-                    className="border w-[10%] border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block p-1 py-2"
-                    value={contact.first || ""}
-                    onChange={e => {
-                      handleContactChange(
-                        "first",
-                        e.currentTarget.value,
-                        "Main"
-                      );
-                    }}
-                  >
-                    {phoneNums.map((phone, idx) => (
-                      <option key={idx} value={phone.value}>
-                        {phone.txt}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="py-2">-</span>
+                <div className="w-full relative">
                   <input
                     type="text"
-                    className="w-[20%] p-2 border border-[#ccc] rounded-sm"
-                    value={contact.second || ""}
-                    onChange={e =>
-                      handleContactChange(
-                        "second",
-                        e.currentTarget.value,
-                        "Main"
-                      )
-                    }
+                    className="w-full p-2 border border-[#ccc] rounded-sm"
+                    value={managerName || ""}
+                    onChange={handleManagerName}
+                    placeholder="최대 20자 (공백포함)"
                   />
-                  <span className="py-2">-</span>
-
-                  <input
-                    type="text"
-                    className="w-[20%] p-2 border border-[#ccc] rounded-sm"
-                    value={contact.third || ""}
-                    onChange={e =>
-                      handleContactChange(
-                        "third",
-                        e.currentTarget.value,
-                        "Main"
-                      )
-                    }
-                  />
-                  <div className="flex items-center gap-x-2 mx-3">
-                    <input
-                      id="contactReveal"
-                      type="checkbox"
-                      name="contactReveal"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                      checked={contact.reveal}
-                      onChange={e =>
-                        handleContactCheckChange("reveal", e, "Main")
-                      }
-                    />
-                    <label htmlFor="contactReveal" className="text-sm">
-                      비공개
-                    </label>
+                  <div className="absolute top-1/2 -translate-y-1/2 right-4 text-xs">
+                    <span className="text-success">{title.length}</span> / 20자
                   </div>
-                  {!addContact && (
-                    <button
-                      className="border border-primary border-dashed p-2 text-primary font-normal"
-                      onClick={() => setAddContact(true)}
-                    >
-                      + 추가하기
-                    </button>
-                  )}
                 </div>
-                {addContact && (
+              </div>
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="lg:w-fit min-w-[84px] py-2">이메일 주소</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="w-full flex justify-start gap-x-1">
+                  <input
+                    type="text"
+                    className="w-full p-2 border border-[#ccc] rounded-sm"
+                    value={emailId || ""}
+                    onChange={handleEmail}
+                    placeholder="예시) abcde@fghijklmn.com"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="flex flex-col justify-start w-fit gap-0">
+                  <div className="lg:w-fit min-w-[84px] py-2">연락처</div>
+                </div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="w-full grid grid-cols-1 gap-y-2">
                   <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
                     <select
-                      id="subContact"
+                      id="contact"
                       className="border w-[10%] border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block p-1 py-2"
-                      value={subContact.first || ""}
+                      value={contact.first || ""}
                       onChange={e => {
                         handleContactChange(
                           "first",
                           e.currentTarget.value,
-                          "Sub"
+                          "Main"
                         );
                       }}
                     >
@@ -3173,12 +3122,12 @@ function AdInput() {
                     <input
                       type="text"
                       className="w-[20%] p-2 border border-[#ccc] rounded-sm"
-                      value={subContact.second || ""}
+                      value={contact.second || ""}
                       onChange={e =>
                         handleContactChange(
                           "second",
                           e.currentTarget.value,
-                          "Sub"
+                          "Main"
                         )
                       }
                     />
@@ -3187,266 +3136,349 @@ function AdInput() {
                     <input
                       type="text"
                       className="w-[20%] p-2 border border-[#ccc] rounded-sm"
-                      value={subContact.third || ""}
+                      value={contact.third || ""}
                       onChange={e =>
                         handleContactChange(
                           "third",
                           e.currentTarget.value,
-                          "Sub"
+                          "Main"
                         )
                       }
                     />
-
                     <div className="flex items-center gap-x-2 mx-3">
                       <input
-                        id="subContactReveal"
+                        id="contactReveal"
                         type="checkbox"
-                        name="subContactReveal"
+                        name="contactReveal"
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                        checked={subContact.reveal}
+                        checked={contact.reveal}
                         onChange={e =>
-                          handleContactCheckChange("reveal", e, "Sub")
+                          handleContactCheckChange("reveal", e, "Main")
                         }
                       />
-                      <label htmlFor="subContactReveal" className="text-sm">
+                      <label htmlFor="contactReveal" className="text-sm">
                         비공개
                       </label>
                     </div>
-                    {addContact && (
+                    {!addContact && (
                       <button
-                        className="border border-success border-dashed p-2 text-success font-normal"
-                        onClick={() => {
-                          setSubContact({
-                            first: "",
-                            second: "",
-                            third: "",
-                            reveal: false,
-                          });
-                          setAddContact(false);
-                        }}
+                        className="border border-primary border-dashed p-2 text-primary font-normal"
+                        onClick={() => setAddContact(true)}
                       >
-                        + 삭제하기
+                        + 추가하기
                       </button>
                     )}
                   </div>
-                )}
+                  {addContact && (
+                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                      <select
+                        id="subContact"
+                        className="border w-[10%] border-gray-300 text-[#666] text-sm rounded focus:ring-orange-500 focus:border-orange-500 block p-1 py-2"
+                        value={subContact.first || ""}
+                        onChange={e => {
+                          handleContactChange(
+                            "first",
+                            e.currentTarget.value,
+                            "Sub"
+                          );
+                        }}
+                      >
+                        {phoneNums.map((phone, idx) => (
+                          <option key={idx} value={phone.value}>
+                            {phone.txt}
+                          </option>
+                        ))}
+                      </select>
+                      <span className="py-2">-</span>
+                      <input
+                        type="text"
+                        className="w-[20%] p-2 border border-[#ccc] rounded-sm"
+                        value={subContact.second || ""}
+                        onChange={e =>
+                          handleContactChange(
+                            "second",
+                            e.currentTarget.value,
+                            "Sub"
+                          )
+                        }
+                      />
+                      <span className="py-2">-</span>
+
+                      <input
+                        type="text"
+                        className="w-[20%] p-2 border border-[#ccc] rounded-sm"
+                        value={subContact.third || ""}
+                        onChange={e =>
+                          handleContactChange(
+                            "third",
+                            e.currentTarget.value,
+                            "Sub"
+                          )
+                        }
+                      />
+
+                      <div className="flex items-center gap-x-2 mx-3">
+                        <input
+                          id="subContactReveal"
+                          type="checkbox"
+                          name="subContactReveal"
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                          checked={subContact.reveal}
+                          onChange={e =>
+                            handleContactCheckChange("reveal", e, "Sub")
+                          }
+                        />
+                        <label htmlFor="subContactReveal" className="text-sm">
+                          비공개
+                        </label>
+                      </div>
+                      {addContact && (
+                        <button
+                          className="border border-success border-dashed p-2 text-success font-normal"
+                          onClick={() => {
+                            setSubContact({
+                              first: "",
+                              second: "",
+                              third: "",
+                              reveal: false,
+                            });
+                            setAddContact(false);
+                          }}
+                        >
+                          + 삭제하기
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div data="상세모집내용" className="grid grid-cols-1 gap-y-[30px] px-5">
-          <h3 className="py-[10px] border-b border-[#ccc] lg:text-2xl font-extra text-[#069]">
-            상세모집내용
-          </h3>
-          <div className="grid grid-cols-1 gap-y-[50px] px-5">
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold py-1">
-              <div className="lg:w-fit min-w-[84px] py-1">광고 상세내용</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-1"></div>
-              <div className="grid grid-cols-1 gap-y-1 bg-white">
-                <div className="w-full relative flex flex-row justify-start gap-x-1 font-normal">
-                  <button
-                    className={`p-2 ${
-                      !isHtml
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => setIsHtml(false)}
-                  >
-                    에디터 사용
-                  </button>
-                  <button
-                    className={`p-2 ${
-                      isHtml
-                        ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
-                        : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
-                    }`}
-                    onClick={() => {
-                      const image = imgChk(detailContent);
-                      if (image) {
-                        const confirm = window.confirm(
-                          "에디터에서 이미지 등록을 한 경우 내용이 매우 길어질 수 있습니다\nHTML모드로 변경하시겠습니까?"
-                        );
-                        if (confirm) {
-                          setIsHtml(true);
+          <div
+            data="상세모집내용"
+            className="grid grid-cols-1 gap-y-[30px] px-5"
+          >
+            <h3 className="py-[10px] border-b border-[#ccc] lg:text-xl font-extra text-[#069]">
+              상세모집내용
+            </h3>
+            <div className="grid grid-cols-1 gap-y-[50px] px-5">
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold py-1">
+                <div className="lg:w-fit min-w-[84px] py-1">광고 상세내용</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-1"></div>
+                <div className="grid grid-cols-1 gap-y-1 bg-white">
+                  <div className="w-full relative flex flex-row justify-start gap-x-1 font-normal">
+                    <button
+                      className={`p-2 ${
+                        !isHtml
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
+                      onClick={() => setIsHtml(false)}
+                    >
+                      에디터 사용
+                    </button>
+                    <button
+                      className={`p-2 ${
+                        isHtml
+                          ? "bg-green-600 text-white border border-green-600 hover:bg-green-700 hover:border-green-700"
+                          : "border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700"
+                      }`}
+                      onClick={() => {
+                        const image = imgChk(detailContent);
+                        if (image) {
+                          const confirm = window.confirm(
+                            "에디터에서 이미지 등록을 한 경우 내용이 매우 길어질 수 있습니다\nHTML모드로 변경하시겠습니까?"
+                          );
+                          if (confirm) {
+                            setIsHtml(true);
+                          } else {
+                            return false;
+                          }
                         } else {
-                          return false;
+                          setIsHtml(true);
                         }
-                      } else {
-                        setIsHtml(true);
-                      }
-                    }}
-                  >
-                    HTML 입력
-                  </button>
+                      }}
+                    >
+                      HTML 입력
+                    </button>
+                  </div>
+                  {!isHtml ? (
+                    <div className="flex flex-row justify-start gap-x-2 h-fit">
+                      <Editor
+                        value={detailContent}
+                        setValue={setDetailContent}
+                        modules={modules}
+                        formats={formats}
+                      />
+                      <div className="flex flex-col"></div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-row justify-start gap-x-1 h-fit">
+                      <textarea
+                        className="htmleditor border p-1"
+                        value={detailContent || ""}
+                        onChange={e => setDetailContent(e.currentTarget.value)}
+                      ></textarea>
+                    </div>
+                  )}
                 </div>
-                {!isHtml ? (
-                  <div className="flex flex-row justify-start gap-x-2 h-fit">
-                    <Editor
-                      value={detailContent}
-                      setValue={setDetailContent}
-                      modules={modules}
-                      formats={formats}
-                    />
-                    <div className="flex flex-col"></div>
-                  </div>
-                ) : (
-                  <div className="flex flex-row justify-start gap-x-1 h-fit">
-                    <textarea
-                      className="htmleditor border p-1"
-                      value={detailContent || ""}
-                      onChange={e => setDetailContent(e.currentTarget.value)}
-                    ></textarea>
-                  </div>
-                )}
               </div>
-            </div>
 
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
-              <div className="lg:w-fit min-w-[84px] py-4">상세이미지</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-4"></div>
-              <div className="w-full bg-[#eaeaea] border border-[#ccc] rounded divide-y">
-                <div className="flex flex-row justify-start gap-x-1 text-sm font-bold py-1 px-2">
-                  <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full px-2 py-1">
-                    <DetailUploadImg
-                      title={"상세이미지"}
-                      type={"detail"}
-                      files={detailImages}
-                      setFiles={setDetailImages}
-                      detailContent={detailContent}
-                      setDetailContent={setDetailContent}
-                    />
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold">
+                <div className="lg:w-fit min-w-[84px] py-4">상세이미지</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-4"></div>
+                <div className="w-full bg-[#eaeaea] border border-[#ccc] rounded divide-y">
+                  <div className="flex flex-row justify-start gap-x-1 text-sm font-bold py-1 px-2">
+                    <div className="flex flex-wrap gap-y-4 gap-x-4 bg-white w-full px-2 py-1">
+                      <DetailUploadImg
+                        title={"상세이미지"}
+                        type={"detail"}
+                        files={detailImages}
+                        setFiles={setDetailImages}
+                        detailContent={detailContent}
+                        setDetailContent={setDetailContent}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <div
-              data="유료상품"
-              className="flex flex-row justify-start gap-x-1 text-sm font-bold"
-            >
-              <div className="lg:w-fit min-w-[84px] py-2">유료상품</div>
-              <div className="lg:w-fit min-w-[48px] text-success py-2">
-                필수
-              </div>
-              <div className="grid grid-cols-1">
-                <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                  {grades.map((gra, idx) => (
+              <div
+                data="유료상품"
+                className="flex flex-row justify-start gap-x-1 text-sm font-bold"
+              >
+                <div className="lg:w-fit min-w-[84px] py-2">유료상품</div>
+                <div className="lg:w-fit min-w-[48px] text-success py-2">
+                  필수
+                </div>
+                <div className="grid grid-cols-1">
+                  <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                    {grades.map((gra, idx) => (
+                      <div
+                        data={`"유료상품-${idx}"`}
+                        className="flex items-center gap-x-2"
+                        key={idx}
+                      >
+                        <input
+                          id={`grade-${idx}`}
+                          type="radio"
+                          value={gra.value}
+                          name={`grade-${idx}`}
+                          className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                          checked={grade === String(gra.value)}
+                          onChange={handleGradeChange}
+                        />
+                        <label htmlFor={`grade-${idx}`} className="text-sm">
+                          {gra.txt}
+                          {gra.des ? ` : ${gra.des}` : ""}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
                     <div
-                      data={`"유료상품-${idx}"`}
+                      data="포커스광고"
                       className="flex items-center gap-x-2"
-                      key={idx}
                     >
                       <input
-                        id={`grade-${idx}`}
-                        type="radio"
-                        value={gra.value}
-                        name={`grade-${idx}`}
+                        id="focus"
+                        type="checkbox"
+                        name="focus"
                         className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                        checked={grade === String(gra.value)}
-                        onChange={handleGradeChange}
+                        checked={focus}
+                        onChange={handleFocusChange}
                       />
-                      <label htmlFor={`grade-${idx}`} className="text-sm">
-                        {gra.txt}
-                        {gra.des ? ` : ${gra.des}` : ""}
+                      <label htmlFor="focus" className="text-sm">
+                        포커스 광고 : 메인 중단, 검색결과 노출
                       </label>
                     </div>
-                  ))}
-                </div>
-                <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                  <div data="포커스광고" className="flex items-center gap-x-2">
-                    <input
-                      id="focus"
-                      type="checkbox"
-                      name="focus"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                      checked={focus}
-                      onChange={handleFocusChange}
-                    />
-                    <label htmlFor="focus" className="text-sm">
-                      포커스 광고 : 메인 중단, 검색결과 노출
-                    </label>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div
-          data="예약등록"
-          className="grid grid-cols-1 gap-y-[10px] px-5 bg-[#eaeaea] py-5"
-        >
-          <div className="grid grid-cols-1 gap-y-[50px]">
-            <div className="flex flex-row justify-start gap-x-1 text-sm font-bold px-5 py-2 bg-white border border-[#ccc]">
-              <div className="w-full grid grid-cols-1 gap-y-2">
-                <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
-                  <h3 className="py-[10px] font-extra text-black">예약등록</h3>
-                  <div data="바로등록" className="flex items-center gap-x-2">
-                    <input
-                      id="no-reserve"
-                      type="radio"
-                      name="reserve"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                      checked={!reserve}
-                      onChange={() => setReserve(false)} // value 대신 직접 boolean 값 설정
-                    />
-                    <label htmlFor="no-reserve" className="text-sm">
-                      바로 등록
-                    </label>
+          <div
+            data="예약등록"
+            className="grid grid-cols-1 gap-y-[10px] px-5 bg-[#eaeaea] py-5"
+          >
+            <div className="grid grid-cols-1 gap-y-[50px]">
+              <div className="flex flex-row justify-start gap-x-1 text-sm font-bold px-5 py-2 bg-white border border-[#ccc]">
+                <div className="w-full grid grid-cols-1 gap-y-2">
+                  <div className="w-full relative flex flex-row justify-start gap-x-[50px] gap-y-3 flex-wrap font-normal py-2">
+                    <h3 className="py-[10px] font-extra text-black">
+                      예약등록
+                    </h3>
+                    <div data="바로등록" className="flex items-center gap-x-2">
+                      <input
+                        id="no-reserve"
+                        type="radio"
+                        name="reserve"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                        checked={!reserve}
+                        onChange={() => setReserve(false)} // value 대신 직접 boolean 값 설정
+                      />
+                      <label htmlFor="no-reserve" className="text-sm">
+                        바로 등록
+                      </label>
+                    </div>
+                    <div data="예약일" className="flex items-center gap-x-2">
+                      <input
+                        id="yes-reserve"
+                        type="radio"
+                        name="reserve"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
+                        checked={reserve}
+                        onChange={() => setReserve(true)} // value 대신 직접 boolean 값 설정
+                      />
+                      <label
+                        htmlFor="yes-reserve"
+                        className="text-sm break-keep"
+                      >
+                        예약 등록
+                      </label>
+                      <input
+                        type="text"
+                        className="w-fit min-w-[100px] py-1 px-2 border border-[#ccc] rounded-sm"
+                        defaultValue={
+                          reserveDate
+                            ? dayjs(reserveDate).format("YYYY-MM-DD")
+                            : ""
+                        }
+                        disabled={!reserve}
+                      />
+                    </div>
                   </div>
-                  <div data="예약일" className="flex items-center gap-x-2">
-                    <input
-                      id="yes-reserve"
-                      type="radio"
-                      name="reserve"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 focus:ring-2"
-                      checked={reserve}
-                      onChange={() => setReserve(true)} // value 대신 직접 boolean 값 설정
-                    />
-                    <label htmlFor="yes-reserve" className="text-sm break-keep">
-                      예약 등록
-                    </label>
-                    <input
-                      type="text"
-                      className="w-fit min-w-[100px] py-1 px-2 border border-[#ccc] rounded-sm"
-                      defaultValue={
-                        reserveDate
-                          ? dayjs(reserveDate).format("YYYY-MM-DD")
-                          : ""
-                      }
-                      disabled={!reserve}
-                    />
-                  </div>
-                </div>
-                {reserve ? (
-                  <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y w-fit">
-                    <div className="flex flex-row justify-start gap-x-1 text-sm font-bold pr-4">
-                      <div className="lg:w-fit text-center min-w-[120px] pl-2 py-4 flex flex-col justify-center">
-                        예약일 선택
-                      </div>
-                      <div className="pl-2 py-4">
-                        <div className="bg-white w-fit border border-[#ccc]">
-                          <DayPicker
-                            mode="single"
-                            timeZone="Asia/Seoul"
-                            locale={ko}
-                            numberOfMonths={2}
-                            selected={reserveDate}
-                            onSelect={setReserveDate}
-                            classNames={{
-                              today: `bg-green-100 rounded-full`, // Add a border to today's date
-                              selected: `bg-blue-100 rounded-full important`, // Highlight the selected day
-                              root: `${defaultClassNames.root} p-5`, // Add a shadow to the root element
-                              caption_label: `${defaultClassNames.caption_label}`,
-                              chevron: `${defaultClassNames.chevron} fill-amber-500`, // Change the color of the chevron
-                              months: `${defaultClassNames.months} grid grid-cols-2 gap-x-2`,
-                            }}
-                          />
+                  {reserve ? (
+                    <div className="bg-[#eaeaea] border border-[#ccc] rounded divide-y w-fit">
+                      <div className="flex flex-row justify-start gap-x-1 text-sm font-bold pr-4">
+                        <div className="lg:w-fit text-center min-w-[120px] pl-2 py-4 flex flex-col justify-center">
+                          예약일 선택
+                        </div>
+                        <div className="pl-2 py-4">
+                          <div className="bg-white w-fit border border-[#ccc]">
+                            <DayPicker
+                              mode="single"
+                              timeZone="Asia/Seoul"
+                              locale={ko}
+                              numberOfMonths={2}
+                              selected={reserveDate}
+                              onSelect={setReserveDate}
+                              classNames={{
+                                today: `bg-green-100 rounded-full`, // Add a border to today's date
+                                selected: `bg-blue-100 rounded-full important`, // Highlight the selected day
+                                root: `${defaultClassNames.root} p-5`, // Add a shadow to the root element
+                                caption_label: `${defaultClassNames.caption_label}`,
+                                chevron: `${defaultClassNames.chevron} fill-amber-500`, // Change the color of the chevron
+                                months: `${defaultClassNames.months} grid grid-cols-2 gap-x-2`,
+                              }}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ) : null}
+                  ) : null}
+                </div>
               </div>
             </div>
           </div>

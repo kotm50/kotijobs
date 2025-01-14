@@ -30,9 +30,8 @@ function ApplyList() {
     const res = await api
       .post("/api/v1/jobsite/user/findAll", { json: data })
       .json();
-    console.log(res);
-    setApplyList(res.jobsiteUserList);
-    setLast(res.totalPages);
+    setApplyList(res.jobsiteUserList || []);
+    setLast(res.totalPages || 1);
   };
 
   const getAge = b => {
@@ -68,126 +67,131 @@ function ApplyList() {
     }
   };
   return (
-    <div className="mt-[100px] max-w-[1240px] bg-white mx-auto py-10 px-5 text-sm">
-      {applyList.length > 0 && (
-        <>
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th className="bg-gray-200 p-1 border border-gray-300 text-center">
-                  회원구분
-                </th>
-                <th className="bg-gray-200 p-1 border border-gray-300 text-center">
-                  아이디
-                </th>
-                <th className="bg-gray-200 p-1 border border-gray-300 text-center">
-                  이름(성별,나이)
-                </th>
-                <th className="bg-gray-200 p-1 border border-gray-300 text-center">
-                  연락처/이메일
-                </th>
-                <th className="bg-gray-200 p-1 border border-gray-300 text-center">
-                  포인트
-                </th>
-                <th className="bg-gray-200 p-1 border border-gray-300 text-center">
-                  이력서
-                </th>
-                <th className="bg-gray-200 p-1 border border-gray-300 text-center">
-                  입사지원
-                </th>
-                <th className="bg-gray-200 p-1 border border-gray-300 text-center">
-                  상태
-                </th>
-                <th className="bg-gray-200 p-1 border border-gray-300 text-center">
-                  가입일
-                </th>
-                <th className="bg-gray-200 p-1 border border-gray-300 text-center">
-                  관리
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {applyList.map((apply, idx) => (
-                <tr key={idx}>
-                  <td className="align-middle py-1 px-2 border border-gray-300 text-center">
-                    개인회원
-                  </td>
-                  <td
-                    className="align-middle py-1 px-2 border border-gray-300 max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis text-center"
-                    title={apply.userId}
-                  >
-                    {apply.userId}
-                  </td>
-                  <td className="align-middle p-1 border border-gray-300 text-center">
-                    {apply.userName} ({apply.gender}, {getAge(apply.birth)}세)
-                  </td>
-                  <td className="align-middle p-1 border border-gray-300 text-center">
-                    <p>{getPhone(apply.phone)}</p>
-                    <p className="text-xs">{apply.email || "이메일 미등록"}</p>
-                  </td>
-                  <td className="align-middle p-1 border border-gray-300 text-center">
-                    0
-                  </td>
-                  <td className="align-middle p-1 border border-gray-300 text-center">
-                    0
-                  </td>
-                  <td className="align-middle p-1 border border-gray-300 text-center">
-                    0
-                  </td>
-                  <td className="align-middle p-1 border border-gray-300 text-center">
-                    0
-                  </td>
-                  <td className="align-middle p-1 border border-gray-300 text-center">
-                    {apply.createdAt}
-                  </td>
-                  <td className="align-middle p-1 border border-gray-300 text-center">
-                    <div className="flex flex-row justify-start gap-x-2 flex-wrap">
-                      <button
-                        className="py-1 px-2 border hover:bg-gray-100 text-sm"
-                        onClick={() => alert("준비 중입니다")}
-                      >
-                        수정
-                      </button>
-                      <button
-                        className="py-1 px-2 border hover:bg-gray-100 text-sm"
-                        onClick={() => alert("준비 중입니다")}
-                      >
-                        문자
-                      </button>
-                      <button
-                        className="py-1 px-2 border hover:bg-gray-100 text-sm"
-                        onClick={() => alert("준비 중입니다")}
-                      >
-                        메일
-                      </button>
-                      <button
-                        className="py-1 px-2 border hover:bg-gray-100 text-sm"
-                        onClick={() => alert("준비 중입니다")}
-                      >
-                        메모
-                      </button>
-                      <button
-                        className="py-1 px-2 border hover:bg-gray-100 text-sm"
-                        onClick={() => alert("준비 중입니다")}
-                      >
-                        로그인
-                      </button>
-                      <button
-                        className="py-1 px-2 border hover:bg-gray-100 text-sm"
-                        onClick={() => alert("준비 중입니다")}
-                      >
-                        탈퇴
-                      </button>
-                    </div>
-                  </td>
+    <>
+      <div className="bg-white mx-auto py-10 px-5 text-sm">
+        <h2 className="lg:text-2xl font-extra text-[#069]">회원 목록</h2>
+        {applyList && applyList.length > 0 && (
+          <>
+            <table className="w-full">
+              <thead>
+                <tr>
+                  <th className="bg-gray-200 p-1 border border-gray-300 text-center">
+                    회원구분
+                  </th>
+                  <th className="bg-gray-200 p-1 border border-gray-300 text-center">
+                    아이디
+                  </th>
+                  <th className="bg-gray-200 p-1 border border-gray-300 text-center">
+                    이름(성별,나이)
+                  </th>
+                  <th className="bg-gray-200 p-1 border border-gray-300 text-center">
+                    연락처/이메일
+                  </th>
+                  <th className="bg-gray-200 p-1 border border-gray-300 text-center">
+                    포인트
+                  </th>
+                  <th className="bg-gray-200 p-1 border border-gray-300 text-center">
+                    이력서
+                  </th>
+                  <th className="bg-gray-200 p-1 border border-gray-300 text-center">
+                    입사지원
+                  </th>
+                  <th className="bg-gray-200 p-1 border border-gray-300 text-center">
+                    상태
+                  </th>
+                  <th className="bg-gray-200 p-1 border border-gray-300 text-center">
+                    가입일
+                  </th>
+                  <th className="bg-gray-200 p-1 border border-gray-300 text-center">
+                    관리
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </>
-      )}
-      {applyList && applyList.length > 0 ? <Pagenation last={last} /> : null}
-    </div>
+              </thead>
+              <tbody>
+                {applyList.map((apply, idx) => (
+                  <tr key={idx}>
+                    <td className="align-middle py-1 px-2 border border-gray-300 text-center">
+                      개인회원
+                    </td>
+                    <td
+                      className="align-middle py-1 px-2 border border-gray-300 max-w-[100px] overflow-hidden whitespace-nowrap text-ellipsis text-center"
+                      title={apply.userId}
+                    >
+                      {apply.userId}
+                    </td>
+                    <td className="align-middle p-1 border border-gray-300 text-center">
+                      {apply.userName} ({apply.gender}, {getAge(apply.birth)}세)
+                    </td>
+                    <td className="align-middle p-1 border border-gray-300 text-center">
+                      <p>{getPhone(apply.phone)}</p>
+                      <p className="text-xs">
+                        {apply.email || "이메일 미등록"}
+                      </p>
+                    </td>
+                    <td className="align-middle p-1 border border-gray-300 text-center">
+                      0
+                    </td>
+                    <td className="align-middle p-1 border border-gray-300 text-center">
+                      0
+                    </td>
+                    <td className="align-middle p-1 border border-gray-300 text-center">
+                      0
+                    </td>
+                    <td className="align-middle p-1 border border-gray-300 text-center">
+                      0
+                    </td>
+                    <td className="align-middle p-1 border border-gray-300 text-center">
+                      {apply.createdAt}
+                    </td>
+                    <td className="align-middle p-1 border border-gray-300 text-center">
+                      <div className="flex flex-row justify-start gap-x-2 flex-wrap">
+                        <button
+                          className="py-1 px-2 border hover:bg-gray-100 text-sm"
+                          onClick={() => alert("준비 중입니다")}
+                        >
+                          수정
+                        </button>
+                        <button
+                          className="py-1 px-2 border hover:bg-gray-100 text-sm"
+                          onClick={() => alert("준비 중입니다")}
+                        >
+                          문자
+                        </button>
+                        <button
+                          className="py-1 px-2 border hover:bg-gray-100 text-sm"
+                          onClick={() => alert("준비 중입니다")}
+                        >
+                          메일
+                        </button>
+                        <button
+                          className="py-1 px-2 border hover:bg-gray-100 text-sm"
+                          onClick={() => alert("준비 중입니다")}
+                        >
+                          메모
+                        </button>
+                        <button
+                          className="py-1 px-2 border hover:bg-gray-100 text-sm"
+                          onClick={() => alert("준비 중입니다")}
+                        >
+                          로그인
+                        </button>
+                        <button
+                          className="py-1 px-2 border hover:bg-gray-100 text-sm"
+                          onClick={() => alert("준비 중입니다")}
+                        >
+                          탈퇴
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+        {applyList && applyList.length > 0 ? <Pagenation last={last} /> : null}
+      </div>
+    </>
   );
 }
 

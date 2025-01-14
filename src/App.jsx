@@ -14,6 +14,7 @@ import { api, useLogout } from "./Api/Api";
 import Clock from "./Components/Clock";
 import Modal from "./Components/Modal";
 import ApplyList from "./Pages/ApplyList";
+import RouteErr from "./Components/RouteErr";
 
 function App() {
   const logout = useLogout();
@@ -27,7 +28,7 @@ function App() {
   const [modalType, setModalType] = useState("");
   useEffect(() => {
     if (thisLocation.pathname === "/" && login.userId) {
-      navi("/admin");
+      navi("/admin/ad/list");
     } else if (!login.userId && thisLocation.pathname !== "/") {
       navi("/");
     }
@@ -93,11 +94,13 @@ function App() {
         <Route path="/test" element={<Test />} />
         <Route path="/admin" element={<AdminMain />}>
           <Route path="" element={<AdList />} />
-          <Route path="adinput" element={<AdInput />} />
-          <Route path="adinput2" element={<AdInput2 />} />
-          <Route path="adlist" element={<AdList />} />
-          <Route path="applylist" element={<ApplyList />} />
+          <Route path="ad/input" element={<AdInput />} />
+          <Route path="ad/input2" element={<AdInput2 />} />
+          <Route path="ad/list" element={<AdList />} />
+          <Route path="apply/list" element={<ApplyList />} />
         </Route>
+        {/* 없는 경로로 접근 시 처리 */}
+        <Route path="*" element={<RouteErr />} />
       </Routes>
       {thisLocation.pathname !== "/" && <Clock time={time} />}
       {thisLocation.pathname !== "/" && (

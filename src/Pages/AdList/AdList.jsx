@@ -296,8 +296,8 @@ function AdList() {
   };
   return (
     <>
-      <div className="w-full max-w-[1240px] mx-auto mt-[100px] bg-white py-10 grid grid-cols-1 gap-y-[40px] mb-20 px-5">
-        <h2 className="lg:text-2xl font-extra text-[#069]">공고 관리</h2>
+      <div className="w-full bg-white py-10 grid grid-cols-1 gap-y-[40px] mb-20 px-5">
+        <h2 className="lg:text-2xl font-extra text-[#069]">공고 목록</h2>
 
         <div className="flex justify-between border-b">
           <div className="flex justify-start gap-x-0">
