@@ -66,8 +66,6 @@ function App() {
     const interval = setInterval(updateTime, 1000); // 1초마다 실행
 
     return () => clearInterval(interval); // 컴포넌트 언마운트 시 정리
-
-    //eslint-disable-next-line
   }, []);
 
   useEffect(() => {

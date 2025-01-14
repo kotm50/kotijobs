@@ -226,6 +226,7 @@ function AdInput() {
   const logout = useLogout();
   // 데이터 불러오기
   const putData = async adInfo => {
+    console.log(adInfo);
     setBeforeData(adInfo);
     setBeforePhotoList(adInfo.photoList ? adInfo.photoList.split(",") : []);
     setZipCode(adInfo.zipCode);
@@ -282,7 +283,8 @@ function AdInput() {
       setLimit("상시모집");
       setLimitDate("");
     } else {
-      setLimit(adInfo.endLimit ? "마감일지정" : "상시모집");
+      console.log(adInfo.endLimit);
+      setLimit(!adInfo.endLimit ? "상시모집" : "마감일지정");
       setLimitDate(adInfo.endDate || "");
     }
     setApplyRoute(adInfo.applyMethod.split(","));
@@ -709,15 +711,6 @@ function AdInput() {
       });
     }
   };
-
-  useEffect(() => {
-    const todayNum = Number(dayjs(new Date()).format("YYYYMMDD"));
-    const selectedNum = Number(dayjs(limitDate).format("YYYYMMDD"));
-    if (selectedNum < todayNum) {
-      alert("마감일은 오늘 이후로 지정하세요");
-      setLimitDate("");
-    }
-  }, [limitDate]);
 
   useEffect(() => {
     if (startTime && endTime) {
@@ -1218,10 +1211,16 @@ function AdInput() {
     }
     data.education = education;
     data.endLimit = limit === "상시모집" ? false : true;
+
+    const todayNum = Number(dayjs(new Date()).format("YYYYMMDD"));
+    const selectedNum = Number(dayjs(limitDate).format("YYYYMMDD"));
     if (limit !== "상시모집") {
       if (!limitDate) {
         result = "마감일을 선택하세요";
 
+        return { data, result };
+      } else if (selectedNum < todayNum) {
+        result = "마감일은 오늘 이후로 지정하세요";
         return { data, result };
       } else {
         data.endDate = dayjs(limitDate).format("YYYY-MM-DD");
