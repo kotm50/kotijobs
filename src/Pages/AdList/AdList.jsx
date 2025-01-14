@@ -56,7 +56,7 @@ function AdList() {
     setLoading(true);
     setAdList([]);
     if (isNaN(keyword)) {
-      navi("/admin/adlist");
+      navi("/admin/ad/list");
       return alert("잘못된 경로로 들어오셨습니다");
     }
 
@@ -95,7 +95,7 @@ function AdList() {
       const stat = await getStat(status);
       if (stat === "에러") {
         alert("잘못된 접근 경로입니다");
-        navi("/admin/adlist");
+        navi("/admin/ad/list");
         return false;
       } else {
         data.status = stat;
@@ -109,7 +109,7 @@ function AdList() {
       if (type === "에러") {
         setErrMsg("잘못된 경로로 접속하셨습니다");
         setAdList(null);
-        navi("/admin/adlist");
+        navi("/admin/ad/list");
         return false;
       } else {
         data.searchType = type;
@@ -302,7 +302,7 @@ function AdList() {
         <div className="flex justify-between border-b">
           <div className="flex justify-start gap-x-0">
             <Link
-              to={`/admin/adlist${
+              to={`/admin/ad/list${
                 searchtype && keyword
                   ? `?searchtype=${searchtype}&keyword=${keyword}`
                   : ""
@@ -323,7 +323,7 @@ function AdList() {
               </span>
             </Link>
             <Link
-              to={`/admin/adlist?status=started${
+              to={`/admin/ad/list?status=started${
                 searchtype && keyword
                   ? `&searchtype=${searchtype}&keyword=${keyword}`
                   : ""
@@ -344,7 +344,7 @@ function AdList() {
               </span>
             </Link>
             <Link
-              to={`/admin/adlist?status=waiting${
+              to={`/admin/ad/list?status=waiting${
                 searchtype && keyword
                   ? `&searchtype=${searchtype}&keyword=${keyword}`
                   : ""
@@ -365,7 +365,7 @@ function AdList() {
               </span>
             </Link>
             <Link
-              to={`/admin/adlist?status=ended${
+              to={`/admin/ad/list?status=ended${
                 searchtype && keyword
                   ? `&searchtype=${searchtype}&keyword=${keyword}`
                   : ""
@@ -608,7 +608,7 @@ function AdList() {
                       {getStatus(ad.startDate, ad.endDate) !== "종료" ? (
                         <>
                           <Link
-                            to={`/admin/adinput?aid=${ad.aid}`}
+                            to={`/admin/ad/input?aid=${ad.aid}`}
                             className="py-1 px-4 border bg-white hover:bg-gray-50 text-[12px] w-[60px] mx-auto"
                           >
                             수정
@@ -633,7 +633,7 @@ function AdList() {
                       )}
 
                       <Link
-                        to={`/admin/adinput?aid=${ad.aid}&reinput=y`}
+                        to={`/admin/ad/input?aid=${ad.aid}&reinput=y`}
                         className="py-1 px-1 border bg-white hover:bg-gray-50 text-[12px] w-[60px] mx-auto"
                       >
                         재등록
