@@ -975,6 +975,10 @@ function AdInput() {
     }
   };
 
+  useEffect(() => {
+    if (!reserve) setReserveDate("");
+  }, [reserve]);
+
   const handleLoading = (loading, message) => {
     setLoading(loading);
     setLoadMsg(message || "작업 중...");

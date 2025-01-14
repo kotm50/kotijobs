@@ -194,6 +194,7 @@ function AdList() {
     const res = await api
       .put("/api/v1/formMail_ad/update/close", { json: data })
       .json();
+    console.log(res);
     if (res.code === "C000") {
       if (!multiple) alert("마감되었습니다");
       getAdList();
