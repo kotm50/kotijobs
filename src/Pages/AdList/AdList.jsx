@@ -270,17 +270,17 @@ function AdList() {
     }
     if (sKeyword === "") {
       if (keyword) {
-        navi("/admin/adlist");
+        navi("/admin/ad/list");
       } else {
         return false;
       }
     } else {
-      navi(`/admin/adlist?searchtype=${sType}&keyword=${sKeyword}`);
+      navi(`/admin/ad/list?searchtype=${sType}&keyword=${sKeyword}`);
     }
   };
 
   const searchCancel = () => {
-    navi("/admin/adlist");
+    navi("/admin/ad/list");
   };
 
   const checkAd = async (e, ad) => {
