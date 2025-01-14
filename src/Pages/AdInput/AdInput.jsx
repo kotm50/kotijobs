@@ -1021,7 +1021,7 @@ function AdInput() {
 
       if (res.code === "C000") {
         alert("완료");
-        navi("/admin/adlist");
+        navi("/admin/ad/list");
       } else {
         if (res.code === "E403") {
           logout();
