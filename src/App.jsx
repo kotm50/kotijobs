@@ -15,8 +15,10 @@ import Clock from "./Components/Clock";
 import Modal from "./Components/Modal";
 import ApplyList from "./Pages/ApplyList";
 import RouteErr from "./Components/RouteErr";
+import useHardReload from "./useHardReload";
 
 function App() {
+  useHardReload(); // ✅ 페이지 로드 시 강제 새로고침 실행
   const logout = useLogout();
   const [time, setTime] = useState(dayjs().format("HH:mm:ss")); // 초 단위 시간 상태
   const thisLocation = useLocation();

@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "prebuild": "node -e \"require('fs').writeFileSync('.env.production', 'VITE_APP_VERSION=' + new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14) + '\\n');\"",
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
