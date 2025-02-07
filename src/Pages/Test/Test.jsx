@@ -109,7 +109,7 @@ function Test() {
   };
   return (
     <>
-      <div className="mt-[200px] w-[1240px] mx-auto">
+      <div className="mt-[200px] w-[1240px] mx-auto hidden">
         <input
           type="date"
           value={date}
@@ -124,7 +124,7 @@ function Test() {
         </button>
         {age}
       </div>
-      <div className="mt-[200px] bg-white w-full grid-cols-2 gap-x-2 max-w-[1200px] mx-auto p-2 hidden">
+      <div className="mt-[200px] bg-white w-full grid-cols-2 gap-x-2 max-w-[1200px] mx-auto p-2">
         <div className="grid grid-cols-1 gap-y-4">
           <div className="p-2">
             <textarea
