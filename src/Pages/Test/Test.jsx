@@ -132,6 +132,7 @@ function Test() {
               value={monTxt}
               onChange={e => setMonTxt(e.currentTarget.value)}
               onBlur={parseMon}
+              placeholder="알바몬"
             ></textarea>
           </div>
           <button
@@ -175,6 +176,7 @@ function Test() {
               value={hvnTxt}
               onChange={e => setHvnTxt(e.currentTarget.value)}
               onBlur={parseHvn}
+              placeholder="알바천국"
             ></textarea>
           </div>
           <button
