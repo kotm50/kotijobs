@@ -410,11 +410,13 @@ function AdInput() {
     };
   }, [modalOn, isPopupOpen]);
 
+  /*
   //좌표정보
   useEffect(() => {
-    if (addressA) getLocation2(addressA);
+    if (addressA) getLocation(addressA);
     //eslint-disable-next-line
   }, [addressA]);
+*/
 
   /*역찾기 임시대기
   const getSubwayUniversity = async (x, y) => {
@@ -454,22 +456,6 @@ function AdInput() {
     await getSubwayUniversity(res.x, res.y);
   };
   */
-
-  const getLocation2 = async address => {
-    const url = `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(
-      address
-    )}`;
-
-    const res = await api
-      .get(url, {
-        headers: {
-          Authorization: `KakaoAK ${import.meta.env.VITE_KAKAO_API_KEY}`,
-        },
-      })
-      .json();
-    setLocationX(res.documents[0].address.x);
-    setLocationY(res.documents[0].address.y);
-  };
 
   const handleManagerName = e => {
     const value = e.target.value;
