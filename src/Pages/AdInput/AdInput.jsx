@@ -231,7 +231,7 @@ function AdInput() {
     setBeforePhotoList(adInfo.photoList ? adInfo.photoList.split(",") : []);
     setZipCode(adInfo.zipCode);
     setAddressA(adInfo.address);
-    await getLocation(adInfo.address);
+    //await getLocation(adInfo.address);
     if (adInfo.addressDetail) {
       setAddressB(adInfo.addressDetail);
     }
@@ -409,13 +409,15 @@ function AdInput() {
       document.body.style.overflow = "";
     };
   }, [modalOn, isPopupOpen]);
-
+  /*
   //좌표정보
   useEffect(() => {
     if (addressA) getLocation(addressA);
     //eslint-disable-next-line
   }, [addressA]);
+  */
 
+  /*역찾기 임시대기
   const getSubwayUniversity = async (x, y) => {
     const res = await api
       .get(`/api/v1/common/find/subway?x=${x}&y=${y}`)
@@ -442,7 +444,8 @@ function AdInput() {
     }
     setStation(stations);
   };
-
+  */
+  /* 주소찾기 임시대기
   const getLocation = async address => {
     const res = await api
       .get(`/api/v1/common/get/coordinates?address=${address}`)
@@ -451,6 +454,7 @@ function AdInput() {
     setLocationY(res.y);
     await getSubwayUniversity(res.x, res.y);
   };
+  */
 
   const handleManagerName = e => {
     const value = e.target.value;
@@ -2609,7 +2613,7 @@ function AdInput() {
                           openPostCode();
                         }}
                       >
-                        주소 찾기
+                        주소찾기
                       </button>
                       <button
                         className={`p-2 border border-green-600 text-green-600 hover:bg-green-50 hover:text-green-700 hover:border-green-700 hidden`}
