@@ -14,12 +14,6 @@ export default defineConfig({
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, ""), // API 경로 재작성 (필요한 경우)
       },
-      "/map": {
-        //target: "http://192.168.0.35:8080", // 로컬 프록시
-        target: "https://dapi.kakao.com", // AWS 프록시
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/map/, ""), // API 경로 재작성 (필요한 경우)
-      },
       "/images": {
         target: "https://goalba.co.kr", // 로컬 프록시
         //target: "https://goalba.co.kr/", // AWS 프록시
